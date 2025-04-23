@@ -1,0 +1,6 @@
+@ReGreenShop.Startup_HostAddress = http://localhost:5074
+
+GET {{ReGreenShop.Startup_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
