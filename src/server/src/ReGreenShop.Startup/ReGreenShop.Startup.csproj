@@ -11,6 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ReGreenShop.Application\ReGreenShop.Application.csproj" />
+    <ProjectReference Include="..\ReGreenShop.Infrastructure\ReGreenShop.Infrastructure.csproj" />
     <ProjectReference Include="..\ReGreenShop.Web\ReGreenShop.Web.csproj" />
   </ItemGroup>
 
