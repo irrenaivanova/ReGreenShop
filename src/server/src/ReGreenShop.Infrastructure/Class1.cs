@@ -1,4 +1,4 @@
-﻿namespace ReGreenShop.Infrastructure
+namespace ReGreenShop.Infrastructure
 {
     public class Class1
     {

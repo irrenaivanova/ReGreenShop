@@ -1,0 +1,43 @@
+# Top-most EditorConfig file
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+end_of_line = crlf
+
+[*.cs]
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = false  # <== Put all usings together
+
+# Remove blank lines around braces and inside blocks
+csharp_preserve_single_line_blocks = true
+csharp_preserve_single_line_statements = true
+csharp_style_allow_blank_lines_between_consecutive_braces = false:warning
+
+# No extra blank lines anywhere
+file_header_template = unset
+csharp_style_allow_blank_line_after_colon = false:warning
+
+# Use `this.` and avoid underscore `_` for fields
+dotnet_style_qualification_for_field = true:warning
+dotnet_naming_rule.no_underscores.fields.severity = warning
+dotnet_naming_rule.no_underscores.fields.symbols = field
+dotnet_naming_rule.no_underscores.fields.style = no_underscores
+
+dotnet_naming_symbols.field.applicable_kinds = field
+dotnet_naming_symbols.field.applicable_accessibilities = *
+dotnet_naming_symbols.field.required_modifiers = *
+
+dotnet_naming_style.no_underscores.required_prefix = ""
+dotnet_naming_style.no_underscores.capitalization = camel_case
+
+# Namespace style
+csharp_style_namespace_declarations = file_scoped:warning
+
+# Optional: sort usings and remove unnecessary
+dotnet_separate_import_directive_groups = false
+dotnet_sort_system_directives_first = true
