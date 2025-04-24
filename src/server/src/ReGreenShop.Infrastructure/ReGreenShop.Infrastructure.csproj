@@ -16,4 +16,10 @@
     <ProjectReference Include="..\ReGreenShop.Application\ReGreenShop.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Persistence\Seeding\Common\SeedFiles\products.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

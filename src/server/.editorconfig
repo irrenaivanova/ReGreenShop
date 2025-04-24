@@ -41,3 +41,5 @@ csharp_style_namespace_declarations = file_scoped:warning
 # Optional: sort usings and remove unnecessary
 dotnet_separate_import_directive_groups = false
 dotnet_sort_system_directives_first = true
+
+csharp_style_namespace_declarations = file_scoped:warning

@@ -17,4 +17,13 @@
     <ProjectReference Include="..\ReGreenShop.Domain\ReGreenShop.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Common\Behaviours\" />
+    <Folder Include="Common\Exceptions\" />
+    <Folder Include="Common\Mappings\" />
+    <Folder Include="Common\Models\" />
+    <Folder Include="Products\Commands\" />
+    <Folder Include="Products\Queries\" />
+  </ItemGroup>
+
 </Project>
