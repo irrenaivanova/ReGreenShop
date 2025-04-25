@@ -5,7 +5,7 @@ using ReGreenShop.Domain.Entities;
 using ReGreenShop.Infrastructure.Persistence.Identity;
 
 namespace ReGreenShop.Infrastructure.Persistence;
-public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>, IData
+public class ApplicationDbContext : IdentityDbContext<User, Role, string>, IData
 {
     public DbSet<Product> Products { get; set; }
 

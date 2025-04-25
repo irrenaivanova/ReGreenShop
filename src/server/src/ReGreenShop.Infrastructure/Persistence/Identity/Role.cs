@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Identity;
 using ReGreenShop.Domain.common;
 
 namespace ReGreenShop.Infrastructure.Persistence.Identity;
-public class ApplicationRole : IdentityRole, IAuditInfo, IDeletableEntity
+public class Role : IdentityRole, IAuditInfo, IDeletableEntity
 {
-    public ApplicationRole(string name)
+    public Role(string name)
            : base(name)
     {
         Id = Guid.NewGuid().ToString();

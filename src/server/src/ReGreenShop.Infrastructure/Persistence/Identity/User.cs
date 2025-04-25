@@ -1,0 +1,51 @@
+using Microsoft.AspNetCore.Identity;
+using ReGreenShop.Domain.common;
+using ReGreenShop.Domain.Entities;
+
+namespace ReGreenShop.Infrastructure.Persistence.Identity;
+public class User : IdentityUser, IAuditInfo, IDeletableEntity
+{
+    public User()
+    {
+        this.Id = Guid.NewGuid().ToString();
+        this.TotalGreenPoints = 0;
+        this.Roles = new HashSet<IdentityUserRole<string>>();
+        this.Claims = new HashSet<IdentityUserClaim<string>>();
+        this.Logins = new HashSet<IdentityUserLogin<string>>();
+        this.Notifications = new HashSet<Notification>();
+        this.Orders = new HashSet<Order>();
+        this.Addresses = new HashSet<Address>();
+        this.LikedProducts = new HashSet<Product>();
+    }
+
+    public string? FirstName { get; set; }
+
+    public string? LastName { get; set; }
+
+    public int TotalGreenPoints { get; set; }
+
+    public DateTime CreatedOn { get; set; }
+
+    public DateTime? ModifiedOn { get; set; }
+
+    public bool IsDeleted { get; set; }
+
+    public string CartId { get; set; } = string.Empty;
+
+    public DateTime? DeletedOn { get; set; }
+
+    public ICollection<Notification> Notifications { get; set; }
+
+    public ICollection<Address> Addresses { get; set; }
+
+    public ICollection<Order> Orders { get; set; }
+
+    public ICollection<IdentityUserRole<string>> Roles { get; set; }
+
+    public ICollection<IdentityUserClaim<string>> Claims { get; set; }
+
+    public ICollection<IdentityUserLogin<string>> Logins { get; set; }
+
+    public ICollection<Product> LikedProducts { get; set; }
+
+}
