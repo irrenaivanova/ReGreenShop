@@ -2,18 +2,19 @@ using ReGreenShop.Domain.common;
 using ReGreenShop.Domain.Entities.Enum;
 
 namespace ReGreenShop.Domain.Entities;
+
 public class Order : BaseDeletableModel<string>
 {
     public Order()
     {
-        Id = Guid.NewGuid().ToString();
-        OrderDetails = new HashSet<OrderDetail>();
-        OrderGreenAlternativeDetails = new HashSet<OrderGreenAlternativeDetail>();
+        this.Id = Guid.NewGuid().ToString();
+        this.OrderDetails = new HashSet<OrderDetail>();
+        this.OrderGreenAlternativeDetails = new HashSet<OrderGreenAlternativeDetail>();
     }
 
     public string InvoiceUrl { get; set; } = string.Empty;
 
-    public string UserId { get; set; } = default!;
+    public string UserId { get; set; } = string.Empty;
 
     public string TotalPrice { get; set; } = string.Empty;
 
@@ -29,11 +30,11 @@ public class Order : BaseDeletableModel<string>
 
     public int PaymentId { get; set; }
 
-    public PaymentDetail Payment { get; set; } = default!;
+    public Payment Payment { get; set; } = default!;
 
-    public int? UsedPointsToDiscountId { get; set; }
+    public int? DiscountVoucherId { get; set; }
 
-    public PointsToDiscount? UsedPointsToDiscount { get; set; }
+    public DiscountVoucher? DiscountVoucher { get; set; }
 
     public IEnumerable<OrderDetail> OrderDetails { get; set; }
 

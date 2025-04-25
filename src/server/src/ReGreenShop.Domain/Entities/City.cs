@@ -1,6 +1,7 @@
 using ReGreenShop.Domain.common;
 
 namespace ReGreenShop.Domain.Entities;
+
 public class City : BaseDeletableModel<int>
 {
     public City()

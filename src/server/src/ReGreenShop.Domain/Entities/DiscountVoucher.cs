@@ -1,7 +1,8 @@
 using ReGreenShop.Domain.common;
 
 namespace ReGreenShop.Domain.Entities;
-public class PointsToDiscount : BaseDeletableModel<int>
+
+public class DiscountVoucher : BaseDeletableModel<int>
 {
     public int GreenPoints { get; set; }
 

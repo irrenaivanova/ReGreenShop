@@ -1,4 +1,5 @@
 namespace ReGreenShop.Domain.Entities;
+
 public class OrderGreenAlternativeDetail
 {
     public string OrderId { get; set; } = string.Empty;

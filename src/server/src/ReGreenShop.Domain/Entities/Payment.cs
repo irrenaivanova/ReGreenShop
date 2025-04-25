@@ -2,8 +2,14 @@ using ReGreenShop.Domain.common;
 using ReGreenShop.Domain.Entities.Enum;
 
 namespace ReGreenShop.Domain.Entities;
-public class PaymentDetail : BaseDeletableModel<Guid>
+
+public class Payment : BaseDeletableModel<string>
 {
+    public Payment()
+    {
+        this.Id = Guid.NewGuid().ToString();
+    }
+
     public PaymentStatus Status { get; set; }
 
     public int PaymentMethodId { get; set; }

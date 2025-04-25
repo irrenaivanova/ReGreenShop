@@ -1,11 +1,12 @@
 using ReGreenShop.Domain.common;
 
 namespace ReGreenShop.Domain.Entities;
+
 public class DeliveryPrice : BaseDeletableModel<int>
 {
     public DeliveryPrice()
     {
-        Orders = new HashSet<Order>();
+        this.Orders = new HashSet<Order>();
     }
 
     public decimal MinPriceOrder { get; set; }

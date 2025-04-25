@@ -1,6 +1,7 @@
 using ReGreenShop.Domain.common;
 
 namespace ReGreenShop.Domain.Entities;
+
 public class Notification : BaseModel<int>
 {
     public string UserId { get; set; } = string.Empty;

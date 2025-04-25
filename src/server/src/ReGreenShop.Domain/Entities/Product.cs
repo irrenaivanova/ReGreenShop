@@ -1,14 +1,15 @@
 using ReGreenShop.Domain.common;
 
 namespace ReGreenShop.Domain.Entities;
+
 public class Product : BaseDeletableModel<int>
 {
     public Product()
     {
-        Categories = new HashSet<Category>();
-        Labels = new HashSet<Label>();
-        CartItems = new HashSet<CartItem>();
-        UserLikes = new HashSet<string>();
+        this.Categories = new HashSet<Category>();
+        this.LabelProducts = new HashSet<LabelProduct>();
+        this.CartItems = new HashSet<CartItem>();
+        this.UserLikes = new HashSet<string>();
     }
 
     public string Name { get; set; } = string.Empty;
@@ -33,7 +34,7 @@ public class Product : BaseDeletableModel<int>
 
     public IEnumerable<Category> Categories { get; set; }
 
-    public IEnumerable<Label> Labels { get; set; }
+    public IEnumerable<LabelProduct> LabelProducts { get; set; }
 
     public IEnumerable<CartItem> CartItems { get; set; }
 

@@ -3,7 +3,7 @@ using ReGreenShop.Domain.common;
 using ReGreenShop.Domain.Entities;
 
 namespace ReGreenShop.Infrastructure.Persistence.Identity;
-public class User : IdentityUser, IAuditInfo, IDeletableEntity
+public class User : IdentityUser, IAuditableEntity, IDeletableEntity
 {
     public User()
     {
@@ -24,13 +24,13 @@ public class User : IdentityUser, IAuditInfo, IDeletableEntity
 
     public int TotalGreenPoints { get; set; }
 
+    public string CartId { get; set; } = string.Empty;
+
     public DateTime CreatedOn { get; set; }
 
     public DateTime? ModifiedOn { get; set; }
 
     public bool IsDeleted { get; set; }
-
-    public string CartId { get; set; } = string.Empty;
 
     public DateTime? DeletedOn { get; set; }
 

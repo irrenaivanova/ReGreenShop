@@ -1,4 +1,5 @@
 namespace ReGreenShop.Domain.Entities;
+
 public class CartItem
 {
     public int CartId { get; set; }

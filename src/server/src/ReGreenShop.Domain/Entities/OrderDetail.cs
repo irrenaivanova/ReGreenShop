@@ -1,6 +1,7 @@
 using ReGreenShop.Domain.common;
 
 namespace ReGreenShop.Domain.Entities;
+
 public class OrderDetail : IDeletableEntity
 {
     public int ProductId { get; set; }
