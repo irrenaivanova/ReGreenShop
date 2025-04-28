@@ -55,6 +55,10 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, string>, IData
 
     public DbSet<Product> Products { get; set; }
 
+    public DbSet<ProductCategory> ProductCategories { get; set; }
+
+    public DbSet<UserLikeProduct> UserLikeProducts { get; set; }
+
     public Task<int> SaveChanges(CancellationToken cancellationToken)
     {
         foreach (var entry in ChangeTracker.Entries<IAuditableEntity>())

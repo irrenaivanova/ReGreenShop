@@ -19,9 +19,6 @@ public class ImageConfiguration : IEntityTypeConfiguration<Image>
             .Property(x => x.BlobPath)
             .HasMaxLength(100);
 
-        builder
-            .Property(x => x.Format)
-            .HasMaxLength(10);
 
         builder
             .HasOne(x => x.Product)

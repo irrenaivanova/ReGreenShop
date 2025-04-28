@@ -10,6 +10,7 @@ public class Product : BaseDeletableModel<int>
         this.LabelProducts = new HashSet<LabelProduct>();
         this.CartItems = new HashSet<CartItem>();
         this.UserLikes = new HashSet<UserLikeProduct>();
+        this.OrderDetails = new HashSet<OrderDetail>();
     }
 
     public string Name { get; set; } = string.Empty;
@@ -39,4 +40,6 @@ public class Product : BaseDeletableModel<int>
     public IEnumerable<CartItem> CartItems { get; set; }
 
     public IEnumerable<UserLikeProduct> UserLikes { get; set; }
+
+    public IEnumerable<OrderDetail> OrderDetails { get; set; }
 }

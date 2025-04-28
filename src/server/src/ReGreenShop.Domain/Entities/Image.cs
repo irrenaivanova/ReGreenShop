@@ -10,8 +10,6 @@ public class Image : BaseDeletableModel<int>
 
     public string? BlobPath { get; set; }
 
-    public string Format { get; set; } = string.Empty;
-
     public int? ProductId { get; set; }
 
     public Product? Product { get; set; }
