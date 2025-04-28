@@ -32,5 +32,13 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .HasOne(x => x.Image)
             .WithOne(x => x.Product)
             .HasForeignKey<Product>(x => x.ImageId);
+
+        builder
+            .Property(x => x.Price)
+            .HasColumnType("decimal(8,2)");
+
+        builder
+            .Property(x => x.Weight)
+            .HasColumnType("decimal(8,2)");
     }
 }

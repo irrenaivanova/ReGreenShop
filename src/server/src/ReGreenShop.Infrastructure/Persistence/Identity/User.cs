@@ -9,9 +9,6 @@ public class User : IdentityUser, IAuditableEntity, IDeletableEntity
     {
        this.Id = Guid.NewGuid().ToString();
        this.TotalGreenPoints = 0;
-       this.Roles = new HashSet<IdentityUserRole<string>>();
-       this.Claims = new HashSet<IdentityUserClaim<string>>();
-       this.Logins = new HashSet<IdentityUserLogin<string>>();
        this.Notifications = new HashSet<Notification>();
        this.Orders = new HashSet<Order>();
        this.Addresses = new HashSet<Address>();
@@ -42,12 +39,5 @@ public class User : IdentityUser, IAuditableEntity, IDeletableEntity
 
     public ICollection<Order> Orders { get; set; }
 
-    public ICollection<IdentityUserRole<string>> Roles { get; set; }
-
-    public ICollection<IdentityUserClaim<string>> Claims { get; set; }
-
-    public ICollection<IdentityUserLogin<string>> Logins { get; set; }
-
     public ICollection<UserLikeProduct> UserLikeProducts { get; set; }
-
 }

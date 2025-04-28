@@ -19,5 +19,8 @@ public class OrderGreenAlternativeDetailConfiguration : IEntityTypeConfiguration
             .HasOne(x => x.GreenAlternative)
             .WithMany(x=> x.OrderGreenAlternativeDetails)
             .HasForeignKey(x => x.GreenAlternativeId);
+
+        builder
+            .HasQueryFilter(x => !x.GreenAlternative.IsDeleted);
     }
 }

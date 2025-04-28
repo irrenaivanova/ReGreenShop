@@ -2,11 +2,11 @@ namespace ReGreenShop.Domain.Entities;
 
 public class CartItem
 {
-    public int CartId { get; set; }
+    public string CartId { get; set; } = string.Empty;
 
     public Cart Cart { get; set; } = default!;
 
-    public string ProductId { get; set; } = string.Empty;
+    public int ProductId { get; set; }
 
     public Product Product { get; set; } = default!;
 

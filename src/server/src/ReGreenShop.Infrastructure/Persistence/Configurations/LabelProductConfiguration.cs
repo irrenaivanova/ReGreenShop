@@ -19,5 +19,8 @@ public class LabelProductConfiguration : IEntityTypeConfiguration<LabelProduct>
             .HasOne(x => x.Label)
             .WithMany(x => x.LabelProducts)
             .HasForeignKey(x => x.LabelId);
+
+        builder
+            .HasQueryFilter(x => !x.Label.IsDeleted);
     }
 }

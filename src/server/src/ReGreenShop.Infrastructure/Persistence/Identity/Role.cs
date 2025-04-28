@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using ReGreenShop.Domain.common;
 
 namespace ReGreenShop.Infrastructure.Persistence.Identity;
-public class Role : IdentityRole, IAuditInfo, IDeletableEntity
+public class Role : IdentityRole, IAuditableEntity, IDeletableEntity
 {
     public Role(string name)
            : base(name)

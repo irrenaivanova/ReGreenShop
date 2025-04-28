@@ -11,5 +11,9 @@ public class DiscountVoucherConfiguration : IEntityTypeConfiguration<DiscountVou
             .HasOne(x => x.Order)
             .WithOne(x => x.DiscountVoucher)
             .HasForeignKey<DiscountVoucher>(x => x.OrderId);
+
+        builder
+            .Property(x => x.PriceDiscount)
+            .HasColumnType("decimal(8,2)");
     }
 }

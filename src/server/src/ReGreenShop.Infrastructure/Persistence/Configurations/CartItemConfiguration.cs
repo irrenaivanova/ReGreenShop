@@ -24,5 +24,8 @@ public class CartItemConfiguration : IEntityTypeConfiguration<CartItem>
             .HasOne(x => x.BaseCategory)
             .WithMany(x => x.CartItems)
             .HasForeignKey(x => x.BaseCategoryId);
+
+        builder
+            .HasQueryFilter(x => !x.BaseCategory.IsDeleted);
     }
 }

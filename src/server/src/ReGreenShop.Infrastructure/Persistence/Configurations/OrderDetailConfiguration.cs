@@ -24,5 +24,9 @@ public class OrderDetailConfiguration : IEntityTypeConfiguration<OrderDetail>
             .HasOne(x => x.BaseCategory)
             .WithMany(x => x.OrderDetails)
             .HasForeignKey(x => x.BaseCategoryId);
+
+        builder
+            .Property(x => x.PricePerUnit)
+            .HasColumnType("decimal(8,2)");
     }
 }

@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Reflection.Emit;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ReGreenShop.Application.Common.Interfaces;
@@ -12,6 +13,13 @@ namespace ReGreenShop.Infrastructure.Persistence;
 public class ApplicationDbContext : IdentityDbContext<User, Role, string>, IData
 {
     private readonly IDateTime dateTime;
+
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IDateTime dateTime)
+        : base(options)
+    {
+        this.dateTime = dateTime;
+    }
+
     public ApplicationDbContext(IDateTime dateTime)
     {
         this.dateTime = dateTime;
@@ -88,6 +96,21 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, string>, IData
         SetGlobalQueryFilters(builder);
 
         DisableCascadeDeletes(builder);
+
+        builder.Entity<IdentityUserClaim<string>>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(uc => uc.UserId);
+
+        builder.Entity<IdentityUserLogin<string>>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(ul => ul.UserId);
+
+        builder.Entity<IdentityUserRole<string>>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(ur => ur.UserId);
 
     }
 
