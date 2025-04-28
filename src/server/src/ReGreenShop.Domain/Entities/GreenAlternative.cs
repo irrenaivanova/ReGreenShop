@@ -6,7 +6,7 @@ public class GreenAlternative : BaseDeletableModel<int>
 {
     public GreenAlternative()
     {
-        this.OrderGreenAlternativeDetails = new HashSet<OrderGreenAlternativeDetail>();
+        OrderGreenAlternativeDetails = new HashSet<OrderGreenAlternativeDetail>();
     }
 
     public string Name { get; set; } = string.Empty;

@@ -8,10 +8,29 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 {
     public void Configure(EntityTypeBuilder<Product> builder)
     {
-        // Ensures UserLikes are only included if the associated Property is not soft-deleted
-        //modelBuilder.Entity<UserLike>()
-        //    .HasQueryFilter(ul => !ul.Property.IsDeleted);
+        builder
+            .Property(x => x.Name)
+            .HasMaxLength(50);
 
-        throw new NotImplementedException();
+        builder
+            .Property(x => x.Description)
+            .HasMaxLength(500);
+
+        builder
+            .Property(x => x.ProductCode)
+            .HasMaxLength(50);
+
+        builder
+             .Property(x => x.Brand)
+             .HasMaxLength(50);
+
+        builder
+              .Property(x => x.Origin)
+              .HasMaxLength(50);
+
+        builder
+            .HasOne(x => x.Image)
+            .WithOne(x => x.Product)
+            .HasForeignKey<Product>(x => x.ImageId);
     }
 }

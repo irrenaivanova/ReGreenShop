@@ -7,15 +7,15 @@ public class User : IdentityUser, IAuditableEntity, IDeletableEntity
 {
     public User()
     {
-        this.Id = Guid.NewGuid().ToString();
-        this.TotalGreenPoints = 0;
-        this.Roles = new HashSet<IdentityUserRole<string>>();
-        this.Claims = new HashSet<IdentityUserClaim<string>>();
-        this.Logins = new HashSet<IdentityUserLogin<string>>();
-        this.Notifications = new HashSet<Notification>();
-        this.Orders = new HashSet<Order>();
-        this.Addresses = new HashSet<Address>();
-        this.LikedProducts = new HashSet<Product>();
+       this.Id = Guid.NewGuid().ToString();
+       this.TotalGreenPoints = 0;
+       this.Roles = new HashSet<IdentityUserRole<string>>();
+       this.Claims = new HashSet<IdentityUserClaim<string>>();
+       this.Logins = new HashSet<IdentityUserLogin<string>>();
+       this.Notifications = new HashSet<Notification>();
+       this.Orders = new HashSet<Order>();
+       this.Addresses = new HashSet<Address>();
+       this.UserLikeProducts = new HashSet<UserLikeProduct>();
     }
 
     public string? FirstName { get; set; }
@@ -23,6 +23,8 @@ public class User : IdentityUser, IAuditableEntity, IDeletableEntity
     public string? LastName { get; set; }
 
     public int TotalGreenPoints { get; set; }
+
+    public Cart Cart { get; set; } = default!;
 
     public string CartId { get; set; } = string.Empty;
 
@@ -46,6 +48,6 @@ public class User : IdentityUser, IAuditableEntity, IDeletableEntity
 
     public ICollection<IdentityUserLogin<string>> Logins { get; set; }
 
-    public ICollection<Product> LikedProducts { get; set; }
+    public ICollection<UserLikeProduct> UserLikeProducts { get; set; }
 
 }

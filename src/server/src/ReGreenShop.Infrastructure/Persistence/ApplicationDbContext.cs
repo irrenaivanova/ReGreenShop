@@ -57,7 +57,7 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, string>, IData
 
     public Task<int> SaveChanges(CancellationToken cancellationToken)
     {
-        foreach (var entry in this.ChangeTracker.Entries<IAuditableEntity>())
+        foreach (var entry in ChangeTracker.Entries<IAuditableEntity>())
         {
             switch (entry.State)
             {

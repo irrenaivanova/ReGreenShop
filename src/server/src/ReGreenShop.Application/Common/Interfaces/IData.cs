@@ -43,5 +43,9 @@ public interface IData
 
     DbSet<Product> Products { get; set; }
 
+    DbSet<ProductCategory> ProductCategories { get; set; }
+
+    DbSet<UserLikeProduct> UserLikeProducts { get; set; }
+
     Task<int> SaveChanges(CancellationToken cancellationToken);
 }

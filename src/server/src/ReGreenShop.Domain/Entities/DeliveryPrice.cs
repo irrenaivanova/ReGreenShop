@@ -6,7 +6,7 @@ public class DeliveryPrice : BaseDeletableModel<int>
 {
     public DeliveryPrice()
     {
-        this.Orders = new HashSet<Order>();
+        Orders = new HashSet<Order>();
     }
 
     public decimal MinPriceOrder { get; set; }

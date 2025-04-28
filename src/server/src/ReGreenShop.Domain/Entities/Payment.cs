@@ -7,7 +7,7 @@ public class Payment : BaseDeletableModel<string>
 {
     public Payment()
     {
-        this.Id = Guid.NewGuid().ToString();
+        Id = Guid.NewGuid().ToString();
     }
 
     public PaymentStatus Status { get; set; }

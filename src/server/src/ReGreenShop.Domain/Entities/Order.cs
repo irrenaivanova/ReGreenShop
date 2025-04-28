@@ -7,9 +7,9 @@ public class Order : BaseDeletableModel<string>
 {
     public Order()
     {
-        this.Id = Guid.NewGuid().ToString();
-        this.OrderDetails = new HashSet<OrderDetail>();
-        this.OrderGreenAlternativeDetails = new HashSet<OrderGreenAlternativeDetail>();
+        Id = Guid.NewGuid().ToString();
+        OrderDetails = new HashSet<OrderDetail>();
+        OrderGreenAlternativeDetails = new HashSet<OrderGreenAlternativeDetail>();
     }
 
     public string InvoiceUrl { get; set; } = string.Empty;

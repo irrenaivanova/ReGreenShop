@@ -6,6 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddInfrastructure(builder.Configuration);
+
 
 // !!! Change WeatherForecast with real class
 builder.Services.AddControllers().

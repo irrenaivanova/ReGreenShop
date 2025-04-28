@@ -6,10 +6,10 @@ public class Product : BaseDeletableModel<int>
 {
     public Product()
     {
-        this.Categories = new HashSet<Category>();
+        this.ProductCategories = new HashSet<ProductCategory>();
         this.LabelProducts = new HashSet<LabelProduct>();
         this.CartItems = new HashSet<CartItem>();
-        this.UserLikes = new HashSet<string>();
+        this.UserLikes = new HashSet<UserLikeProduct>();
     }
 
     public string Name { get; set; } = string.Empty;
@@ -32,11 +32,11 @@ public class Product : BaseDeletableModel<int>
 
     public Image? Image { get; set; }
 
-    public IEnumerable<Category> Categories { get; set; }
+    public IEnumerable<ProductCategory> ProductCategories { get; set; }
 
     public IEnumerable<LabelProduct> LabelProducts { get; set; }
 
     public IEnumerable<CartItem> CartItems { get; set; }
 
-    public IEnumerable<string> UserLikes { get; set; }
+    public IEnumerable<UserLikeProduct> UserLikes { get; set; }
 }
