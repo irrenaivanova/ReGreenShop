@@ -12,16 +12,12 @@ namespace ReGreenShop.Infrastructure.Persistence;
 public class ApplicationDbContext : IdentityDbContext<User, Role, string>, IData
 {
     private readonly IDateTime dateTime;
-
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IDateTime dateTime)
+    public ApplicationDbContext(
+        DbContextOptions<ApplicationDbContext> options,
+        IDateTime dateTime)
         : base(options)
     {
-        this.dateTime = dateTime;
-    }
-
-    public ApplicationDbContext(IDateTime dateTime)
-    {
-        this.dateTime = dateTime;
+        this.dateTime = dateTime ?? throw new ArgumentNullException(nameof(dateTime));
     }
 
     public DbSet<Address> Addresses { get; set; }
@@ -66,7 +62,10 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, string>, IData
 
     public DbSet<UserLikeProduct> UserLikeProducts { get; set; }
 
-    public Task<int> SaveChanges(CancellationToken cancellationToken)
+    public Task<int> SaveChanges(CancellationToken cancellationToken = new CancellationToken())
+    => this.SaveChangesAsync(cancellationToken);
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken)
     {
         foreach (var entry in ChangeTracker.Entries<IAuditableEntity>())
         {

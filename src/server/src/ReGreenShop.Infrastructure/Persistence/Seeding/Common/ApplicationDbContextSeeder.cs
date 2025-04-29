@@ -10,14 +10,15 @@ public class ApplicationDbContextSeeder : ISeeder, IScopedService
         var seeders = new List<ISeeder>
         {
             // new ProductsSeeder(),
-            new RolesSeeder(),
+             new RolesSeeder(),
+             new CitySeeder(),
 
         };
 
         foreach (var seeder in seeders)
         {
             await seeder.SeedAsync(dbContext, serviceProvider);
-            await dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync(CancellationToken.None);
         }
     }
 }
