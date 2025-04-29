@@ -2,7 +2,7 @@ using ReGreenShop.Domain.Entities;
 using ReGreenShop.Infrastructure.Persistence.Seeding.Common;
 
 namespace ReGreenShop.Infrastructure.Persistence.Seeding;
-internal class CitySeeder : ISeeder
+public class CategorySeeder : ISeeder
 {
     public async Task SeedAsync(ApplicationDbContext dbContext, IServiceProvider serviceProvider)
     {

@@ -63,7 +63,7 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, string>, IData
     public DbSet<UserLikeProduct> UserLikeProducts { get; set; }
 
     public Task<int> SaveChanges(CancellationToken cancellationToken = new CancellationToken())
-    => this.SaveChangesAsync(cancellationToken);
+    => SaveChangesAsync(cancellationToken);
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken)
     {

@@ -23,7 +23,7 @@ public static class ServiceRegistration
             .AddScoped<IData>(provider => provider.GetService<ApplicationDbContext>()!);
 
         services
-            .AddIdentity<User, Role>() 
+            .AddIdentity<User, Role>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
