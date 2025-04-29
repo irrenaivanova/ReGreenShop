@@ -8,7 +8,7 @@ public class OrderDetailConfiguration : IEntityTypeConfiguration<OrderDetail>
     public void Configure(EntityTypeBuilder<OrderDetail> builder)
     {
         builder
-            .HasKey(x => new {x.OrderId, x.ProductId});
+            .HasKey(x => new { x.OrderId, x.ProductId });
 
         builder
             .HasOne(x => x.Order)

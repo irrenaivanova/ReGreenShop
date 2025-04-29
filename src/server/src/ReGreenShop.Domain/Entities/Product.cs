@@ -6,11 +6,11 @@ public class Product : BaseDeletableModel<int>
 {
     public Product()
     {
-        this.ProductCategories = new HashSet<ProductCategory>();
-        this.LabelProducts = new HashSet<LabelProduct>();
-        this.CartItems = new HashSet<CartItem>();
-        this.UserLikes = new HashSet<UserLikeProduct>();
-        this.OrderDetails = new HashSet<OrderDetail>();
+        ProductCategories = new HashSet<ProductCategory>();
+        LabelProducts = new HashSet<LabelProduct>();
+        CartItems = new HashSet<CartItem>();
+        UserLikes = new HashSet<UserLikeProduct>();
+        OrderDetails = new HashSet<OrderDetail>();
     }
 
     public string Name { get; set; } = string.Empty;

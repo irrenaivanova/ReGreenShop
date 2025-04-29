@@ -5,10 +5,10 @@ namespace ReGreenShop.Domain.Entities;
 public class Category : BaseDeletableModel<int>
 {
     public Category()
-    {  
-        this.ProductCategories = new HashSet<ProductCategory>();
-        this.CartItems = new HashSet<CartItem>();
-        this.OrderDetails = new HashSet<OrderDetail>();
+    {
+        ProductCategories = new HashSet<ProductCategory>();
+        CartItems = new HashSet<CartItem>();
+        OrderDetails = new HashSet<OrderDetail>();
     }
 
     public string Name { get; set; } = string.Empty;

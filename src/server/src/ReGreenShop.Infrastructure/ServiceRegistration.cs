@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ReGreenShop.Application.Common.Interfaces;
 using ReGreenShop.Infrastructure.Persistence;
 using ReGreenShop.Infrastructure.Persistence.Identity;
+using ReGreenShop.Infrastructure.Persistence.Seeding.Common;
 using ReGreenShop.Infrastructure.Services;
+using static ReGreenShop.Application.ServiceRegistration;
 
 public static class ServiceRegistration
 {
@@ -20,9 +23,15 @@ public static class ServiceRegistration
             .AddScoped<IData>(provider => provider.GetService<ApplicationDbContext>()!);
 
         services
-            .AddDefaultIdentity<User>()
-            .AddEntityFrameworkStores<ApplicationDbContext>();
+            .AddIdentity<User, Role>() 
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
 
+        services
+            .AddConventionalServices(typeof(ServiceRegistration).Assembly);
+
+        services
+            .AddScoped<ApplicationDbContextSeeder>();
 
         // Add JWtAuthentication
 

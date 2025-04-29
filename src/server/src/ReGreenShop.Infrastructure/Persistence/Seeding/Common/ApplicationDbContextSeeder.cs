@@ -9,8 +9,9 @@ public class ApplicationDbContextSeeder : ISeeder, IScopedService
 
         var seeders = new List<ISeeder>
         {
-            new ProductsSeeder(),
-            new RolesSeeder()
+            // new ProductsSeeder(),
+            new RolesSeeder(),
+
         };
 
         foreach (var seeder in seeders)

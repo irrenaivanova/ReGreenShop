@@ -8,7 +8,7 @@ public class OrderGreenAlternativeDetailConfiguration : IEntityTypeConfiguration
     public void Configure(EntityTypeBuilder<OrderGreenAlternativeDetail> builder)
     {
         builder
-            .HasKey(x => new {x.OrderId, x.GreenAlternativeId});
+            .HasKey(x => new { x.OrderId, x.GreenAlternativeId });
 
         builder
             .HasOne(x => x.Order)
@@ -17,7 +17,7 @@ public class OrderGreenAlternativeDetailConfiguration : IEntityTypeConfiguration
 
         builder
             .HasOne(x => x.GreenAlternative)
-            .WithMany(x=> x.OrderGreenAlternativeDetails)
+            .WithMany(x => x.OrderGreenAlternativeDetails)
             .HasForeignKey(x => x.GreenAlternativeId);
 
         builder

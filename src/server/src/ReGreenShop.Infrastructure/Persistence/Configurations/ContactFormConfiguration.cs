@@ -13,7 +13,7 @@ public class ContactFormConfiguration : IEntityTypeConfiguration<ContactForm>
 
         builder
             .Property(x => x.Email)
-            .HasMaxLength (50);
+            .HasMaxLength(50);
 
         builder
             .Property(x => x.Title)

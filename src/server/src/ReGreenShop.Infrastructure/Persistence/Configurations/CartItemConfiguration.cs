@@ -8,7 +8,7 @@ public class CartItemConfiguration : IEntityTypeConfiguration<CartItem>
     public void Configure(EntityTypeBuilder<CartItem> builder)
     {
         builder
-            .HasKey(x => new {x.CartId, x.ProductId});
+            .HasKey(x => new { x.CartId, x.ProductId });
 
         builder
             .HasOne(x => x.Cart)

@@ -7,12 +7,12 @@ public class User : IdentityUser, IAuditableEntity, IDeletableEntity
 {
     public User()
     {
-       this.Id = Guid.NewGuid().ToString();
-       this.TotalGreenPoints = 0;
-       this.Notifications = new HashSet<Notification>();
-       this.Orders = new HashSet<Order>();
-       this.Addresses = new HashSet<Address>();
-       this.UserLikeProducts = new HashSet<UserLikeProduct>();
+        Id = Guid.NewGuid().ToString();
+        TotalGreenPoints = 0;
+        Notifications = new HashSet<Notification>();
+        Orders = new HashSet<Order>();
+        Addresses = new HashSet<Address>();
+        UserLikeProducts = new HashSet<UserLikeProduct>();
     }
 
     public string? FirstName { get; set; }
