@@ -18,17 +18,5 @@ public class ImageConfiguration : IEntityTypeConfiguration<Image>
         builder
             .Property(x => x.BlobPath)
             .HasMaxLength(100);
-
-
-        builder
-            .HasOne(x => x.Product)
-            .WithOne(x => x.Image)
-            .HasForeignKey<Image>(x => x.ProductId);
-
-
-        builder
-            .HasOne(x => x.Category)
-            .WithOne(x => x.Image)
-            .HasForeignKey<Image>(x => x.CategoryId);
     }
 }

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using ReGreenShop.Application.Common.Services;
 
 namespace ReGreenShop.Infrastructure.Persistence.Seeding.Common;
@@ -12,8 +13,7 @@ public class ApplicationDbContextSeeder : ISeeder, IScopedService
             // new ProductsSeeder(),
              new RolesSeeder(),
              new CitySeeder(),
-             new CategorySeeder()
-
+             new BaseCategorySeeder(),
         };
 
         foreach (var seeder in seeders)

@@ -18,7 +18,7 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 
         builder
             .HasOne(x => x.Image)
-            .WithOne(x => x.Category)
+            .WithOne()
             .HasForeignKey<Category>(x => x.ImageId);
     }
 }

@@ -22,6 +22,6 @@ public class ImageStorageService : IImageStorage
         var filePath = Path.Combine(folderPath, fileName);
         await File.WriteAllBytesAsync(filePath, imageBytes);
 
-        return $"/images/{fileName}.png";
+        return $"/images/products/{fileName}.png";
     }
 }

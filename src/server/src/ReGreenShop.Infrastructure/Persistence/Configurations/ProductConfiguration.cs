@@ -30,7 +30,7 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 
         builder
             .HasOne(x => x.Image)
-            .WithOne(x => x.Product)
+            .WithOne()
             .HasForeignKey<Product>(x => x.ImageId);
 
         builder
