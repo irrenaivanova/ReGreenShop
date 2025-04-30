@@ -1,5 +1,7 @@
+using ReGreenShop.Application.Common.Services;
+
 namespace ReGreenShop.Application.Common.Interfaces;
-public interface IImageDownloader
+public interface IImageDownloader : IService
 {
-    Task<string> DownloadImageAsync(string imageUrl, string fileName);
+    Task<byte[]> DownloadImageAsync(string imageUrl);
 }

@@ -1,0 +1,26 @@
+using Microsoft.AspNetCore.Mvc;
+using ReGreenShop.Application.Common.Interfaces;
+
+namespace ReGreenShop.Web.Controllers;
+[ApiController]
+[Route("api/[controller]")]
+public class TestController : ControllerBase
+{
+    private readonly IImageDownloader downloader;
+    private readonly IImageStorage storage;
+
+    public TestController(IImageDownloader downloader, IImageStorage storage)
+    {
+        this.downloader = downloader;
+        this.storage = storage;
+    }
+
+    [HttpGet(nameof(DownloadImage))]
+    public async Task DownloadImage()
+    {
+        string imageUrl = @"https://static-new.kolichka.bg/k3wCdnContainerk3w-static-ne-bg-prod/images/thumbs/37/300x200x1_37kxbghrgr4f.jpg";
+        string name = "Ръчен козунак със стафиди и бадеми";
+        var bytes = await this.downloader.DownloadImageAsync(imageUrl);
+        await this.storage.SaveImageAsync(bytes, name);
+    }
+}
