@@ -23,8 +23,14 @@ public static class ServiceRegistration
             .AddScoped<IData>(provider => provider.GetService<ApplicationDbContext>()!);
 
         services
-            .AddIdentity<User, Role>()
-            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddIdentity<User, Role>(options =>
+            {
+                options.Password.RequiredLength = 6;
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = false;
+            }).AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
         services

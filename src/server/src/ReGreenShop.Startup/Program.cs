@@ -1,4 +1,6 @@
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using ReGreenShop.Application.Categories.Queries.GetRootCategories;
 using ReGreenShop.Infrastructure.Persistence;
 using ReGreenShop.Infrastructure.Persistence.Seeding.Common;
 using ReGreenShop.Web;
@@ -10,12 +12,13 @@ builder.Services.AddInfrastructure(builder.Configuration);
 // builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddWebComponents();
 
-// !!! Change WeatherForecast with real class
 builder.Services.AddControllers().
-    AddApplicationPart(typeof(ReGreenShop.Web.WeatherForecast).Assembly);
+    AddApplicationPart(typeof(ReGreenShop.Web.Controllers.BaseController).Assembly);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddMediatR(typeof(GetRootCategoriesQuery).Assembly);
 
 var app = builder.Build();
 
