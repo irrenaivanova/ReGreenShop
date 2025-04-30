@@ -11,7 +11,8 @@ const CategoryList: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -46,7 +47,7 @@ const CategoryList: React.FC = () => {
           {categories.map((category) => (
             <li key={category.id}>
               <img
-                src={`https://localhost:7102/${category.imagePath}.png`}
+                src={`${baseUrl}${category.imagePath}`}
                 alt={category.name}
                 style={{ width: 50, height: 50, objectFit: 'cover', marginRight: 10 }}
               />

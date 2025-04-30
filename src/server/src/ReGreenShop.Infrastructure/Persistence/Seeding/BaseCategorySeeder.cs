@@ -53,6 +53,6 @@ public class BaseCategorySeeder : ISeeder
     }
     private string GeneratePath(string name)
     {
-        return $"images/categories/{GenerateSlugName(name)}";
+        return $"/images/categories/{GenerateSlugName(name)}.png";
     }
 }
