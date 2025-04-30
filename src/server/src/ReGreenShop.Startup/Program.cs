@@ -8,6 +8,17 @@ using static ReGreenShop.Web.ServiceRegistration;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddInfrastructure(builder.Configuration);
 // builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddWebComponents();
@@ -20,6 +31,17 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddMediatR(typeof(GetRootCategoriesQuery).Assembly);
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 // Perform database migration and seeding
@@ -31,6 +53,8 @@ using (var scope = app.Services.CreateScope())
     var seeder = scope.ServiceProvider.GetRequiredService<ApplicationDbContextSeeder>();
     await seeder.SeedAsync(dbContext, scope.ServiceProvider);
 }
+
+app.UseCors();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
