@@ -47,7 +47,7 @@ const CategoryList: React.FC = () => {
           {categories.map((category) => (
             <li key={category.id}>
               <img
-                src={`${baseUrl}${category.imagePath}`}
+                src={category.imagePath}
                 alt={category.name}
                 style={{ width: 50, height: 50, objectFit: 'cover', marginRight: 10 }}
               />

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using ReGreenShop.Application.Common.Utilities;
 using ReGreenShop.Domain.Entities;
 using ReGreenShop.Infrastructure.Persistence.Seeding.Common;
+using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Infrastructure.Persistence.Seeding;
 public class BaseCategorySeeder : ISeeder
@@ -53,6 +54,6 @@ public class BaseCategorySeeder : ISeeder
     }
     private string GeneratePath(string name)
     {
-        return $"/images/categories/{GenerateSlugName(name)}.png";
+        return $"{BaseUrl}/images/categories/{GenerateSlugName(name)}.png";
     }
 }

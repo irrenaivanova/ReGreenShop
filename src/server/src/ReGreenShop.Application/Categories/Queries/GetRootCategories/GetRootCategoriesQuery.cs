@@ -25,7 +25,7 @@ public class GetRootCategoriesQuery : IRequest<IEnumerable<RootCategoriesModel>>
                     Id = x.Id,
                     Name = x.Name,
                     ImagePath = x.Image != null
-                         ? (x.Image.LocalPath ?? x.Image.BlobPath ?? string.Empty)
+                         ? (x.Image.BlobPath ?? x.Image.LocalPath ?? string.Empty)
                          : string.Empty 
                 }).ToListAsync();
 

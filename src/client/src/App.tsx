@@ -4,12 +4,14 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import Logo from './Components/Logo'
 import CategoryList from './Components/CategoryList'
+import ReGreenMission from './Components/ReGreenMission'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
+    <ReGreenMission />
     <div><Logo /></div>
 <CategoryList />
       <div>

@@ -3,7 +3,7 @@ import { GiFairyWings } from "react-icons/gi";
 const Logo = () => {
   return (
     <div>
-      <GiFairyWings color="#2138f75" size={100}/>
+      <GiFairyWings color="#157f83" size={100}/>
     </div>
   )
 }
