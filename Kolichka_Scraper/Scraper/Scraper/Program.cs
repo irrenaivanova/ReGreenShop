@@ -12,24 +12,55 @@ using var playwright = await Playwright.CreateAsync();
 var browser = await playwright.Chromium.LaunchAsync(new() { Headless = true });
 var page = await browser.NewPageAsync();
 
-
-var productsByCategoryUrl = @"https://www.kolichka.bg/c1-hlyab-i-testeni";
-string fileName = productsByCategoryUrl.Split('/').Last();
-
-await page.GotoAsync(productsByCategoryUrl);
-await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-
-int maxScrolls = 15;
-int scrollCount = 0;
-
-List<string> productUrls = new List<string>();
-
-Stopwatch stopwatch = new Stopwatch();
-stopwatch.Start();
-
-while (scrollCount < maxScrolls)
+var addresses = new List<string>
 {
-    var productElements = await page.QuerySelectorAllAsync("a[data-tid='product-box__name']");
+    @"https://www.kolichka.bg/c1-hlyab-i-testeni",
+    @"https://www.kolichka.bg/c5736-plodove-i-zelencuci",
+    @"https://www.kolichka.bg/c511-meso-i-riba",
+    @"https://www.kolichka.bg/c6831-kolbasi-i-delikatesi",
+    @"https://www.kolichka.bg/c6096-mlecni-i-yajca",
+    @"https://www.kolichka.bg/c4971-zamrazeni-hrani",
+    @"https://www.kolichka.bg/c2971-paketirani-hrani",
+    @"https://www.kolichka.bg/c201-napitki",
+    @"https://www.kolichka.bg/c6871-bio-i-specializirani",
+    @"https://www.kolichka.bg/c2241-kozmetika",
+    @"https://www.kolichka.bg/c6841-za-doma",
+    @"https://www.kolichka.bg/c1201-za-bebeto",
+    @"https://www.kolichka.bg/c4816-domasni-lyubimci",
+};
+
+
+foreach (var address in addresses)
+{
+    string fileName = address.Split('/').Last();
+    await ScrapeCategoriesAsync(address,fileName);
+}
+
+async Task ScrapeCategoriesAsync(string address,  string fileName)
+{
+    await page.GotoAsync(address);
+    await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+    int maxScrolls = 15;
+    int scrollCount = 0;
+
+    List<string> productUrls = new List<string>();
+
+    Stopwatch stopwatch = new Stopwatch();
+    stopwatch.Start();
+    IReadOnlyList<IElementHandle> productElements = new List<IElementHandle>();
+
+    while (scrollCount < maxScrolls)
+    {
+        productElements = await page.QuerySelectorAllAsync("a[data-tid='product-box__name']");
+        scrollCount++;
+
+        Console.WriteLine($"Scroll {scrollCount} — loaded {productElements.Count} products...");
+
+        await page.EvaluateAsync(@"window.scrollBy(0, window.innerHeight);");
+        await Task.Delay(2000); // Wait longer to ensure content loads
+    }
+
     foreach (var product in productElements)
     {
         string? href = await product.GetAttributeAsync("href");
@@ -39,35 +70,35 @@ while (scrollCount < maxScrolls)
         }
     }
 
-    scrollCount++;
+    Console.WriteLine(string.Join("\n", productUrls));
+    Console.WriteLine(productUrls.Count);
 
-    Console.WriteLine($"Scroll {scrollCount} — loaded {productElements.Count} products...");
+    // For control by scraping
+    int n = 0;
 
-    await page.EvaluateAsync(@"window.scrollBy(0, window.innerHeight);");
-    await Task.Delay(2000); // Wait longer to ensure content loads
-}
-
-Console.WriteLine(string.Join("\n", productUrls));
-
-foreach (var productUrl in productUrls)
-{
-    var productDetails = await ScrapeProductDetailsAsync(productUrl);
-    if (productDetails != null)
+    foreach (var productUrl in productUrls)
     {
-        allProducts.Add(productDetails);
+        var productDetails = await ScrapeProductDetailsAsync(productUrl);
+        if (productDetails != null)
+        {
+            allProducts.Add(productDetails);
+            Console.WriteLine(n++);
+        }
     }
+
+    stopwatch.Stop();
+    TimeSpan time = stopwatch.Elapsed;
+    var timeInfo = $"{time.ToString()} --> {productUrls.Count} Products";
+
+
+    string jsonFile = JsonConvert.SerializeObject(allProducts, Formatting.Indented);
+    string path = $@"..\..\..\{fileName}.json";
+    string pathTime = $@"..\..\..\{fileName}_time.json";
+    File.WriteAllText(path, jsonFile);
+    File.WriteAllText(pathTime, timeInfo);
 }
 
-stopwatch.Stop();
-TimeSpan time = stopwatch.Elapsed;
-var timeInfo = $"{time.ToString()} --> {productUrls.Count} Products";
 
-
-string jsonFile = JsonConvert.SerializeObject(allProducts, Formatting.Indented);
-string path = $@"..\..\..\{fileName}.json";
-string pathTime = $@"..\..\..\{fileName}time.json";
-File.WriteAllText(path, jsonFile);
-File.WriteAllText(pathTime, timeInfo);
 
 async Task<ProductDto?> ScrapeProductDetailsAsync(string url)
 {
@@ -116,12 +147,14 @@ async Task<ProductDto?> ScrapeProductDetailsAsync(string url)
     var brand = brandElement != null ? await brandElement.InnerTextAsync() : string.Empty;
 
     // Extract origin
-    var originSelector = @"#kosik-app2 > div:nth-child(2) > div > article > div.d-flex.mt-4.flex-wrap 
-                        > div > div:nth-child(5) > dl > dd > span";
-
+    var originSelector = @"#kosik-app2 > div:nth-child(2) > div > article > div.d-flex.mt-4.flex-wrap > div > div:nth-child(5) > dl > dd > span";
     var originElement = await page.QuerySelectorAsync(originSelector);
     var origin = originElement != null ? await originElement.InnerTextAsync() : string.Empty;
 
+    // Extract packaging 
+    var packagingSelector = @"#kosik-app2 > div:nth-child(2) > div > article > div.d-flex.mt-4.flex-wrap > div > div.product-tag-row.d-flex.justify-content-between > span";
+    var packagingElement = await page.QuerySelectorAsync(packagingSelector);
+    var packaging = packagingElement != null ? await packagingElement.InnerTextAsync() : string.Empty;
 
     // Extract main category
     var mainCategorySelector = @"#kosik-app2 > div:nth-child(2) > div > article > nav > span:nth-child(3) > a > span";
@@ -151,5 +184,7 @@ async Task<ProductDto?> ScrapeProductDetailsAsync(string url)
         Brand = brand,
         Origin = origin,
         Categories = categories,
+        OriginalUrl = url,
+        Packaging = packaging,
     };
 }
