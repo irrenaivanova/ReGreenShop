@@ -29,6 +29,7 @@ builder.Services.AddControllers().
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// when fix addApplication this should be cleared
 builder.Services.AddMediatR(typeof(GetRootCategoriesQuery).Assembly);
 
 builder.Services.AddCors(options =>

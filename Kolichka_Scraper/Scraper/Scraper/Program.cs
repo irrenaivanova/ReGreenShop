@@ -3,14 +3,9 @@ using Microsoft.Playwright;
 using Newtonsoft.Json;
 using Scraper;
 using System.Diagnostics;
+using System.Net;
 using static System.Net.WebRequestMethods;
 using File = System.IO.File;
-
-var allProducts = new List<ProductDto>();
-
-using var playwright = await Playwright.CreateAsync();
-var browser = await playwright.Chromium.LaunchAsync(new() { Headless = true });
-var page = await browser.NewPageAsync();
 
 var addresses = new List<string>
 {
@@ -29,15 +24,21 @@ var addresses = new List<string>
     @"https://www.kolichka.bg/c4816-domasni-lyubimci",
 };
 
+using var playwright = await Playwright.CreateAsync();
+var browser = await playwright.Chromium.LaunchAsync(new() { Headless = true });
+var page = await browser.NewPageAsync();
 
-foreach (var address in addresses)
+
+for (int i = 3; i < addresses.Count; i++)
 {
-    string fileName = address.Split('/').Last();
-    await ScrapeCategoriesAsync(address,fileName);
+    string fileName = addresses[i].Split('/').Last();
+    await ScrapeCategoriesAsync(addresses[i], fileName);
 }
-
+    
 async Task ScrapeCategoriesAsync(string address,  string fileName)
 {
+    var productsInCategory = new List<ProductDto>();
+
     await page.GotoAsync(address);
     await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
@@ -48,11 +49,10 @@ async Task ScrapeCategoriesAsync(string address,  string fileName)
 
     Stopwatch stopwatch = new Stopwatch();
     stopwatch.Start();
-    IReadOnlyList<IElementHandle> productElements = new List<IElementHandle>();
 
     while (scrollCount < maxScrolls)
     {
-        productElements = await page.QuerySelectorAllAsync("a[data-tid='product-box__name']");
+        var productElements = await page.QuerySelectorAllAsync("a[data-tid='product-box__name']");
         scrollCount++;
 
         Console.WriteLine($"Scroll {scrollCount} — loaded {productElements.Count} products...");
@@ -61,130 +61,111 @@ async Task ScrapeCategoriesAsync(string address,  string fileName)
         await Task.Delay(2000); // Wait longer to ensure content loads
     }
 
-    foreach (var product in productElements)
+    var finalElements = await page.QuerySelectorAllAsync("a[data-tid='product-box__name']");
+    foreach (var product in finalElements)
     {
         string? href = await product.GetAttributeAsync("href");
-        if (href != null)
-        {
+        if (!string.IsNullOrWhiteSpace(href))
             productUrls.Add($"https://www.kolichka.bg{href}#productDescription");
-        }
     }
 
     Console.WriteLine(string.Join("\n", productUrls));
     Console.WriteLine(productUrls.Count);
 
     // For control by scraping
-    int n = 0;
+    int count = 0;
 
-    foreach (var productUrl in productUrls)
+    foreach (var url in productUrls)
     {
-        var productDetails = await ScrapeProductDetailsAsync(productUrl);
-        if (productDetails != null)
+        var product = await ScrapeProductDetailsAsync(url);
+        if (product != null)
         {
-            allProducts.Add(productDetails);
-            Console.WriteLine(n++);
+            productsInCategory.Add(product);
+            Console.WriteLine($"Scraped [{count++}]: {product.Name}");
         }
     }
 
     stopwatch.Stop();
-    TimeSpan time = stopwatch.Elapsed;
-    var timeInfo = $"{time.ToString()} --> {productUrls.Count} Products";
+    var timeInfo = $"{stopwatch.Elapsed.ToString()} --> {productUrls.Count} Products";
 
 
-    string jsonFile = JsonConvert.SerializeObject(allProducts, Formatting.Indented);
+    string jsonFile = JsonConvert.SerializeObject(productsInCategory, Formatting.Indented);
+    
     string path = $@"..\..\..\{fileName}.json";
     string pathTime = $@"..\..\..\{fileName}_time.json";
+    
     File.WriteAllText(path, jsonFile);
     File.WriteAllText(pathTime, timeInfo);
 }
 
-
-
 async Task<ProductDto?> ScrapeProductDetailsAsync(string url)
 {
     using var playwright = await Playwright.CreateAsync();
-    await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
+    await using var browser = await playwright.Chromium.LaunchAsync(new() { Headless = true });
     var page = await browser.NewPageAsync();
 
-    await page.GotoAsync(url);
-
-    await page.WaitForSelectorAsync("h1");
-
-    // Extract product name
-    var name = await page.InnerTextAsync("h1");
-
-    // Extract image URL
-    var imageSelector = @"#kosik-app2 > div:nth-child(2) > div > article > 
-                        div.d-flex.mt-4.flex-wrap > aside > div:nth-child(1) > div > picture > img";
-
-    var imageElement = await page.QuerySelectorAsync(imageSelector);
-    var imageUrlRow = imageElement != null ? await imageElement.GetAttributeAsync("srcset") : string.Empty;
-    var imageUrl = imageUrlRow != null ? imageUrlRow!.Split(", ").FirstOrDefault() : string.Empty;
-
-
-    // Extract description
-    var descriptionSelector = @"#kosik-app2 > div:nth-child(2) > div > article > div.mt-2 >" +
-                             " div:nth-child(2) > div > div:nth-child(1) > div:nth-child(1) > dl > dd > span > p";
-
-    var descriptionElement = await page.QuerySelectorAsync(descriptionSelector);
-    var description = descriptionElement != null ? await descriptionElement.InnerTextAsync() : string.Empty;
-
-    // Extract price
-    var priceSelector = @"#kosik-app2 > div:nth-child(2) > div > article > div.d-flex.mt-4.flex-wrap " +
-                        "> div > div.product-header-box.row.no-gutters.my-2.product-header-box--radius.border-neutrals" +
-                        "-10.border.p-3 > div:nth-child(1) > strong";
-
-    var priceElement = await page.QuerySelectorAsync(priceSelector);
-    var priceText = priceElement != null ? await priceElement.InnerTextAsync() : string.Empty;
-    string numeric = new string(priceText.TakeWhile(c => char.IsDigit(c) || c == ',' || c == '.').ToArray());
-    numeric = numeric.Replace(',', '.');
-    decimal? price = decimal.TryParse(numeric, System.Globalization.NumberStyles.Any,
-                    System.Globalization.CultureInfo.InvariantCulture, out var result) ? result : null;
-
-    // Extract brand
-    var brandSelector = "#kosik-app2 > div:nth-child(2) > div > article > div.d-flex.mt-4.flex-wrap > div > div:nth-child(5) > p > a";
-    var brandElement = await page.QuerySelectorAsync(brandSelector);
-    var brand = brandElement != null ? await brandElement.InnerTextAsync() : string.Empty;
-
-    // Extract origin
-    var originSelector = @"#kosik-app2 > div:nth-child(2) > div > article > div.d-flex.mt-4.flex-wrap > div > div:nth-child(5) > dl > dd > span";
-    var originElement = await page.QuerySelectorAsync(originSelector);
-    var origin = originElement != null ? await originElement.InnerTextAsync() : string.Empty;
-
-    // Extract packaging 
-    var packagingSelector = @"#kosik-app2 > div:nth-child(2) > div > article > div.d-flex.mt-4.flex-wrap > div > div.product-tag-row.d-flex.justify-content-between > span";
-    var packagingElement = await page.QuerySelectorAsync(packagingSelector);
-    var packaging = packagingElement != null ? await packagingElement.InnerTextAsync() : string.Empty;
-
-    // Extract main category
-    var mainCategorySelector = @"#kosik-app2 > div:nth-child(2) > div > article > nav > span:nth-child(3) > a > span";
-    var mainCategoryElement = await page.QuerySelectorAsync(mainCategorySelector);
-    var mainCategory = mainCategoryElement != null ? await mainCategoryElement.InnerTextAsync() : string.Empty;
-
-    // Extract subcategory
-    var subCategorySelector = @"#kosik-app2 > div:nth-child(2) > div > article > nav > span:nth-child(5) > a > span";
-    var subCategoryElement = await page.QuerySelectorAsync(subCategorySelector);
-    var subCategory = subCategoryElement != null ? await subCategoryElement.InnerTextAsync() : string.Empty;
-
-    // Extract subSubCategory
-    var subSubCategorySelector = @"#kosik-app2 > div:nth-child(2) > div > article > nav > span:nth-child(7) > a > span";
-    var subSubCategoryElement = await page.QuerySelectorAsync(subSubCategorySelector);
-    var subSubCategory = subSubCategoryElement != null ? await subSubCategoryElement.InnerTextAsync() : string.Empty;
-
-    List<string> categories = new List<string>() { mainCategory, subCategory, subSubCategory }
-            .Where(c => !string.IsNullOrWhiteSpace(c))
-            .ToList()!;
-
-    return new ProductDto
+    try
     {
-        Name = name,
-        ImageUrl = imageUrl,
-        Description = description,
-        Price = price,
-        Brand = brand,
-        Origin = origin,
-        Categories = categories,
-        OriginalUrl = url,
-        Packaging = packaging,
-    };
+        await page.GotoAsync(url);
+        await page.WaitForSelectorAsync("h1");
+
+        string GetText(string selector) =>
+            page.QuerySelectorAsync(selector).Result?.InnerTextAsync().Result ?? string.Empty;
+
+        string? GetAttribute(string selector, string attribute) =>
+            page.QuerySelectorAsync(selector).Result?.GetAttributeAsync(attribute).Result;
+
+        var name = GetText("h1");
+
+        var imageSelector = @"#kosik-app2 > div:nth-child(2) > div > article > 
+                        div.d-flex.mt-4.flex-wrap > aside > div:nth-child(1) > div > picture > img";
+        var imageSrcset = GetAttribute(imageSelector, "srcset") ?? "";
+        var imageUrl = imageSrcset.Split(", ").FirstOrDefault() ?? string.Empty;
+
+        var description = GetText(@"#kosik-app2 > div:nth-child(2) > div > article > div.mt-2 >" +
+                                  " div:nth-child(2) > div > div:nth-child(1) > div:nth-child(1) > dl > dd > span > p");
+
+        var priceText = GetText(@"#kosik-app2 > div:nth-child(2) > div > article > div.d-flex.mt-4.flex-wrap " +
+                                "> div > div.product-header-box.row.no-gutters.my-2.product-header-box--radius.border-neutrals" +
+                                "-10.border.p-3 > div:nth-child(1) > strong");
+        string numeric = new string(priceText.TakeWhile(c => char.IsDigit(c) || c == ',' || c == '.').ToArray());
+        numeric = numeric.Replace(',', '.');
+        decimal? price = decimal.TryParse(numeric, System.Globalization.NumberStyles.Any,
+                         System.Globalization.CultureInfo.InvariantCulture, out var parsed) ? parsed : null;
+
+        var brand = GetText("#kosik-app2 > div:nth-child(2) > div > article > div.d-flex.mt-4.flex-wrap > div > div:nth-child(5) > p > a");
+        var origin = GetText(@"#kosik-app2 dl > dd > span");
+        var packaging = GetText(@"#kosik-app2 > div:nth-child(2) > div > article > div.d-flex.mt-4.flex-wrap > div 
+                                > div.product-tag-row.d-flex.justify-content-between > span");
+
+        string[] categorySelectors =
+        {
+            @"#kosik-app2 nav > span:nth-child(3) > a > span",
+            @"#kosik-app2 nav > span:nth-child(5) > a > span",
+            @"#kosik-app2 nav > span:nth-child(7) > a > span"
+        };
+
+        var categories = categorySelectors
+            .Select(sel => GetText(sel))
+            .Where(text => !string.IsNullOrWhiteSpace(text))
+            .ToList();
+
+        return new ProductDto
+        {
+            Name = name,
+            ImageUrl = imageUrl,
+            Description = description,
+            Price = price,
+            Brand = brand,
+            Origin = origin,
+            Packaging = packaging,
+            Categories = categories,
+            OriginalUrl = url
+        };
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Failed to scrape: {url} \nError: {ex.Message}");
+        return null;
+    }
 }
