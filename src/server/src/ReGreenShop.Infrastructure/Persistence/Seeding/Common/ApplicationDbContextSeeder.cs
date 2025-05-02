@@ -1,4 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
 using ReGreenShop.Application.Common.Services;
 
 namespace ReGreenShop.Infrastructure.Persistence.Seeding.Common;

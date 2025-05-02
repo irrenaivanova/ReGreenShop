@@ -1,5 +1,4 @@
 using MediatR;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using ReGreenShop.Application.Categories.Queries.GetRootCategories;
 
@@ -16,5 +15,5 @@ public class CategoryController : BaseController
     [HttpGet(nameof(GetRootCategories))]
     public async Task<IActionResult> GetRootCategories() =>
          Ok(await this.mediator.Send(new GetRootCategoriesQuery()));
- 
+
 }

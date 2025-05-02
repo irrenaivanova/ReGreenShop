@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Options;
 using ReGreenShop.Application.Common.Utilities;
 using ReGreenShop.Domain.Entities;
 using ReGreenShop.Infrastructure.Persistence.Seeding.Common;

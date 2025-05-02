@@ -3,7 +3,7 @@ public class ProductDto
 {
     public ProductDto()
     {
-        this.Categories = new HashSet<string>();
+        Categories = new HashSet<string>();
     }
 
     public string Name { get; set; } = string.Empty;

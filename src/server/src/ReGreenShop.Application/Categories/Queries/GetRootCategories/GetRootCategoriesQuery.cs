@@ -1,4 +1,3 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ReGreenShop.Application.Common.Interfaces;
@@ -26,7 +25,7 @@ public class GetRootCategoriesQuery : IRequest<IEnumerable<RootCategoriesModel>>
                     Name = x.Name,
                     ImagePath = x.Image != null
                          ? (x.Image.BlobPath ?? x.Image.LocalPath ?? string.Empty)
-                         : string.Empty 
+                         : string.Empty
                 }).ToListAsync();
 
             if (categories.Count == 0)
