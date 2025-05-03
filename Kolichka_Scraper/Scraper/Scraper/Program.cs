@@ -29,7 +29,7 @@ var browser = await playwright.Chromium.LaunchAsync(new() { Headless = true });
 var page = await browser.NewPageAsync();
 
 
-for (int i = 3; i < addresses.Count; i++)
+for (int i = 8; i < addresses.Count; i++)
 {
     string fileName = addresses[i].Split('/').Last();
     await ScrapeCategoriesAsync(addresses[i], fileName);
