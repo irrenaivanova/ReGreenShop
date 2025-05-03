@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using ReGreenShop.Application.Common.Exceptions;
 using ReGreenShop.Application.Common.Interfaces;
 
 namespace ReGreenShop.Application.Categories.Queries.GetRootCategories;
@@ -30,7 +31,7 @@ public class GetRootCategoriesQuery : IRequest<IEnumerable<RootCategoriesModel>>
 
             if (categories.Count == 0)
             {
-                throw new FileNotFoundException("No root categories found!");
+                throw new NotFoundException("Root categories","all");
             }
 
             return categories;

@@ -47,5 +47,5 @@ public interface IData
 
     DbSet<UserLikeProduct> UserLikeProducts { get; set; }
 
-    Task<int> SaveChanges(CancellationToken cancellationToken);
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default!);
 }

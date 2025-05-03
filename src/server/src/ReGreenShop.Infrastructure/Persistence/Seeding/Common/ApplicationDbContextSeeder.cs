@@ -1,11 +1,12 @@
+using ReGreenShop.Application.Common.Interfaces;
 using ReGreenShop.Application.Common.Services;
 
 namespace ReGreenShop.Infrastructure.Persistence.Seeding.Common;
 public class ApplicationDbContextSeeder : ISeeder, IScopedService
 {
-    public async Task SeedAsync(ApplicationDbContext dbContext, IServiceProvider serviceProvider)
+    public async Task SeedAsync(ApplicationDbContext data, IServiceProvider serviceProvider)
     {
-        ArgumentNullException.ThrowIfNull(dbContext);
+        ArgumentNullException.ThrowIfNull(data);
 
         var seeders = new List<ISeeder>
         {
@@ -17,8 +18,8 @@ public class ApplicationDbContextSeeder : ISeeder, IScopedService
 
         foreach (var seeder in seeders)
         {
-            await seeder.SeedAsync(dbContext, serviceProvider);
-            await dbContext.SaveChangesAsync(CancellationToken.None);
+            await seeder.SeedAsync(data, serviceProvider);
+            await data.SaveChangesAsync(CancellationToken.None);
         }
     }
 }
