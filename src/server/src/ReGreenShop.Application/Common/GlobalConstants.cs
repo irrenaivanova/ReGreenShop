@@ -6,4 +6,8 @@ public static class GlobalConstants
     public const string BaseUrl = @"https://localhost:7102";
 
     public const string SessionId = "SessionId";
+
+    public const int MaxLengthLongName = 100;
+
+    public const int MaxLengthShortName = 50;
 }

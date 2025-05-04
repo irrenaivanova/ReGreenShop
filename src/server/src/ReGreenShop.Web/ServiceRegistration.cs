@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using static ReGreenShop.Application.ServiceRegistration;
 
@@ -11,6 +12,7 @@ public static class ServiceRegistration
                 .AddHttpContextAccessor()
                 .AddConventionalServices(typeof(ServiceRegistration).Assembly);
 
+        services.AddDistributedMemoryCache();
         services.AddSession(options =>
         {
             options.Cookie.Name = "ReGreenShop.Session";

@@ -6,12 +6,11 @@ namespace ReGreenShop.Application;
 
 public static class ServiceRegistration
 {
-    //public static IServiceCollection AddApplication(this IServiceCollection services)
-    //=> services
-    //    .AddAutoMapper(Assembly.GetExecutingAssembly())
-    //    .AddMediatR(Assembly.GetExecutingAssembly())
-    //    .AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceBehaviour<,>))
-    //    .AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
+    public static IServiceCollection AddApplication(this IServiceCollection services)
+    => services
+        .AddAutoMapper(Assembly.GetExecutingAssembly());
+        //.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceBehaviour<,>))
+        //.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
 
     public static IServiceCollection AddConventionalServices(
            this IServiceCollection services,

@@ -18,9 +18,9 @@ public class TestController : ControllerBase
     [HttpGet(nameof(DownloadImage))]
     public async Task DownloadImage()
     {
-        string imageUrl = @"https://static-new.kolichka.bg/k3wCdnContainerk3w-static-ne-bg-prod/images/thumbs/37/300x200x1_37kxbghrgr4f.jpg";
-        string name = "Ръчен козунак със стафиди и бадеми";
-        var bytes = await this.downloader.DownloadImageAsync(imageUrl);
-        await this.storage.SaveImageAsync(bytes, name);
+        string imageUrl = @"https://static-new.kolichka.bg/k3wCdnContainerk3w-static-ne-bg-prod/images/thumbs/mg/300x200x1_mg4t5udji0to.jpg";
+        string name = "test";
+        var bytesExtension = await this.downloader.DownloadImageAsync(imageUrl);
+        await this.storage.SaveImageAsync(bytesExtension.ImageBytes, name, bytesExtension.Extension);
     }
 }

@@ -11,17 +11,17 @@ public class ImageStorageService : IImageStorage
         this.env = env;
     }
 
-    public async Task<string> SaveImageAsync(byte[] imageBytes, string name)
+    public async Task<string> SaveImageAsync(byte[] imageBytes, string name, string extension)
     {
         var slugGenerator = new SlugGenerator();
-        var fileName = slugGenerator.GenerateSlug(name) + ".png";
-        var folderPath = Path.Combine(this.env.WebRootPath, "images");
+        var fileName = slugGenerator.GenerateSlug(name) + extension;
+        var folderPath = Path.Combine(this.env.WebRootPath, "images", "products");
 
         Directory.CreateDirectory(folderPath);
 
         var filePath = Path.Combine(folderPath, fileName);
         await File.WriteAllBytesAsync(filePath, imageBytes);
 
-        return $"/images/products/{fileName}.png";
+        return $"/images/products/{fileName}";
     }
 }

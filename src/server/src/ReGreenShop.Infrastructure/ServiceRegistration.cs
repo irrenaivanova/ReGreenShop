@@ -80,8 +80,6 @@ public static class ServiceRegistration
                 };
             });
 
-        services.AddSwaggerJwToken();
-
         return services;
     }
 
@@ -124,5 +122,4 @@ public static class ServiceRegistration
 
         return services;
     }
-
 }

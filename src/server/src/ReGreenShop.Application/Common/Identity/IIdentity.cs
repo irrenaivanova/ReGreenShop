@@ -1,5 +1,7 @@
+using ReGreenShop.Application.Common.Services;
+
 namespace ReGreenShop.Application.Common.Identity;
-public interface IIdentity
+public interface IIdentity : IScopedService
 {
     Task<AuthResponse> LoginUserAsync(string username, string password);
 
