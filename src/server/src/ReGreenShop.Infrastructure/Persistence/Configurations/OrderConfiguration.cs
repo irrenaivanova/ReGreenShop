@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ReGreenShop.Domain.Entities;
 using ReGreenShop.Infrastructure.Persistence.Identity;
+using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Infrastructure.Persistence.Configurations;
 public class OrderConfiguration : IEntityTypeConfiguration<Order>
@@ -20,7 +21,7 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
 
         builder
             .Property(x => x.InvoiceUrl)
-            .HasMaxLength(100);
+            .HasMaxLength(MaxLengthLongName);
 
         builder
             .HasOne(x => x.DeliveryPrice)

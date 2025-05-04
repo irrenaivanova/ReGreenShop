@@ -5,24 +5,31 @@ using System.Text;
 using System.Threading.Tasks;
 using MediatR;
 using ReGreenShop.Application.Common.Identity.Login;
+using ReGreenShop.Application.Common.Interfaces;
 
 namespace ReGreenShop.Application.Common.Identity.Register;
 public class RegisterCommand : IRequest<AuthResponse>
 {
-    public string UserName { get; set; }
+    public string UserName { get; set; } = string.Empty;
 
-    public string Password { get; set; }
+    public string Password { get; set; } = string.Empty;
 
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, AuthResponse>
     {
-        private readonly IIdentity identity;
+        private readonly IIdentity identityService;
+        private readonly ICart cartService;
 
-        public RegisterCommandHandler(IIdentity identity)
+        public RegisterCommandHandler(IIdentity identityService, ICart cartService)
         {
-            this.identity = identity;
+            this.identityService = identityService;
+            this.cartService = cartService;
         }
 
         public async Task<AuthResponse> Handle(RegisterCommand request, CancellationToken cancellationToken)
-                    => await this.identity.RegisterUserAsync(request.UserName, request.Password);
+        {
+            var authResponse = await this.identityService.RegisterUserAsync(request.UserName, request.Password);
+            await this.cartService.CreateCartAsync(authResponse.UserId);
+            return authResponse;
+        }
     }
 }

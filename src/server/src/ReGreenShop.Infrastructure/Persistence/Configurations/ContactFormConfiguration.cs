@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ReGreenShop.Domain.Entities;
+using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Infrastructure.Persistence.Configurations;
 public class ContactFormConfiguration : IEntityTypeConfiguration<ContactForm>
@@ -9,15 +10,15 @@ public class ContactFormConfiguration : IEntityTypeConfiguration<ContactForm>
     {
         builder
             .Property(x => x.Name)
-            .HasMaxLength(50);
+            .HasMaxLength(MaxLengthShortName);
 
         builder
             .Property(x => x.Email)
-            .HasMaxLength(50);
+            .HasMaxLength(MaxLengthShortName);
 
         builder
             .Property(x => x.Title)
-            .HasMaxLength(50);
+            .HasMaxLength(MaxLengthShortName);
 
         builder
             .Property(x => x.Content)

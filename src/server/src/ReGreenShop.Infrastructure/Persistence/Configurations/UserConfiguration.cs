@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ReGreenShop.Infrastructure.Persistence.Identity;
+using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Infrastructure.Persistence.Configurations;
 public class UserConfiguration : IEntityTypeConfiguration<User>
@@ -14,11 +15,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder
             .Property(x => x.FirstName)
-            .HasMaxLength(50);
+            .HasMaxLength(MaxLengthShortName);
 
         builder
             .Property(x => x.LastName)
-            .HasMaxLength(50);
+            .HasMaxLength(MaxLengthShortName);
 
         // Setting maximum length for these properties because they are default NVARCHAR(MAX) if not specified
 

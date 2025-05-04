@@ -1,5 +1,7 @@
+using ReGreenShop.Application.Common.Services;
+
 namespace ReGreenShop.Application.Common.Interfaces;
-public interface ICart
+public interface ICart : IService
 {
     Task<string> GetCartId();
 

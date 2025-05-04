@@ -31,6 +31,10 @@ public class Product : BaseDeletableModel<int>
 
     public int? ImageId { get; set; }
 
+    public string? Packaging { get; set; }
+
+    public string? OriginalUrl { get; set; }
+
     public Image? Image { get; set; }
 
     public IEnumerable<ProductCategory> ProductCategories { get; set; }

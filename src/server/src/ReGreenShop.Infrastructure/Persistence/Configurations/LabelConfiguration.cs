@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ReGreenShop.Domain.Entities;
+using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Infrastructure.Persistence.Configurations;
 public class LabelConfiguration : IEntityTypeConfiguration<Label>
@@ -9,6 +10,6 @@ public class LabelConfiguration : IEntityTypeConfiguration<Label>
     {
         builder
             .Property(x => x.Name)
-            .HasMaxLength(50);
+            .HasMaxLength(MaxLengthShortName);
     }
 }

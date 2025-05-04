@@ -21,9 +21,9 @@ public class User : IdentityUser, IAuditableEntity, IDeletableEntity
 
     public int TotalGreenPoints { get; set; }
 
-    public Cart Cart { get; set; } = default!;
+    public Cart? Cart { get; set; } 
 
-    public string CartId { get; set; } = string.Empty;
+    public string? CartId { get; set; } 
 
     public DateTime CreatedOn { get; set; }
 

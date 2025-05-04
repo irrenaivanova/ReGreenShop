@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ReGreenShop.Domain.Entities;
+using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Infrastructure.Persistence.Configurations;
 
@@ -10,7 +11,7 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
     {
         builder
             .Property(x => x.Name)
-            .HasMaxLength(50);
+            .HasMaxLength(MaxLengthShortName);
 
         builder
             .Property(x => x.Description)
@@ -18,15 +19,23 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 
         builder
             .Property(x => x.ProductCode)
-            .HasMaxLength(50);
+            .HasMaxLength(MaxLengthShortName);
 
         builder
              .Property(x => x.Brand)
-             .HasMaxLength(50);
+             .HasMaxLength(MaxLengthShortName);
 
         builder
               .Property(x => x.Origin)
-              .HasMaxLength(50);
+              .HasMaxLength(MaxLengthShortName);
+
+        builder
+              .Property(x => x.Packaging)
+              .HasMaxLength(MaxLengthShortName);
+
+        builder
+              .Property(x => x.OriginalUrl)
+              .HasMaxLength(MaxLengthLongName);
 
         builder
             .HasOne(x => x.Image)

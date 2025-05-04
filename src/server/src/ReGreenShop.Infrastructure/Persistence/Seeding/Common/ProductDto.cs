@@ -3,24 +3,24 @@ public class ProductDto
 {
     public ProductDto()
     {
-        Categories = new HashSet<string>();
+        this.Categories = new List<string>();
     }
 
-    public string Name { get; set; } = string.Empty;
+    public string? Name { get; set; }
 
     public string? Description { get; set; }
 
-    public decimal? Weight { get; set; }
-
-    public decimal Price { get; set; }
-
-    public string? ProductCode { get; set; }
+    public decimal? Price { get; set; }
 
     public string? Brand { get; set; }
 
     public string? Origin { get; set; }
 
-    public string ImageUrl { get; set; }
+    public string? Packaging { get; set; }
+
+    public string? OriginalUrl { get; set; }
+
+    public string? ImageUrl { get; set; }
 
     public IEnumerable<string> Categories { get; set; }
 }

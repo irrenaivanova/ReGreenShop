@@ -7,6 +7,7 @@ using ReGreenShop.Web;
 using static ReGreenShop.Web.ServiceRegistration;
 using static ReGreenShop.Application.ServiceRegistration;
 using ReGreenShop.Application.Common.Services;
+using ReGreenShop.Web.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,6 +66,7 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = string.Empty;  // Makes Swagger UI available at the root URL
     });
 }
+app.UseCustomExceptionHandler();
 
 app.UseHttpsRedirection();
 

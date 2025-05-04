@@ -62,7 +62,6 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, string>, IData
 
     public DbSet<UserLikeProduct> UserLikeProducts { get; set; }
 
-
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken)
     {
         foreach (var entry in ChangeTracker.Entries<IAuditableEntity>())

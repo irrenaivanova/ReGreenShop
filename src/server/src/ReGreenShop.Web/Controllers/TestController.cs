@@ -1,7 +1,10 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReGreenShop.Application.Common.Interfaces;
 
 namespace ReGreenShop.Web.Controllers;
+
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class TestController : ControllerBase

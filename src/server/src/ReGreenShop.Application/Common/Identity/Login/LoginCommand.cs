@@ -4,24 +4,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MediatR;
+using ReGreenShop.Application.Common.Interfaces;
 
 namespace ReGreenShop.Application.Common.Identity.Login;
 public class LoginCommand : IRequest<AuthResponse>
 {
-    public string UserName { get; set; }
+    public string UserName { get; set; } = string.Empty;
 
-    public string Password { get; set; }
+    public string Password { get; set; } = string.Empty;
 
     public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponse>
     {
-        private readonly IIdentity identity;
+        private readonly IIdentity identityService;
+        private readonly ICart cartService;
 
-        public LoginCommandHandler(IIdentity identity)
+        public LoginCommandHandler(IIdentity identityService, ICart cartService)
         {
-            this.identity = identity;
+            this.identityService = identityService;
+            this.cartService = cartService;
         }
 
         public async Task<AuthResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
-                    => await this.identity.LoginUserAsync(request.UserName, request.Password);
+        {
+            var authResponse =  await this.identityService.LoginUserAsync(request.UserName, request.Password);
+            await this.cartService.MergeCartIfAnyAsync();
+            return authResponse;
+        }               
     }
 }
