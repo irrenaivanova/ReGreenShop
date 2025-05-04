@@ -5,11 +5,11 @@ public class LoginCommandValidator : AbstractValidator<LoginCommand>
 {
     public LoginCommandValidator()
     {
-        this.RuleFor(x => x.UserName)
+        RuleFor(x => x.UserName)
             .MaximumLength(128)
             .NotEmpty();
 
-        this.RuleFor(x => x.Password)
+        RuleFor(x => x.Password)
             .MinimumLength(6)
             .WithMessage("The password should be minimum 6 characters long");
     }

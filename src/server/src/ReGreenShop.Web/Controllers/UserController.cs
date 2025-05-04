@@ -1,5 +1,4 @@
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReGreenShop.Application.Common.Identity.Login;
 using ReGreenShop.Application.Common.Identity.Register;

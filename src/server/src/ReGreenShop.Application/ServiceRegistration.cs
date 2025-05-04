@@ -14,7 +14,7 @@ public static class ServiceRegistration
     => services
         .AddAutoMapper(Assembly.GetExecutingAssembly())
         .AddValidatorsFromAssemblyContaining<LoginCommandValidator>()
-    //.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceBehaviour<,>))
+        .AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceBehavior<,>))
         .AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
 
     public static IServiceCollection AddConventionalServices(

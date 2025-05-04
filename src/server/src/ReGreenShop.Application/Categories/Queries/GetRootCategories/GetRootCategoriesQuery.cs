@@ -31,7 +31,7 @@ public class GetRootCategoriesQuery : IRequest<IEnumerable<RootCategoriesModel>>
 
             if (categories.Count == 0)
             {
-                throw new NotFoundException("Root categories","all");
+                throw new NotFoundException("Root categories", "all");
             }
 
             return categories;

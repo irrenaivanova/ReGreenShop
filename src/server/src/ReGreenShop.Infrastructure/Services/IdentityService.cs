@@ -1,9 +1,10 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using ReGreenShop.Application.Common.Exceptions;
 using ReGreenShop.Application.Common.Identity;
 using ReGreenShop.Application.Common.Interfaces;
 using ReGreenShop.Infrastructure.Persistence.Identity;
-using ReGreenShop.Application.Common.Exceptions;
 using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Infrastructure.Services;
@@ -19,6 +20,12 @@ public class IdentityService : IIdentity
         this.userManager = userManager;
     }
 
+    public async Task<string?> GetUserName(string userId)
+            => await this.userManager
+                .Users
+                .Where(u => u.Id == userId)
+                .Select(u => u.UserName)
+                .FirstOrDefaultAsync();
     public async Task<AuthResponse> LoginUserAsync(string username, string password)
     {
         var user = await this.userManager.FindByNameAsync(username)
@@ -63,7 +70,7 @@ public class IdentityService : IIdentity
         {
             throw new AuthenticationException("Username already exists.");
         }
-            
+
         var user = new User { UserName = username };
         var result = await this.userManager.CreateAsync(user, password);
 

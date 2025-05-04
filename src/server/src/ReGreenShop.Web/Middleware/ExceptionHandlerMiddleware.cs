@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Security;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
@@ -51,12 +46,12 @@ public class ExceptionHandlerMiddleware
                 break;
             // 401 Unauthorized
             case UnauthorizedAccessException _:
-                code = HttpStatusCode.Unauthorized; 
+                code = HttpStatusCode.Unauthorized;
                 result = JsonConvert.SerializeObject(new { error = "Unauthorized: You must be authenticated to access this resource." });
                 break;
             // 403 Forbidden
             case SecurityException _:
-                code = HttpStatusCode.Forbidden; 
+                code = HttpStatusCode.Forbidden;
                 result = JsonConvert.SerializeObject(new { error = "Forbidden: You do not have permission to access this resource." });
                 break;
         }

@@ -1,13 +1,22 @@
 using MediatR;
+using MediatR.Pipeline;
 using Microsoft.EntityFrameworkCore;
 using ReGreenShop.Application.Categories.Queries.GetRootCategories;
+using ReGreenShop.Application.Common.Behaviors;
 using ReGreenShop.Infrastructure.Persistence;
 using ReGreenShop.Infrastructure.Persistence.Seeding.Common;
 using ReGreenShop.Web;
-using static ReGreenShop.Web.ServiceRegistration;
-using static ReGreenShop.Application.ServiceRegistration;
-using ReGreenShop.Application.Common.Services;
 using ReGreenShop.Web.Middleware;
+using Serilog;
+using static ReGreenShop.Application.ServiceRegistration;
+using static ReGreenShop.Web.ServiceRegistration;
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)
+    .Enrich.FromLogContext()
+    .MinimumLevel.Information()
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,9 +47,10 @@ builder.Services.AddControllers().
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerJwToken();
 
-// when fix addApplication this should be cleared
 builder.Services.AddMediatR(typeof(GetRootCategoriesQuery).Assembly);
+builder.Services.AddTransient(typeof(IRequestPreProcessor<>), typeof(RequestLogger<>));
 
+builder.Host.UseSerilog();
 
 var app = builder.Build();
 

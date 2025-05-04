@@ -1,4 +1,3 @@
-using ReGreenShop.Application.Common.Interfaces;
 using ReGreenShop.Application.Common.Services;
 
 namespace ReGreenShop.Infrastructure.Persistence.Seeding.Common;

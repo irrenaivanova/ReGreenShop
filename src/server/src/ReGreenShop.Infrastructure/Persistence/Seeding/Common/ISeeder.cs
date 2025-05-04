@@ -1,5 +1,3 @@
-using ReGreenShop.Application.Common.Interfaces;
-
 namespace ReGreenShop.Infrastructure.Persistence.Seeding.Common;
 public interface ISeeder
 {

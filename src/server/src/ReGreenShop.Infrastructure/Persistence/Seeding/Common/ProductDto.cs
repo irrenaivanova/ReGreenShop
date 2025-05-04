@@ -3,7 +3,7 @@ public class ProductDto
 {
     public ProductDto()
     {
-        this.Categories = new List<string>();
+        Categories = new List<string>();
     }
 
     public string? Name { get; set; }

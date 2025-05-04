@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MediatR;
 using ReGreenShop.Application.Common.Interfaces;
 
@@ -26,9 +21,9 @@ public class LoginCommand : IRequest<AuthResponse>
 
         public async Task<AuthResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
-            var authResponse =  await this.identityService.LoginUserAsync(request.UserName, request.Password);
+            var authResponse = await this.identityService.LoginUserAsync(request.UserName, request.Password);
             await this.cartService.MergeCartIfAnyAsync();
             return authResponse;
-        }               
+        }
     }
 }

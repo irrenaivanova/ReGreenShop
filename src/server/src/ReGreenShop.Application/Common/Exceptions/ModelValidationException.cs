@@ -5,7 +5,7 @@ public class ModelValidationException : Exception
 {
     public ModelValidationException()
            : base("One or more validation failures have occurred.")
-           => this.Failures = new Dictionary<string, string[]>();
+           => Failures = new Dictionary<string, string[]>();
 
     public ModelValidationException(List<ValidationFailure> failures)
         : this()
@@ -18,7 +18,7 @@ public class ModelValidationException : Exception
             var propertyName = failureGroup.Key;
             var propertyFailures = failureGroup.ToArray();
 
-            this.Failures.Add(propertyName, propertyFailures);
+            Failures.Add(propertyName, propertyFailures);
         }
     }
 

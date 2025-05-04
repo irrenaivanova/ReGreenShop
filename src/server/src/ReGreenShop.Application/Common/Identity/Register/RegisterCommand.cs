@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MediatR;
-using ReGreenShop.Application.Common.Identity.Login;
 using ReGreenShop.Application.Common.Interfaces;
 
 namespace ReGreenShop.Application.Common.Identity.Register;

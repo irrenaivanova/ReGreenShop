@@ -56,7 +56,7 @@ public class CartService : ICart
 
     public async Task<int> GetCountProductsInCart()
     {
-        var cartId = await this.GetCartId();
+        var cartId = await GetCartId();
         return this.data.Carts.FirstOrDefault(x => x.Id == cartId)!.CartItems.Count();
     }
 
