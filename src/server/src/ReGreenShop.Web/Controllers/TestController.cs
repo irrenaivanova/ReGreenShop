@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,13 +33,13 @@ public class TestController : ControllerBase
     }
 
     [HttpGet(nameof(SendEmail))]
-    public async Task SendEmail()
+    public async Task SendEmail(string email)
     {
         var html = new StringBuilder();
         html.AppendLine($"<h3>Thank you for contacting us!</h3>");
         html.AppendLine($"<p>Dear Irena,</p>");
         html.AppendLine($"<p>Thanks for getting in touch! We’ve received your message and " +
             $"will get back to you as soon as we can — usually within 3 days.</p>");
-        await this.sender.SendEmailAsync(SystemEmailSender,SystemEmailSenderName, SystemEmailReceiver, "Test",html.ToString());
+        await this.sender.SendEmailAsync(SystemEmailSender,SystemEmailSenderName, email, "Test",html.ToString());
     }
 }

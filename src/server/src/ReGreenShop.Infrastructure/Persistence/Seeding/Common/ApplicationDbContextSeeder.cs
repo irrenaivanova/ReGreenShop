@@ -11,6 +11,7 @@ public class ApplicationDbContextSeeder : ISeeder, IScopedService
         {
             // new ProductsSeeder(),
              new RolesSeeder(),
+             new UserSeeder(),
              new CitySeeder(),
              new BaseCategorySeeder(),
         };

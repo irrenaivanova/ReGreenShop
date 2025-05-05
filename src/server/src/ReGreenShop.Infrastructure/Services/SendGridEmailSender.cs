@@ -1,11 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using Polly;
+using Polly.Retry;
 using ReGreenShop.Application.Common.Interfaces;
 using ReGreenShop.Application.Common.Models;
+using ReGreenShop.Infrastructure.Settings;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
@@ -13,15 +11,20 @@ namespace ReGreenShop.Infrastructure.Services;
 public class SendGridEmailSender : IEmailSender
 {
     private readonly SendGridClient client;
+    private readonly IAdminNotifier adminNotifier;
+    private readonly AsyncRetryPolicy retryPolicy;
 
-    public SendGridEmailSender(string apiKey)
+    public SendGridEmailSender(IOptions<SendGridSettings> options, IAdminNotifier adminNotifier)
     {
-        if (string.IsNullOrWhiteSpace(apiKey))
-        {
-            throw new ArgumentException("API Key cannot be null or empty.", nameof(apiKey));
-        }
-
+        var apiKey = options?.Value?.ApiKey ?? throw new ArgumentException("API Key is missing.");
         this.client = new SendGridClient(apiKey);
+        this.adminNotifier = adminNotifier;
+
+        this.retryPolicy = Policy
+                .Handle<Exception>()
+                .WaitAndRetryAsync(
+                    retryCount: 3,
+                    sleepDurationProvider: attempt => TimeSpan.FromSeconds(attempt * 10));
     }
 
     public async Task SendEmailAsync(string from, string fromName, string to, string subject, string htmlContent, IEnumerable<EmailAttachment>? attachments = null)
@@ -44,14 +47,13 @@ public class SendGridEmailSender : IEmailSender
 
         try
         {
-            var response = await this.client.SendEmailAsync(message);
-            Console.WriteLine(response.StatusCode);
-            Console.WriteLine(await response.Body.ReadAsStringAsync());
+            await this.retryPolicy.ExecuteAsync(async () => await this.client.SendEmailAsync(message));
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            throw;
+            string title = "Email not send!";
+            string text = $"Email to {toAddress} with {subject} was not send, reason:{e.Message}!";
+            await this.adminNotifier.NotifyAsync(title, text);
         }
     }
 }

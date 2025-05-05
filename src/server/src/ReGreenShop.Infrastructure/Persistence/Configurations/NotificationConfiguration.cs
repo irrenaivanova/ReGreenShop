@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ReGreenShop.Domain.Entities;
 using ReGreenShop.Infrastructure.Persistence.Identity;
+using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Infrastructure.Persistence.Configurations;
 public class NotificationConfiguration : IEntityTypeConfiguration<Notification>
@@ -16,5 +17,9 @@ public class NotificationConfiguration : IEntityTypeConfiguration<Notification>
         builder
             .Property(x => x.Text)
             .HasMaxLength(500);
+
+        builder
+            .Property(x => x.Title)
+            .HasMaxLength(MaxLengthLongName);
     }
 }
