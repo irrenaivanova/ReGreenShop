@@ -12,32 +12,33 @@ public class BaseCategorySeeder : ISeeder
         {
             return;
         }
-        var categories = new List<string>
+        var categories = new List<(string English, string Bulgarian)>
         {
-            "Bread and Pastries",
-            "Fruits and Vegetables",
-            "Meat and Fish",
-            "Sausages and Delicacies",
-            "Dairy and Eggs",
-            "Frozen Foods",
-            "Packaged Foods",
-            "Beverages",
-            "Organic and Specialty",
-            "Cosmetics",
-            "For the Home",
-            "For the Baby",
-            "Pets"
+            ("Bread and Pastries", "Хляб и тестени"),
+            ("Fruits and Vegetables", "Плодове и зеленчуци"),
+            ("Meat and Fish", "Месо и риба"),
+            ("Sausages and Delicacies", "Колбаси и деликатеси"),
+            ("Dairy and Eggs", "Млечни и яйца"),
+            ("Frozen Foods", "Замразени храни"),
+            ("Packaged Foods", "Пакетирани храни"),
+            ("Beverages", "Напитки"),
+            ("Organic and Specialty", "Био и специализирани"),
+            ("Cosmetics", "Козметика"),
+            ("For the Home", "За дома и офиса"),
+            ("For the Baby", "За бебето"),
+            ("Pets", "Домашни любимци")
         };
 
         for (int i = 0; i < categories.Count; i++)
         {
             var newCategory = new Category()
             {
-                Name = categories[i],
+                NameInEnglish = categories[i].English,
+                NameInBulgarian = categories[i].Bulgarian,
                 Image = new Image()
                 {
-                    Name = GenerateSlugName(categories[i]),
-                    LocalPath = GeneratePath(categories[i]),
+                    Name = GenerateSlugName(categories[i].English),
+                    LocalPath = GeneratePath(categories[i].English),
                 }
             };
 
@@ -52,6 +53,6 @@ public class BaseCategorySeeder : ISeeder
     }
     private string GeneratePath(string name)
     {
-        return $"{BaseUrl}/images/categories/{GenerateSlugName(name)}.png";
+        return $"/images/categories/{GenerateSlugName(name)}.png";
     }
 }

@@ -14,6 +14,7 @@ public class RootCategoriesModel : IMapFrom<Category>, IMapExplicitly
     public void CreateMappings(IProfileExpression configuration)
     {
         configuration.CreateMap<Category, RootCategoriesModel>()
-            .ForMember(x => x.ImagePath, cfg => cfg.MapFrom(x => x.Image!.BlobPath ?? x.Image.LocalPath));
+            .ForMember(x => x.ImagePath, cfg => cfg.MapFrom(x => x.Image!.BlobPath ?? x.Image.LocalPath))
+            .ForMember(x => x.Name, cfg => cfg.MapFrom(x => x.NameInEnglish));
     }
 }

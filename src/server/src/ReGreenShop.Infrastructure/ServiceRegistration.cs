@@ -12,6 +12,7 @@ using ReGreenShop.Application.Common.Interfaces;
 using ReGreenShop.Infrastructure.Persistence;
 using ReGreenShop.Infrastructure.Persistence.Identity;
 using ReGreenShop.Infrastructure.Persistence.Seeding.Common;
+using ReGreenShop.Infrastructure.Services;
 using ReGreenShop.Infrastructure.Settings;
 using static ReGreenShop.Application.ServiceRegistration;
 
@@ -32,9 +33,9 @@ public static class ServiceRegistration
             .AddIdentity<User, Role>(options =>
             {
                 options.Password.RequiredLength = 6;
-                options.Password.RequireDigit = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequireUppercase = true;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
                 options.Password.RequireNonAlphanumeric = false;
             }).AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
@@ -45,6 +46,15 @@ public static class ServiceRegistration
         services
             .AddScoped<ApplicationDbContextSeeder>();
 
+        // SendGrid
+        services
+            .Configure<SendGridSettings>(configuration.GetSection(nameof(SendGridSettings)));
+        var sendSettings = configuration.GetSection(nameof(SendGridSettings)).Get<SendGridSettings>() ??
+                            throw new InvalidOperationException("The SendGridSettings are missing!");
+        var sendGridApiKey = sendSettings.ApiKey;
+        services.AddTransient<IEmailSender>(x => new SendGridEmailSender(sendGridApiKey));
+
+        // JWToken
         services
             .Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
 

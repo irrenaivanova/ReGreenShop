@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { baseUrl } from '../Constants/baseUrl';
+
 
 interface Category {
   id: number;
@@ -12,11 +14,10 @@ const CategoryList: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('https://localhost:7102/api/Category/GetRootCategories');
+        const response = await axios.get(`${baseUrl}/api/Category/GetRootCategories`);
         
         if (!Array.isArray(response.data)) {
           throw new Error("Unexpected response type");
@@ -47,7 +48,7 @@ const CategoryList: React.FC = () => {
           {categories.map((category) => (
             <li key={category.id}>
               <img
-                src={category.imagePath}
+                src={`${baseUrl}${category.imagePath}`}
                 alt={category.name}
                 style={{ width: 50, height: 50, objectFit: 'cover', marginRight: 10 }}
               />

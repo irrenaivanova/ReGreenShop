@@ -9,4 +9,6 @@ public class Image : BaseDeletableModel<int>
     public string? LocalPath { get; set; }
 
     public string? BlobPath { get; set; }
+
+    public string? OriginalUrl { get; set; }
 }

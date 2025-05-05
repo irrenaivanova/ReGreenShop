@@ -13,5 +13,7 @@ public static class GlobalConstants
 
     public const string SystemEmailSender = "irrenaivanova@gmail.com";
 
+    public const string SystemEmailSenderName = "ReGreenShop";
+
     public const string SystemEmailReceiver = "irrenka_@abv.bg";
 }

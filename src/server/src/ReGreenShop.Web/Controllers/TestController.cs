@@ -1,21 +1,25 @@
+using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReGreenShop.Application.Common.Interfaces;
+using ReGreenShop.Domain.Entities;
+using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Web.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class TestController : ControllerBase
 {
     private readonly IImageDownloader downloader;
     private readonly IImageStorage storage;
+    private readonly IEmailSender sender;
 
-    public TestController(IImageDownloader downloader, IImageStorage storage)
+    public TestController(IImageDownloader downloader, IImageStorage storage, IEmailSender sender)
     {
         this.downloader = downloader;
         this.storage = storage;
+        this.sender = sender;
     }
 
     [HttpGet(nameof(DownloadImage))]
@@ -25,5 +29,16 @@ public class TestController : ControllerBase
         string name = "test";
         var bytesExtension = await this.downloader.DownloadImageAsync(imageUrl);
         await this.storage.SaveImageAsync(bytesExtension.ImageBytes, name, bytesExtension.Extension);
+    }
+
+    [HttpGet(nameof(SendEmail))]
+    public async Task SendEmail()
+    {
+        var html = new StringBuilder();
+        html.AppendLine($"<h3>Thank you for contacting us!</h3>");
+        html.AppendLine($"<p>Dear Irena,</p>");
+        html.AppendLine($"<p>Thanks for getting in touch! We’ve received your message and " +
+            $"will get back to you as soon as we can — usually within 3 days.</p>");
+        await this.sender.SendEmailAsync(SystemEmailSender,SystemEmailSenderName, SystemEmailReceiver, "Test",html.ToString());
     }
 }

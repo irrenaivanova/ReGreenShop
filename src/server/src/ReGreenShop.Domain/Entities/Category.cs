@@ -11,7 +11,9 @@ public class Category : BaseDeletableModel<int>
         OrderDetails = new HashSet<OrderDetail>();
     }
 
-    public string Name { get; set; } = string.Empty;
+    public string? NameInBulgarian { get; set; }
+
+    public string? NameInEnglish { get; set; }
 
     public int? ParentCategoryId { get; set; }
 
