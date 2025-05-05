@@ -2,7 +2,9 @@ using MediatR;
 using MediatR.Pipeline;
 using Microsoft.EntityFrameworkCore;
 using ReGreenShop.Application.Categories.Queries.GetRootCategories;
+using ReGreenShop.Application.Common;
 using ReGreenShop.Application.Common.Behaviors;
+using ReGreenShop.Application.Common.Mappings;
 using ReGreenShop.Infrastructure.Persistence;
 using ReGreenShop.Infrastructure.Persistence.Seeding.Common;
 using ReGreenShop.Web;
@@ -63,6 +65,7 @@ using (var scope = app.Services.CreateScope())
     var seeder = scope.ServiceProvider.GetRequiredService<ApplicationDbContextSeeder>();
     await seeder.SeedAsync(dbContext, scope.ServiceProvider);
 }
+AutoMapperConfig.RegisterMappings(typeof(GlobalConstants).Assembly);
 
 app.UseCors();
 
@@ -73,7 +76,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("swagger/v1/swagger.json", "ReGreenShop API v1");
-        c.RoutePrefix = string.Empty;  // Makes Swagger UI available at the root URL
+        c.RoutePrefix = "swagger";
     });
 }
 app.UseCustomExceptionHandler();

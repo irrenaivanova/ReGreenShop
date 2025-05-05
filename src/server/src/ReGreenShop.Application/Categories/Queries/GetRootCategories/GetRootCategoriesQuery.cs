@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ReGreenShop.Application.Common.Exceptions;
 using ReGreenShop.Application.Common.Interfaces;
+using ReGreenShop.Application.Common.Mappings;
 
 namespace ReGreenShop.Application.Categories.Queries.GetRootCategories;
 public class GetRootCategoriesQuery : IRequest<IEnumerable<RootCategoriesModel>>
@@ -20,14 +21,8 @@ public class GetRootCategoriesQuery : IRequest<IEnumerable<RootCategoriesModel>>
                 .Include(x => x.Image)
                 .Where(x => x.ParentCategoryId == null)
                 .AsNoTracking()
-                .Select(x => new RootCategoriesModel
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    ImagePath = x.Image != null
-                         ? (x.Image.BlobPath ?? x.Image.LocalPath ?? string.Empty)
-                         : string.Empty
-                }).ToListAsync();
+                .To<RootCategoriesModel>()
+                .ToListAsync();
 
             if (categories.Count == 0)
             {

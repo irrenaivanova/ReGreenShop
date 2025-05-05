@@ -103,6 +103,7 @@ public static class ServiceRegistration
     {
         services.AddSwaggerGen(x =>
         {
+            x.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });
             var securityScheme = new OpenApiSecurityScheme
             {
                 Name = "JWT Authentication",

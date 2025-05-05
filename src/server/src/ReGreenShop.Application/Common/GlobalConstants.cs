@@ -10,4 +10,8 @@ public static class GlobalConstants
     public const int MaxLengthLongName = 100;
 
     public const int MaxLengthShortName = 50;
+
+    public const string SystemEmailSender = "irrenaivanova@gmail.com";
+
+    public const string SystemEmailReceiver = "irrenka_@abv.bg";
 }
