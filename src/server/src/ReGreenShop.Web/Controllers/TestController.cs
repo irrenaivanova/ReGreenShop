@@ -1,6 +1,9 @@
 using System.Text;
+using System.Xml.Linq;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using ReGreenShop.Application.Common.Interfaces;
+using ReGreenShop.Application.Common.Models;
 using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Web.Controllers;
@@ -10,14 +13,18 @@ namespace ReGreenShop.Web.Controllers;
 public class TestController : ControllerBase
 {
     private readonly IImageDownloader downloader;
-    private readonly IImageStorage storage;
+    private readonly IStorage storage;
     private readonly IEmailSender sender;
+    private readonly IPdfGenerator pdfGenerator;
+    private readonly IWebHostEnvironment web;
 
-    public TestController(IImageDownloader downloader, IImageStorage storage, IEmailSender sender)
+    public TestController(IImageDownloader downloader, IStorage storage, IEmailSender sender, IPdfGenerator pdfGenerator,IWebHostEnvironment web)
     {
         this.downloader = downloader;
         this.storage = storage;
         this.sender = sender;
+        this.pdfGenerator = pdfGenerator;
+        this.web = web;
     }
 
     [HttpGet(nameof(DownloadImage))]
@@ -37,7 +44,16 @@ public class TestController : ControllerBase
         html.AppendLine($"<p>Dear Irena,</p>");
         html.AppendLine($"<p>Thanks for getting in touch! We’ve received your message and " +
             $"will get back to you as soon as we can — usually within 3 days.</p>");
-        await this.sender.SendEmailAsync(SystemEmailSender, SystemEmailSenderName, email, "Test", html.ToString());
+
+        var path = Path.Combine(this.web.WebRootPath, "invoices", "invoice.pdf");
+        var fileBytes = await System.IO.File.ReadAllBytesAsync(path);
+        var attachment = new EmailAttachment
+        {
+            FileName = "invoice.pdf",
+            Content = fileBytes,
+            MimeType = "application/pdf"
+        };
+        await this.sender.SendEmailAsync(SystemEmailSender, SystemEmailSenderName, email, "Test", html.ToString(),new List<EmailAttachment> { attachment });
     }
 
 
@@ -51,5 +67,13 @@ public class TestController : ControllerBase
             { "name2", "12345" },
         };
         await this.sender.SendTemplateEmailAsync(SystemEmailSender, SystemEmailSenderName, email, templateId, dynamicDta);
+    }
+
+
+    [HttpPost(nameof(MakePdf))]
+    public async Task MakePdf(InvoiceItem model)
+    {
+        var bytes = this.pdfGenerator.GenerateReceiptPdfAsync(model);
+        await this.storage.SaveInvoicesAsync(bytes,"Invoice");
     }
 }

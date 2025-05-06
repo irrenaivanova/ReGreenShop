@@ -1,10 +1,12 @@
 using MediatR;
 using MediatR.Pipeline;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Infrastructure;
 using ReGreenShop.Application.Categories.Queries.GetRootCategories;
 using ReGreenShop.Application.Common;
 using ReGreenShop.Application.Common.Behaviors;
 using ReGreenShop.Application.Common.Mappings;
+using ReGreenShop.Application.Common.Services;
 using ReGreenShop.Infrastructure.Persistence;
 using ReGreenShop.Infrastructure.Persistence.Seeding.Common;
 using ReGreenShop.Web;
@@ -43,8 +45,11 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 builder.Services.AddWebComponents();
 
+
 builder.Services.AddControllers().
     AddApplicationPart(typeof(ReGreenShop.Web.Controllers.BaseController).Assembly);
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerJwToken();
@@ -52,9 +57,13 @@ builder.Services.AddSwaggerJwToken();
 builder.Services.AddMediatR(typeof(GetRootCategoriesQuery).Assembly);
 builder.Services.AddTransient(typeof(IRequestPreProcessor<>), typeof(RequestLogger<>));
 
+
 builder.Host.UseSerilog();
 
 var app = builder.Build();
+
+// QuestPDF is free if the organization earns less than $1million USD per year
+QuestPDF.Settings.License = LicenseType.Community;
 
 // Perform database migration and seeding
 using (var scope = app.Services.CreateScope())
@@ -79,6 +88,7 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = string.Empty;
     });
 }
+
 app.UseCustomExceptionHandler();
 
 app.UseHttpsRedirection();
