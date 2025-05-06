@@ -1,9 +1,6 @@
-using System.Globalization;
 using System.Text;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReGreenShop.Application.Common.Interfaces;
-using ReGreenShop.Domain.Entities;
 using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Web.Controllers;
@@ -40,6 +37,19 @@ public class TestController : ControllerBase
         html.AppendLine($"<p>Dear Irena,</p>");
         html.AppendLine($"<p>Thanks for getting in touch! We’ve received your message and " +
             $"will get back to you as soon as we can — usually within 3 days.</p>");
-        await this.sender.SendEmailAsync(SystemEmailSender,SystemEmailSenderName, email, "Test",html.ToString());
+        await this.sender.SendEmailAsync(SystemEmailSender, SystemEmailSenderName, email, "Test", html.ToString());
+    }
+
+
+    [HttpGet(nameof(SendEmailTemplate))]
+    public async Task SendEmailTemplate(string email)
+    {
+        string templateId = "d-5e226b6ae4c4434cadfee761ff05ea51";
+        var dynamicDta = new Dictionary<string, object>
+        {
+            { "name1", "John Doe" },
+            { "name2", "12345" },
+        };
+        await this.sender.SendTemplateEmailAsync(SystemEmailSender, SystemEmailSenderName, email, templateId, dynamicDta);
     }
 }
