@@ -8,6 +8,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\seedFiles\c1-hlyab-i-testeni.json" />
+    <Content Remove="wwwroot\seedFiles\c1201-za-bebeto.json" />
+    <Content Remove="wwwroot\seedFiles\c201-napitki.json" />
+    <Content Remove="wwwroot\seedFiles\c2241-kozmetika.json" />
+    <Content Remove="wwwroot\seedFiles\c2971-paketirani-hrani.json" />
+    <Content Remove="wwwroot\seedFiles\c4816-domasni-lyubimci.json" />
+    <Content Remove="wwwroot\seedFiles\c4971-zamrazeni-hrani.json" />
+    <Content Remove="wwwroot\seedFiles\c511-meso-i-riba.json" />
+    <Content Remove="wwwroot\seedFiles\c5736-plodove-i-zelencuci.json" />
+    <Content Remove="wwwroot\seedFiles\c6096-mlecni-i-yajca.json" />
+    <Content Remove="wwwroot\seedFiles\c6831-kolbasi-i-delikatesi.json" />
+    <Content Remove="wwwroot\seedFiles\c6841-za-doma.json" />
+    <Content Remove="wwwroot\seedFiles\c6871-bio-i-specializirani.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.15">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -30,7 +46,48 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\images\categories\" />
-    <Folder Include="wwwroot\images\products\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\seedFiles\c1-hlyab-i-testeni.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\seedFiles\c1201-za-bebeto.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\seedFiles\c201-napitki.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\seedFiles\c2241-kozmetika.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\seedFiles\c2971-paketirani-hrani.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\seedFiles\c4816-domasni-lyubimci.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\seedFiles\c4971-zamrazeni-hrani.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\seedFiles\c511-meso-i-riba.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\seedFiles\c5736-plodove-i-zelencuci.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\seedFiles\c6096-mlecni-i-yajca.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\seedFiles\c6831-kolbasi-i-delikatesi.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\seedFiles\c6841-za-doma.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\seedFiles\c6871-bio-i-specializirani.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

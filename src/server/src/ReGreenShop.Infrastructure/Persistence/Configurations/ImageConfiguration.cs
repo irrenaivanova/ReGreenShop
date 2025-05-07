@@ -10,14 +10,14 @@ public class ImageConfiguration : IEntityTypeConfiguration<Image>
     {
         builder
             .Property(x => x.Name)
-            .HasMaxLength(MaxLengthShortName);
+            .HasMaxLength(200);
 
         builder
             .Property(x => x.LocalPath)
-            .HasMaxLength(MaxLengthLongName);
+            .HasMaxLength(200);
 
         builder
             .Property(x => x.BlobPath)
-            .HasMaxLength(MaxLengthLongName);
+            .HasMaxLength(200);
     }
 }

@@ -18,7 +18,7 @@ public class ContactFormConfiguration : IEntityTypeConfiguration<ContactForm>
 
         builder
             .Property(x => x.Title)
-            .HasMaxLength(MaxLengthShortName);
+            .HasMaxLength(MaxLengthLongName);
 
         builder
             .Property(x => x.Content)

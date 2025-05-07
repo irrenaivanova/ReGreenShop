@@ -252,12 +252,12 @@ namespace ReGreenShop.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("NameInBulgarian")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("NameInEnglish")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int?>("ParentCategoryId")
                         .HasColumnType("int");
@@ -270,9 +270,7 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.HasIndex("IsDeleted");
 
-                    b.HasIndex("ParentCategoryId")
-                        .IsUnique()
-                        .HasFilter("[ParentCategoryId] IS NOT NULL");
+                    b.HasIndex("ParentCategoryId");
 
                     b.ToTable("Categories");
                 });
@@ -340,8 +338,8 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -407,10 +405,6 @@ namespace ReGreenShop.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("OrderId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<decimal>("PriceDiscount")
                         .HasColumnType("decimal(8,2)");
 
@@ -443,8 +437,8 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("RewardPoints")
                         .HasColumnType("int");
@@ -465,8 +459,8 @@ namespace ReGreenShop.Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("BlobPath")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
@@ -478,16 +472,16 @@ namespace ReGreenShop.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("LocalPath")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("OriginalUrl")
                         .HasColumnType("nvarchar(max)");
@@ -642,9 +636,7 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.HasIndex("DeliveryPriceId");
 
-                    b.HasIndex("DiscountVoucherId")
-                        .IsUnique()
-                        .HasFilter("[DiscountVoucherId] IS NOT NULL");
+                    b.HasIndex("DiscountVoucherId");
 
                     b.HasIndex("IsDeleted");
 
@@ -796,8 +788,8 @@ namespace ReGreenShop.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<int?>("ImageId")
                         .HasColumnType("int");
@@ -810,16 +802,16 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Origin")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("OriginalUrl")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Packaging")
                         .HasMaxLength(50)
@@ -834,9 +826,6 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.Property<int>("Stock")
                         .HasColumnType("int");
-
-                    b.Property<decimal?>("Weight")
-                        .HasColumnType("decimal(8,2)");
 
                     b.HasKey("Id");
 
@@ -1119,8 +1108,9 @@ namespace ReGreenShop.Infrastructure.Migrations
                         .HasForeignKey("ReGreenShop.Domain.Entities.Category", "ImageId");
 
                     b.HasOne("ReGreenShop.Domain.Entities.Category", "ParentCategory")
-                        .WithOne()
-                        .HasForeignKey("ReGreenShop.Domain.Entities.Category", "ParentCategoryId");
+                        .WithMany("ChildCategories")
+                        .HasForeignKey("ParentCategoryId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Image");
 
@@ -1170,8 +1160,8 @@ namespace ReGreenShop.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("ReGreenShop.Domain.Entities.DiscountVoucher", "DiscountVoucher")
-                        .WithOne("Order")
-                        .HasForeignKey("ReGreenShop.Domain.Entities.Order", "DiscountVoucherId");
+                        .WithMany("Orders")
+                        .HasForeignKey("DiscountVoucherId");
 
                     b.HasOne("ReGreenShop.Infrastructure.Persistence.Identity.User", null)
                         .WithMany("Orders")
@@ -1319,6 +1309,8 @@ namespace ReGreenShop.Infrastructure.Migrations
                 {
                     b.Navigation("CartItems");
 
+                    b.Navigation("ChildCategories");
+
                     b.Navigation("OrderDetails");
 
                     b.Navigation("ProductCategories");
@@ -1336,8 +1328,7 @@ namespace ReGreenShop.Infrastructure.Migrations
 
             modelBuilder.Entity("ReGreenShop.Domain.Entities.DiscountVoucher", b =>
                 {
-                    b.Navigation("Order")
-                        .IsRequired();
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("ReGreenShop.Domain.Entities.GreenAlternative", b =>

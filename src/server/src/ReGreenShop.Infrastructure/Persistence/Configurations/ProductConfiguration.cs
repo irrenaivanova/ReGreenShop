@@ -11,11 +11,11 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
     {
         builder
             .Property(x => x.Name)
-            .HasMaxLength(MaxLengthShortName);
+            .HasMaxLength(MaxLengthLongName);
 
         builder
             .Property(x => x.Description)
-            .HasMaxLength(500);
+            .HasMaxLength(1000);
 
         builder
             .Property(x => x.ProductCode)
@@ -35,7 +35,7 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 
         builder
               .Property(x => x.OriginalUrl)
-              .HasMaxLength(MaxLengthLongName);
+              .HasMaxLength(200);
 
         builder
             .HasOne(x => x.Image)
@@ -46,8 +46,5 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .Property(x => x.Price)
             .HasColumnType("decimal(8,2)");
 
-        builder
-            .Property(x => x.Weight)
-            .HasColumnType("decimal(8,2)");
     }
 }

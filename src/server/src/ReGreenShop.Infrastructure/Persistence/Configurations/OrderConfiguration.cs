@@ -40,7 +40,7 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
 
         builder
             .HasOne(x => x.DiscountVoucher)
-            .WithOne(x => x.Order)
-            .HasForeignKey<Order>(x => x.DiscountVoucherId);
+            .WithMany(x => x.Orders)
+            .HasForeignKey(x => x.DiscountVoucherId);
     }
 }

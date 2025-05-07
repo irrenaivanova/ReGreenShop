@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Hosting;
+
 namespace ReGreenShop.Infrastructure.Persistence.Seeding.Common;
 public interface ISeeder
 {

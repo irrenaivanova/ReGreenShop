@@ -9,11 +9,16 @@ public class ApplicationDbContextSeeder : ISeeder, IScopedService
 
         var seeders = new List<ISeeder>
         {
-            // new ProductsSeeder(),
              new RolesSeeder(),
              new UserSeeder(),
              new CitySeeder(),
+             new GreenAlternativesSeeder(),
+             new PaymentMethodsSeeder(),
+             new DiscountVouchersSeeder(),
+             new DeliveryPricesSeeder(),
+             new LabelsSeeder(),
              new BaseCategorySeeder(),
+             new ProductsSeeder()
         };
 
         foreach (var seeder in seeders)

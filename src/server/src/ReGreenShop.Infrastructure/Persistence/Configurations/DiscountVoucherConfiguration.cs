@@ -8,11 +8,6 @@ public class DiscountVoucherConfiguration : IEntityTypeConfiguration<DiscountVou
     public void Configure(EntityTypeBuilder<DiscountVoucher> builder)
     {
         builder
-            .HasOne(x => x.Order)
-            .WithOne(x => x.DiscountVoucher)
-            .HasForeignKey<DiscountVoucher>(x => x.OrderId);
-
-        builder
             .Property(x => x.PriceDiscount)
             .HasColumnType("decimal(8,2)");
     }

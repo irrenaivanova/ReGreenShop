@@ -9,6 +9,7 @@ public class Category : BaseDeletableModel<int>
         ProductCategories = new HashSet<ProductCategory>();
         CartItems = new HashSet<CartItem>();
         OrderDetails = new HashSet<OrderDetail>();
+        ChildCategories = new HashSet<Category>();
     }
 
     public string? NameInBulgarian { get; set; }
@@ -28,4 +29,6 @@ public class Category : BaseDeletableModel<int>
     public IEnumerable<CartItem> CartItems { get; set; }
 
     public IEnumerable<OrderDetail> OrderDetails { get; set; }
+
+    public IEnumerable<Category> ChildCategories { get; set; }
 }

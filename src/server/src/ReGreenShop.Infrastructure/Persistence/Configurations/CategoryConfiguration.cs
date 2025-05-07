@@ -10,16 +10,17 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
     {
         builder
             .Property(x => x.NameInBulgarian)
-            .HasMaxLength(MaxLengthShortName);
+            .HasMaxLength(MaxLengthLongName);
 
         builder
             .Property(x => x.NameInEnglish)
-            .HasMaxLength(MaxLengthShortName);
+            .HasMaxLength(MaxLengthLongName);
 
         builder
-            .HasOne(x => x.ParentCategory)
-            .WithOne()
-            .HasForeignKey<Category>(x => x.ParentCategoryId);
+             .HasOne(c => c.ParentCategory)
+             .WithMany(c => c.ChildCategories)
+             .HasForeignKey(c => c.ParentCategoryId)
+             .OnDelete(DeleteBehavior.Restrict);
 
         builder
             .HasOne(x => x.Image)

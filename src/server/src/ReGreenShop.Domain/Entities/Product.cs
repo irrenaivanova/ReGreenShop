@@ -6,7 +6,7 @@ public class Product : BaseDeletableModel<int>
 {
     public Product()
     {
-        ProductCategories = new HashSet<ProductCategory>();
+        ProductCategories = new List<ProductCategory>();
         LabelProducts = new HashSet<LabelProduct>();
         CartItems = new HashSet<CartItem>();
         UserLikes = new HashSet<UserLikeProduct>();
@@ -16,8 +16,6 @@ public class Product : BaseDeletableModel<int>
     public string Name { get; set; } = string.Empty;
 
     public string? Description { get; set; }
-
-    public decimal? Weight { get; set; }
 
     public decimal Price { get; set; }
 
@@ -29,15 +27,15 @@ public class Product : BaseDeletableModel<int>
 
     public string? Origin { get; set; }
 
-    public int? ImageId { get; set; }
-
     public string? Packaging { get; set; }
 
     public string? OriginalUrl { get; set; }
 
+    public int? ImageId { get; set; }
+
     public Image? Image { get; set; }
 
-    public IEnumerable<ProductCategory> ProductCategories { get; set; }
+    public IList<ProductCategory> ProductCategories { get; set; }
 
     public IEnumerable<LabelProduct> LabelProducts { get; set; }
 

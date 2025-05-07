@@ -4,7 +4,7 @@ using ReGreenShop.Infrastructure.Persistence.Seeding.Common;
 using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Infrastructure.Persistence.Seeding;
-public class BaseCategorySeeder : ISeeder
+internal class BaseCategorySeeder : ISeeder
 {
     public async Task SeedAsync(ApplicationDbContext dbContext, IServiceProvider serviceProvider)
     {

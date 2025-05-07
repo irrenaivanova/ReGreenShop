@@ -10,6 +10,6 @@ public class GreenAlternativeConfiguration : IEntityTypeConfiguration<GreenAlter
     {
         builder
             .Property(x => x.Name)
-            .HasMaxLength(MaxLengthShortName);
+            .HasMaxLength(MaxLengthLongName);
     }
 }
