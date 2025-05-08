@@ -11,6 +11,8 @@ public class CategoryModel : IMapFrom<ProductCategory>, IMapExplicitly
 
     public void CreateMappings(IProfileExpression configuration)
     {
-        throw new NotImplementedException();
+        configuration.CreateMap<ProductCategory, CategoryModel>()
+            .ForMember(x => x.Id, cfg => cfg.MapFrom(x => x.CategoryId))
+            .ForMember(x => x.Name, cfg => cfg.MapFrom(x => x.Category.NameInEnglish ?? x.Category.NameInBulgarian));
     }
 }

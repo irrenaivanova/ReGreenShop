@@ -60,22 +60,24 @@ public class CartService : ICart
         return this.data.Carts.FirstOrDefault(x => x.Id == cartId)!.CartItems.Count();
     }
 
-    public async Task MergeCartIfAnyAsync()
+    public async Task MergeCartIfAnyAsync(string userId)
     {
-        // exception if userId or context null
-        var userId = this.user.UserId;
+        // exception if context null
         var context = this.contextAccessor.HttpContext;
         string sessionValue = context!.Session.GetString(SessionId)!;
-        var sessionIdCart = this.data.Carts.FirstOrDefault(x => x.Session == sessionValue);
-        if (sessionIdCart != null)
+        if (sessionValue!=null)
         {
-            var userCartId = this.data.Carts.FirstOrDefault(x => x.UserId == userId)!.Id;
-            foreach (var item in sessionIdCart.CartItems)
+            var sessionIdCart = this.data.Carts.FirstOrDefault(x => x.Session == sessionValue);
+            if (sessionIdCart != null)
             {
-                item.CartId = userCartId;
+                var userCartId = this.data.Carts.FirstOrDefault(x => x.UserId == userId)!.Id;
+                foreach (var item in sessionIdCart.CartItems)
+                {
+                    item.CartId = userCartId;
+                }
+                await this.data.SaveChangesAsync();
             }
-            await this.data.SaveChangesAsync();
-        }
+        }  
     }
 
     public async Task<string> CreateCartAsync(string userId)

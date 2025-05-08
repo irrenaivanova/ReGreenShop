@@ -18,7 +18,6 @@ public class GetRootCategoriesQuery : IRequest<IEnumerable<RootCategoriesModel>>
         public async Task<IEnumerable<RootCategoriesModel>> Handle(GetRootCategoriesQuery request, CancellationToken cancellationToken)
         {
             var categories = await this.data.Categories
-                .Include(x => x.Image)
                 .Where(x => x.ParentCategoryId == null)
                 .AsNoTracking()
                 .To<RootCategoriesModel>()

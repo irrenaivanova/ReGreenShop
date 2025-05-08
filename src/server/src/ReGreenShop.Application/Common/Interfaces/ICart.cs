@@ -7,7 +7,7 @@ public interface ICart : IService
 
     Task<int> GetCountProductsInCart();
 
-    Task MergeCartIfAnyAsync();
+    Task MergeCartIfAnyAsync(string userId);
 
     Task<string> CreateCartAsync(string userId);
 }

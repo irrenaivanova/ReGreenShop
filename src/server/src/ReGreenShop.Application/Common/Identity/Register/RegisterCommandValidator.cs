@@ -11,9 +11,9 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
             .EmailAddress().WithMessage("Invalid email format.");
 
         RuleFor(x => x.Password)
-            .MinimumLength(6).WithMessage("The password should be minimum 6 characters long")
-            .Matches("[A-Z]").WithMessage("Password must contain at least one uppercase letter.")
-            .Matches("[a-z]").WithMessage("Password must contain at least one lowercase letter.")
-            .Matches("[0-9]").WithMessage("Password must contain at least one digit.");
+            .MinimumLength(6).WithMessage("The password should be minimum 6 characters long");
+            //.Matches("[A-Z]").WithMessage("Password must contain at least one uppercase letter.")
+            //.Matches("[a-z]").WithMessage("Password must contain at least one lowercase letter.")
+            //.Matches("[0-9]").WithMessage("Password must contain at least one digit.");
     }
 }

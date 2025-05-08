@@ -10,6 +10,6 @@ public class ApiResponseHelper
 
     public static IActionResult Created(object data, string message = "Resource created successfully")
     {
-        return new CreatedResult("/api/resource", new { status = 201, message = message, data = data });
+        return new CreatedResult("/resource", new { status = 201, message = message, data = data });
     }
 }

@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Categories\Queries\GetSubCategoriesByRootCategoryId\" />
     <Folder Include="Products\Commands\" />
   </ItemGroup>
 

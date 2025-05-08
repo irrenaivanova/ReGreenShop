@@ -3,6 +3,8 @@ using ReGreenShop.Application.Common.Mappings;
 using ReGreenShop.Domain.Entities;
 
 namespace ReGreenShop.Application.Products.Queries.GetProductById.Models;
+
+// should add tags and likes
 public class ProductByIdModel : IMapFrom<Product>, IMapExplicitly
 {
     public ProductByIdModel()

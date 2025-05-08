@@ -27,6 +27,6 @@ public class UserController : BaseController
     public async Task<IActionResult> Register([FromBody] RegisterCommand command)
     {
         var result = await this.mediator.Send(command);
-        return ApiResponseHelper.Success(result, "Registration successful, you can now log in.");
+        return ApiResponseHelper.Created(result, "Registration successful, you can now log in.");
     }
 }

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using ReGreenShop.Domain.Entities;
 using ReGreenShop.Infrastructure.Persistence.Identity;
 using ReGreenShop.Infrastructure.Persistence.Seeding.Common;
 using static ReGreenShop.Application.Common.GlobalConstants;
@@ -28,6 +29,7 @@ internal class UserSeeder : ISeeder
                 LastName = "Ivanov",
                 Email = adminEmail,
                 UserName = adminEmail,
+                Cart = new Cart(),
             };
             var result = await userManager.CreateAsync(adminUser, adminUser.Email);
             if (result.Succeeded)

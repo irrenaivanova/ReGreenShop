@@ -7,16 +7,14 @@ using ReGreenShop.Application.Common.Exceptions;
 using AutoMapper;
 
 namespace ReGreenShop.Application.Products.Queries.GetProductById;
-public class GetProductByIdQuery : IRequest<ProductByIdModel>
+public record GetProductByIdQuery(int Id) : IRequest<ProductByIdModel>
 {
-    public int Id { get; set; }
-
-    public class GetProductByIdQueryValidator : IRequestHandler<GetProductByIdQuery, ProductByIdModel>
+    public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, ProductByIdModel>
     {
         private readonly IData data;
         private readonly IMapper mapper;
 
-        public GetProductByIdQueryValidator(IData data, IMapper mapper)
+        public GetProductByIdQueryHandler(IData data, IMapper mapper)
         {
             this.data = data;
             this.mapper = mapper;
@@ -24,16 +22,20 @@ public class GetProductByIdQuery : IRequest<ProductByIdModel>
 
         public async Task<ProductByIdModel> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
         {
-            //var productEntity = await this.data.Products
-            //            .Where(x => x.Id == request.Id)
-            //            .Include(x => x.ProductCategories)
-            //            .ThenInclude(x => x.Category)
-            //            .AsNoTracking()
-            //            .FirstOrDefaultAsync();
+            var productEntity = await this.data.Products
+                        .Where(x => x.Id == request.Id)
+                        .Include(x => x.ProductCategories)
+                        .ThenInclude(x => x.Category)
+                        .To<ProductByIdModel>()
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync();
 
-            return null;
+            if (productEntity == null)
+            {
+                throw new NotFoundException("Product", request.Id);
+            }
 
-
+            return productEntity;
         }
     }
 }

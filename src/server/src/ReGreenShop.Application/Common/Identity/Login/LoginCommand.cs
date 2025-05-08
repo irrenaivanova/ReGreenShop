@@ -22,7 +22,7 @@ public class LoginCommand : IRequest<AuthResponse>
         public async Task<AuthResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
             var authResponse = await this.identityService.LoginUserAsync(request.UserName, request.Password);
-            await this.cartService.MergeCartIfAnyAsync();
+            await this.cartService.MergeCartIfAnyAsync(authResponse.UserId);
             return authResponse;
         }
     }
