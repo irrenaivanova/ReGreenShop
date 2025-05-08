@@ -1,7 +1,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using ReGreenShop.Application.Categories.Queries.GetRootCategories;
+using ReGreenShop.Application.Categories.Queries.GetSubCategoriesByRootCategoryId;
 using ReGreenShop.Application.Common.Helpers;
+using ReGreenShop.Application.Products.Queries.GetProductById;
 
 namespace ReGreenShop.Web.Controllers;
 public class CategoryController : BaseController
@@ -17,6 +19,14 @@ public class CategoryController : BaseController
     public async Task<IActionResult> GetRootCategories()
     {
         var query = new GetRootCategoriesQuery();
+        var result = await this.mediator.Send(query);
+        return ApiResponseHelper.Success(result);
+    }
+
+    [HttpGet("GetSubCategoriesByRootCategory/{id}")]
+    public async Task<IActionResult> GetSubCategoriesByRooCategoryId(int id)
+    {
+        var query = new GetSubCategoriesByRootCategoryIdQuery(id);
         var result = await this.mediator.Send(query);
         return ApiResponseHelper.Success(result);
     }

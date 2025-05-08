@@ -2,6 +2,7 @@ using System.Text;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ReGreenShop.Application.Common.Interfaces;
 using ReGreenShop.Application.Common.Models;
 using static ReGreenShop.Application.Common.GlobalConstants;
@@ -17,14 +18,19 @@ public class TestController : ControllerBase
     private readonly IEmailSender sender;
     private readonly IPdfGenerator pdfGenerator;
     private readonly IWebHostEnvironment web;
+    private readonly IData data;
 
-    public TestController(IImageDownloader downloader, IStorage storage, IEmailSender sender, IPdfGenerator pdfGenerator,IWebHostEnvironment web)
+    public TestController(IImageDownloader downloader,
+                    IStorage storage, IEmailSender sender,
+                    IPdfGenerator pdfGenerator,IWebHostEnvironment web,
+                    IData data)
     {
         this.downloader = downloader;
         this.storage = storage;
         this.sender = sender;
         this.pdfGenerator = pdfGenerator;
         this.web = web;
+        this.data = data;
     }
 
     [HttpGet(nameof(DownloadImage))]
@@ -75,5 +81,14 @@ public class TestController : ControllerBase
     {
         var bytes = this.pdfGenerator.GenerateReceiptPdfAsync(model);
         await this.storage.SaveInvoicesAsync(bytes,"Invoice");
+    }
+
+    [HttpGet("AllcategoriesName")]
+    public async Task AllcategoriesName()
+    {
+        var categorynames = await this.data.Categories.Where(x => x.Id > 831)
+            .Select(x => x.NameInBulgarian)
+            .ToListAsync();
+        return categorynames;
     }
 }

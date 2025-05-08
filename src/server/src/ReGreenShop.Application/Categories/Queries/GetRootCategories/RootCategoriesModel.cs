@@ -15,6 +15,6 @@ public class RootCategoriesModel : IMapFrom<Category>, IMapExplicitly
     {
         configuration.CreateMap<Category, RootCategoriesModel>()
             .ForMember(x => x.ImagePath, cfg => cfg.MapFrom(x => x.Image!.BlobPath ?? x.Image.LocalPath))
-            .ForMember(x => x.Name, cfg => cfg.MapFrom(x => x.NameInEnglish));
+            .ForMember(x => x.Name, cfg => cfg.MapFrom(x => x.NameInEnglish ?? x.NameInBulgarian));
     }
 }

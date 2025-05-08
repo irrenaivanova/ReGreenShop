@@ -7,23 +7,21 @@ using ReGreenShop.Application.Common.Exceptions;
 using AutoMapper;
 
 namespace ReGreenShop.Application.Products.Queries.GetProductById;
-public record GetProductByIdQuery(int Id) : IRequest<ProductByIdModel>
+public record GetProductByIdQuery(int id) : IRequest<ProductByIdModel>
 {
     public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, ProductByIdModel>
     {
         private readonly IData data;
-        private readonly IMapper mapper;
-
-        public GetProductByIdQueryHandler(IData data, IMapper mapper)
+        public GetProductByIdQueryHandler(IData data)
         {
             this.data = data;
-            this.mapper = mapper;
+
         }
 
         public async Task<ProductByIdModel> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
         {
             var productEntity = await this.data.Products
-                        .Where(x => x.Id == request.Id)
+                        .Where(x => x.Id == request.id)
                         .Include(x => x.ProductCategories)
                         .ThenInclude(x => x.Category)
                         .To<ProductByIdModel>()
@@ -32,7 +30,7 @@ public record GetProductByIdQuery(int Id) : IRequest<ProductByIdModel>
 
             if (productEntity == null)
             {
-                throw new NotFoundException("Product", request.Id);
+                throw new NotFoundException("Product", request.id);
             }
 
             return productEntity;
