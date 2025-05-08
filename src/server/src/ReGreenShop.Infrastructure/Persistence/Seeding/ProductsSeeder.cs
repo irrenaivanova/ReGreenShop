@@ -1,8 +1,5 @@
-using System;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using Polly;
 using ReGreenShop.Domain.Entities;
 using ReGreenShop.Infrastructure.Persistence.Seeding.Common;
 using ReGreenShop.Infrastructure.Services;
@@ -16,14 +13,14 @@ internal class ProductsSeeder : ISeeder
         {
             return;
         }
-        var folderPath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..","wwwroot", "seedFiles");
+        var folderPath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "wwwroot", "seedFiles");
         var files = Directory.GetFiles(folderPath, "*.json");
         var random = new Random();
 
         for (int m = 0; m < files.Length; m++)
         {
             var file = files[m];
-        
+
             var json = await File.ReadAllTextAsync(file);
             var products = JsonConvert.DeserializeObject<List<ProductDto>>(json)!;
 
@@ -35,7 +32,7 @@ internal class ProductsSeeder : ISeeder
                 {
                     continue;
                 }
-                if (product.Brand!=null && product.Brand.Length > 50)
+                if (product.Brand != null && product.Brand.Length > 50)
                 {
                     continue;
                 }
@@ -93,7 +90,7 @@ internal class ProductsSeeder : ISeeder
                         bool alreadyExists = await data.ProductCategories
                                  .AnyAsync(x => x.ProductId == newProduct.Id && x.CategoryId == mainCategory.Id);
 
-                        if(alreadyExists)
+                        if (alreadyExists)
                         {
                             continue;
                         }

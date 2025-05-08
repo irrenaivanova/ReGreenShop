@@ -24,10 +24,6 @@ public class GetRootCategoriesQuery : IRequest<IEnumerable<RootCategoriesModel>>
                 .To<RootCategoriesModel>()
                 .ToListAsync();
 
-            if (categories.Count == 0)
-            {
-                throw new NotFoundException("Root categories", "all");
-            }
 
             return categories;
         }
