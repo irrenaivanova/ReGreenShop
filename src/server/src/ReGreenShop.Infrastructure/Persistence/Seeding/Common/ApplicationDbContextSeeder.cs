@@ -7,6 +7,12 @@ public class ApplicationDbContextSeeder : ISeeder, IScopedService
     {
         ArgumentNullException.ThrowIfNull(data);
 
+        // Prevent repeated seeder checks during data seeding
+        if (data.Products.Any())
+        {
+            return;
+        }
+
         var seeders = new List<ISeeder>
         {
              new RolesSeeder(),

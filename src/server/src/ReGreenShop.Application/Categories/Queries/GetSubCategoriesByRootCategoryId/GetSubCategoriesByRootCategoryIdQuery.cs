@@ -42,7 +42,7 @@ public record  GetSubCategoriesByRootCategoryIdQuery(int id) : IRequest<RootCate
 
             if (category == null)
             {
-                throw new NotFoundException("Category", request.id);
+                throw new NotFoundException("Root category", request.id);
             }
 
             return category;

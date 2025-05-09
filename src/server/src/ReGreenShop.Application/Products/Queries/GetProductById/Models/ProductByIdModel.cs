@@ -4,7 +4,7 @@ using ReGreenShop.Domain.Entities;
 
 namespace ReGreenShop.Application.Products.Queries.GetProductById.Models;
 
-// should add tags and likes
+// should add tags and likes // price if discount
 public class ProductByIdModel : IMapFrom<Product>, IMapExplicitly
 {
     public ProductByIdModel()
