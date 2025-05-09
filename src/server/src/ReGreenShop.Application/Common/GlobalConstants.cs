@@ -18,4 +18,12 @@ public static class GlobalConstants
     public const string SystemEmailSenderName = "ReGreenShop";
 
     public const string SystemEmailReceiver = "irrenka_@abv.bg";
+
+    public const int ProductsInRow = 7;
+
+    public const string Offer = "Top Offer";
+
+    public const string TwoForOne = "Two for One";
+
+    public const string DateTimeCustomFormat = "dd.MMMM.yyyy";
 }

@@ -2,7 +2,7 @@ using AutoMapper;
 using ReGreenShop.Application.Common.Mappings;
 using ReGreenShop.Domain.Entities;
 
-namespace ReGreenShop.Application.Products.Queries.GetProductById.Models;
+namespace ReGreenShop.Application.Products.Models;
 public class CategoryModel : IMapFrom<ProductCategory>, IMapExplicitly
 {
     public int Id { get; set; }

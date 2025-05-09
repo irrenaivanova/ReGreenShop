@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using ReGreenShop.Application.Common.Helpers;
-using ReGreenShop.Application.Products.Queries.GetProductById;
+using ReGreenShop.Application.Products.Queries;
 
 namespace ReGreenShop.Web.Controllers;
 public class ProductController : BaseController

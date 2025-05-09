@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ReGreenShop.Application.Common.Interfaces;
 using ReGreenShop.Domain.Entities;
+using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Infrastructure.Services;
 public class PromoService : IPromo
@@ -26,15 +27,21 @@ public class PromoService : IPromo
             .Where(x => x.ParentCategoryId == null).ToListAsync();
 
         var labelProductsToAdd = new List<LabelProduct>();
+        int countProducts = 3;
 
         foreach (var label in labels)
         {
+            if (label.Name == TwoForOne)
+            {
+                countProducts = 1;
+            }
+
             foreach (var category in rootCategories)
             {
                 var products = this.data.Products
                     .Where(x => x.ProductCategories.Any(x => x.CategoryId == category.Id))
                     .OrderBy(x => Guid.NewGuid())
-                    .Take(3)
+                    .Take(countProducts)
                     .ToList();
 
                 foreach (var product in products)
@@ -44,8 +51,8 @@ public class PromoService : IPromo
                         Duration = 7,
                         Product = product,
                         Label = label,
-                        PercentageDiscount = label.Name == "Top Offer"
-                            ? this.random.Next(5, 21)
+                        PercentageDiscount = label.Name == Offer
+                            ? this.random.Next(10, 36)
                             : null
                     };
 

@@ -1,6 +1,8 @@
+using ReGreenShop.Domain.common;
+
 namespace ReGreenShop.Domain.Entities;
 
-public class LabelProduct
+public class LabelProduct : IAuditableEntity
 {
     public int ProductId { get; set; }
 
@@ -11,7 +13,11 @@ public class LabelProduct
     public Label Label { get; set; } = default!;
 
     // in days
-    public int? Duration { get; set; }
+    public double Duration { get; set; }
 
     public int? PercentageDiscount { get; set; }
+
+    public DateTime CreatedOn { get; set; }
+
+    public DateTime? ModifiedOn { get; set; }
 }
