@@ -1,0 +1,62 @@
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using ReGreenShop.Application.Common.Interfaces;
+using ReGreenShop.Application.Common.Mappings;
+using ReGreenShop.Application.Products.Models;
+using ReGreenShop.Domain.Services;
+using static ReGreenShop.Application.Common.GlobalConstants;
+
+namespace ReGreenShop.Application.Products.Queries;
+public class GetTopProductsQuery : IRequest<IEnumerable<ProductInList>>
+{
+    public class GetTopProductsQueryHandler : IRequestHandler<GetTopProductsQuery, IEnumerable<ProductInList>>
+    {
+        private readonly IData data;
+        private readonly ICurrentUser userService;
+
+        public GetTopProductsQueryHandler(IData data, ICurrentUser userService)
+        {
+            this.data = data;
+            this.userService = userService;
+        }
+
+        public async Task<IEnumerable<ProductInList>> Handle(GetTopProductsQuery request, CancellationToken cancellationToken)
+        {
+            var topProducts = new List<ProductInList>();
+            var productsTwoForOne = await this.data.Products
+                .Where(x => x.LabelProducts.Any(x => x.Label.Name == TwoForOne))
+                .To<ProductInList>()
+                .AsNoTracking()
+                .Take(ProductsInRow)
+                .ToListAsync();
+
+            var productsPromo = await this.data.Products
+                .Where(x => x.LabelProducts.Any(x => x.Label.Name == Offer))
+                .OrderByDescending(x => x.LabelProducts.FirstOrDefault(x => x.Label.Name == Offer)!.PercentageDiscount)
+                .To<ProductInList>()
+                .AsNoTracking()
+                .Take(ProductsInRow)
+                .ToListAsync();
+
+            topProducts.AddRange(productsTwoForOne);
+            topProducts.AddRange(productsPromo);
+
+            foreach (var prod in topProducts)
+            {
+                if (prod.HasPromoDiscount && !prod.HasTwoForOneDiscount)
+                {
+                    prod.DiscountPrice = PriceCalculator.CalculateDiscountedPrice(prod.Price, prod.DiscountPercentage);
+                    prod.Labels.Add($"SAVE {prod.DiscountPercentage}%");
+                }
+
+                string? userId = this.userService.UserId;
+                if (userId != null)
+                {
+                    prod.IsLiked = this.data.Products.Where(x => x.Id == prod.Id).Any(x => x.UserLikes.Any(x => x.UserId == userId));
+                }
+            }
+
+            return topProducts;
+        }
+    }
+}

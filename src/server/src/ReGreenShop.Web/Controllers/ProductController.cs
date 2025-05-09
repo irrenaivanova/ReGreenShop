@@ -20,4 +20,12 @@ public class ProductController : BaseController
         var result = await this.mediator.Send(query);
         return ApiResponseHelper.Success(result);
     }
+
+    [HttpGet(nameof(GetTopProducts))]
+    public async Task<IActionResult> GetTopProducts()
+    {
+        var query = new GetTopProductsQuery();
+        var result = await this.mediator.Send(query);
+        return ApiResponseHelper.Success(result);
+    }
 }

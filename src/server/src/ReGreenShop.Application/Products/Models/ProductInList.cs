@@ -49,7 +49,8 @@ public class ProductInList : IMapFrom<Product>, IMapExplicitly
                                                             x.LabelProducts.FirstOrDefault(y => y.Label.Name == Offer)!.PercentageDiscount : 0))
             .ForMember(x => x.ValidTo, cfg => cfg.MapFrom(x => x.LabelProducts.Any()
                                        ? x.LabelProducts.FirstOrDefault()!.CreatedOn.AddDays(x.LabelProducts.FirstOrDefault()!.Duration)
-                                      .ToString(DateTimeCustomFormat, CultureInfo.InvariantCulture) : string.Empty));
+                                      .ToString(DateTimeCustomFormat, CultureInfo.InvariantCulture) : string.Empty))
+            .ForMember(x => x.AdditionalTextForPromotion, cfg => cfg.MapFrom(x => x.LabelProducts.Any(x => x.Label.Name == Offer) ? $"{x.Price}lv for 2!" : string.Empty));
 
     }
 }

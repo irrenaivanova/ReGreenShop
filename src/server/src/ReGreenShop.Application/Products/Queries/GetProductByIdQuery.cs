@@ -23,8 +23,6 @@ public record GetProductByIdQuery(int id) : IRequest<ProductByIdModel>
         {
             var prod = await this.data.Products
                         .Where(x => x.Id == request.id)
-                        .Include(x => x.ProductCategories)
-                        .ThenInclude(x => x.Category)
                         .To<ProductByIdModel>()
                         .AsNoTracking()
                         .FirstOrDefaultAsync();
@@ -34,10 +32,6 @@ public record GetProductByIdQuery(int id) : IRequest<ProductByIdModel>
                 throw new NotFoundException("Product", request.id);
             }
 
-            if (prod.HasTwoForOneDiscount)
-            {
-                prod.AdditionalTextForPromotion = $"{prod.Price}lv for 2!";
-            }
             if (prod.HasPromoDiscount && !prod.HasTwoForOneDiscount)
             {
                 prod.DiscountPrice = PriceCalculator.CalculateDiscountedPrice(prod.Price, prod.DiscountPercentage);

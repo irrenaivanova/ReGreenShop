@@ -26,4 +26,6 @@ public static class GlobalConstants
     public const string TwoForOne = "Two for One";
 
     public const string DateTimeCustomFormat = "dd.MMMM.yyyy";
+
+    public const int ItemsPerPage = ProductsInRow*4;
 }

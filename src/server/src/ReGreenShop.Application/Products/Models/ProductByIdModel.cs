@@ -1,7 +1,11 @@
 using System.Globalization;
 using AutoMapper;
+using MediatR;
+using ReGreenShop.Application.Common.Interfaces;
 using ReGreenShop.Application.Common.Mappings;
 using ReGreenShop.Domain.Entities;
+using ReGreenShop.Domain.Services;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Application.Products.Models;
@@ -64,7 +68,7 @@ public class ProductByIdModel : IMapFrom<Product>, IMapExplicitly
                                                             x.LabelProducts.FirstOrDefault(y => y.Label.Name == Offer)!.PercentageDiscount : 0))
             .ForMember(x => x.ValidTo, cfg => cfg.MapFrom(x => x.LabelProducts.Any()
                                        ? x.LabelProducts.FirstOrDefault()!.CreatedOn.AddDays(x.LabelProducts.FirstOrDefault()!.Duration)
-                                      .ToString(DateTimeCustomFormat, CultureInfo.InvariantCulture) : string.Empty));
-
+                                      .ToString(DateTimeCustomFormat, CultureInfo.InvariantCulture) : string.Empty))
+            .ForMember(x => x.AdditionalTextForPromotion, cfg => cfg.MapFrom(x => x.LabelProducts.Any(x => x.Label.Name == Offer) ? $"{x.Price}lv for 2!" : string.Empty));
     }
 }
