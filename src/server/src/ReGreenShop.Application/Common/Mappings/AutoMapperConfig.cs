@@ -1,5 +1,5 @@
-using AutoMapper;
 using System.Reflection;
+using AutoMapper;
 
 namespace ReGreenShop.Application.Common.Mappings;
 public static class AutoMapperConfig

@@ -1,10 +1,9 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using ReGreenShop.Application.Common.Interfaces;
-using ReGreenShop.Application.Products.Queries.GetProductById.Models;
-using ReGreenShop.Application.Common.Mappings;
 using ReGreenShop.Application.Common.Exceptions;
-using AutoMapper;
+using ReGreenShop.Application.Common.Interfaces;
+using ReGreenShop.Application.Common.Mappings;
+using ReGreenShop.Application.Products.Queries.GetProductById.Models;
 
 namespace ReGreenShop.Application.Products.Queries.GetProductById;
 public record GetProductByIdQuery(int id) : IRequest<ProductByIdModel>

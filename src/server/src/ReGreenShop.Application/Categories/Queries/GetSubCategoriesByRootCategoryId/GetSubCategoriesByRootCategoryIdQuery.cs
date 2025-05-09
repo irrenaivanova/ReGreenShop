@@ -1,4 +1,3 @@
-using System.Xml.Linq;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ReGreenShop.Application.Categories.Queries.GetSubCategoriesByRootCategoryId.Models;
@@ -6,7 +5,7 @@ using ReGreenShop.Application.Common.Exceptions;
 using ReGreenShop.Application.Common.Interfaces;
 
 namespace ReGreenShop.Application.Categories.Queries.GetSubCategoriesByRootCategoryId;
-public record  GetSubCategoriesByRootCategoryIdQuery(int id) : IRequest<RootCategoryModel>
+public record GetSubCategoriesByRootCategoryIdQuery(int id) : IRequest<RootCategoryModel>
 {
     public class GetSubCategoriesByRootCategoryIdQueryHandler : IRequestHandler<GetSubCategoriesByRootCategoryIdQuery, RootCategoryModel>
     {
@@ -23,11 +22,11 @@ public record  GetSubCategoriesByRootCategoryIdQuery(int id) : IRequest<RootCate
                 .Where(x => x.Id == request.id && x.ParentCategoryId == null)
                 .Include(x => x.ChildCategories)
                 .AsNoTracking()
-                .Select (r => new RootCategoryModel
+                .Select(r => new RootCategoryModel
                 {
                     Id = r.Id,
                     Name = r.NameInEnglish ?? r.NameInBulgarian ?? string.Empty,
-                    SubCategories = r.ChildCategories.Select (x => new SubCategoryModel
+                    SubCategories = r.ChildCategories.Select(x => new SubCategoryModel
                     {
                         Id = x.Id,
                         Name = x.NameInEnglish ?? x.NameInBulgarian ?? string.Empty,

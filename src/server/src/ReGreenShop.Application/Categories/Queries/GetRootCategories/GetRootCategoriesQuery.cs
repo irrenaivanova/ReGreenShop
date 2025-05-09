@@ -1,6 +1,5 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using ReGreenShop.Application.Common.Exceptions;
 using ReGreenShop.Application.Common.Interfaces;
 using ReGreenShop.Application.Common.Mappings;
 

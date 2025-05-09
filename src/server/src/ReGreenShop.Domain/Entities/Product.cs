@@ -7,10 +7,10 @@ public class Product : BaseDeletableModel<int>
     public Product()
     {
         ProductCategories = new List<ProductCategory>();
-        LabelProducts = new HashSet<LabelProduct>();
-        CartItems = new HashSet<CartItem>();
-        UserLikes = new HashSet<UserLikeProduct>();
-        OrderDetails = new HashSet<OrderDetail>();
+        LabelProducts = new List<LabelProduct>();
+        CartItems = new List<CartItem>();
+        UserLikes = new List<UserLikeProduct>();
+        OrderDetails = new List<OrderDetail>();
     }
 
     public string Name { get; set; } = string.Empty;
@@ -37,11 +37,11 @@ public class Product : BaseDeletableModel<int>
 
     public IList<ProductCategory> ProductCategories { get; set; }
 
-    public IEnumerable<LabelProduct> LabelProducts { get; set; }
+    public IList<LabelProduct> LabelProducts { get; set; }
 
-    public IEnumerable<CartItem> CartItems { get; set; }
+    public IList<CartItem> CartItems { get; set; }
 
-    public IEnumerable<UserLikeProduct> UserLikes { get; set; }
+    public IList<UserLikeProduct> UserLikes { get; set; }
 
-    public IEnumerable<OrderDetail> OrderDetails { get; set; }
+    public IList<OrderDetail> OrderDetails { get; set; }
 }

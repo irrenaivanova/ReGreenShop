@@ -6,12 +6,12 @@ public class DiscountVoucher : BaseDeletableModel<int>
 {
     public DiscountVoucher()
     {
-        this.Orders = new List<Order>();
+        Orders = new List<Order>();
     }
 
     public int GreenPoints { get; set; }
 
     public decimal PriceDiscount { get; set; }
 
-    public IEnumerable<Order> Orders { get; set; } = default!;
+    public IList<Order> Orders { get; set; } = default!;
 }

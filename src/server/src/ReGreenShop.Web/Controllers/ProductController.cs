@@ -1,6 +1,5 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using ReGreenShop.Application.Categories.Queries.GetRootCategories;
 using ReGreenShop.Application.Common.Helpers;
 using ReGreenShop.Application.Products.Queries.GetProductById;
 

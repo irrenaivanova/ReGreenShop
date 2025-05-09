@@ -171,7 +171,7 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Addresses");
+                    b.ToTable("Addresses", (string)null);
                 });
 
             modelBuilder.Entity("ReGreenShop.Domain.Entities.Cart", b =>
@@ -202,7 +202,7 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.HasIndex("IsDeleted");
 
-                    b.ToTable("Carts");
+                    b.ToTable("Carts", (string)null);
                 });
 
             modelBuilder.Entity("ReGreenShop.Domain.Entities.CartItem", b =>
@@ -225,7 +225,7 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartItems");
+                    b.ToTable("CartItems", (string)null);
                 });
 
             modelBuilder.Entity("ReGreenShop.Domain.Entities.Category", b =>
@@ -272,7 +272,7 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.HasIndex("ParentCategoryId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("ReGreenShop.Domain.Entities.City", b =>
@@ -304,7 +304,7 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.HasIndex("IsDeleted");
 
-                    b.ToTable("Cities");
+                    b.ToTable("Cities", (string)null);
                 });
 
             modelBuilder.Entity("ReGreenShop.Domain.Entities.ContactForm", b =>
@@ -343,7 +343,7 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ContactForms");
+                    b.ToTable("ContactForms", (string)null);
                 });
 
             modelBuilder.Entity("ReGreenShop.Domain.Entities.DeliveryPrice", b =>
@@ -379,7 +379,7 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.HasIndex("IsDeleted");
 
-                    b.ToTable("DeliveryPrices");
+                    b.ToTable("DeliveryPrices", (string)null);
                 });
 
             modelBuilder.Entity("ReGreenShop.Domain.Entities.DiscountVoucher", b =>
@@ -412,7 +412,7 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.HasIndex("IsDeleted");
 
-                    b.ToTable("DiscountVouchers");
+                    b.ToTable("DiscountVouchers", (string)null);
                 });
 
             modelBuilder.Entity("ReGreenShop.Domain.Entities.GreenAlternative", b =>
@@ -447,7 +447,7 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.HasIndex("IsDeleted");
 
-                    b.ToTable("GreenAlternatives");
+                    b.ToTable("GreenAlternatives", (string)null);
                 });
 
             modelBuilder.Entity("ReGreenShop.Domain.Entities.Image", b =>
@@ -490,7 +490,7 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.HasIndex("IsDeleted");
 
-                    b.ToTable("Images");
+                    b.ToTable("Images", (string)null);
                 });
 
             modelBuilder.Entity("ReGreenShop.Domain.Entities.Label", b =>
@@ -522,7 +522,7 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.HasIndex("IsDeleted");
 
-                    b.ToTable("Labels");
+                    b.ToTable("Labels", (string)null);
                 });
 
             modelBuilder.Entity("ReGreenShop.Domain.Entities.LabelProduct", b =>
@@ -543,7 +543,7 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.HasIndex("LabelId");
 
-                    b.ToTable("LabelProducts");
+                    b.ToTable("LabelProducts", (string)null);
                 });
 
             modelBuilder.Entity("ReGreenShop.Domain.Entities.Notification", b =>
@@ -581,7 +581,7 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("ReGreenShop.Domain.Entities.Order", b =>
@@ -642,7 +642,7 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("ReGreenShop.Domain.Entities.OrderDetail", b =>
@@ -676,7 +676,7 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderDetails");
+                    b.ToTable("OrderDetails", (string)null);
                 });
 
             modelBuilder.Entity("ReGreenShop.Domain.Entities.OrderGreenAlternativeDetail", b =>
@@ -694,7 +694,7 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.HasIndex("GreenAlternativeId");
 
-                    b.ToTable("OrderGreenAlternativeDetails");
+                    b.ToTable("OrderGreenAlternativeDetails", (string)null);
                 });
 
             modelBuilder.Entity("ReGreenShop.Domain.Entities.Payment", b =>
@@ -734,7 +734,7 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.HasIndex("PaymentMethodId");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("ReGreenShop.Domain.Entities.PaymentMethod", b =>
@@ -766,7 +766,7 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.HasIndex("IsDeleted");
 
-                    b.ToTable("PaymentMethods");
+                    b.ToTable("PaymentMethods", (string)null);
                 });
 
             modelBuilder.Entity("ReGreenShop.Domain.Entities.Product", b =>
@@ -835,7 +835,7 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.HasIndex("IsDeleted");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("ReGreenShop.Domain.Entities.ProductCategory", b =>
@@ -850,7 +850,7 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("ProductCategories");
+                    b.ToTable("ProductCategories", (string)null);
                 });
 
             modelBuilder.Entity("ReGreenShop.Domain.Entities.UserLikeProduct", b =>
@@ -865,7 +865,7 @@ namespace ReGreenShop.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserLikeProducts");
+                    b.ToTable("UserLikeProducts", (string)null);
                 });
 
             modelBuilder.Entity("ReGreenShop.Infrastructure.Persistence.Identity.Role", b =>

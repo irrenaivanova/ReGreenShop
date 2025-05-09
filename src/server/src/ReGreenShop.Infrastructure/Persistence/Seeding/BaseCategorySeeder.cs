@@ -1,7 +1,6 @@
 using ReGreenShop.Application.Common.Utilities;
 using ReGreenShop.Domain.Entities;
 using ReGreenShop.Infrastructure.Persistence.Seeding.Common;
-using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Infrastructure.Persistence.Seeding;
 internal class BaseCategorySeeder : ISeeder

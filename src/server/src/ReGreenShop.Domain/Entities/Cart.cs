@@ -7,12 +7,12 @@ public class Cart : BaseDeletableModel<string>
     public Cart()
     {
         Id = Guid.NewGuid().ToString();
-        CartItems = new HashSet<CartItem>();
+        CartItems = new List<CartItem>();
     }
 
     public string? UserId { get; set; }
 
     public string? Session { get; set; }
 
-    public IEnumerable<CartItem> CartItems { get; set; }
+    public IList<CartItem> CartItems { get; set; }
 }

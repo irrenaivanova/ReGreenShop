@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using ReGreenShop.Application.Categories.Queries.GetRootCategories;
 using ReGreenShop.Application.Categories.Queries.GetSubCategoriesByRootCategoryId;
 using ReGreenShop.Application.Common.Helpers;
-using ReGreenShop.Application.Products.Queries.GetProductById;
 
 namespace ReGreenShop.Web.Controllers;
 public class CategoryController : BaseController

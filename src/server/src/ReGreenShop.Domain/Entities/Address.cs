@@ -6,7 +6,7 @@ public class Address : BaseDeletableModel<int>
 {
     public Address()
     {
-        Orders = new HashSet<Order>();
+        Orders = new List<Order>();
     }
 
     public int CityId { get; set; }
@@ -19,5 +19,5 @@ public class Address : BaseDeletableModel<int>
 
     public string UserId { get; set; } = string.Empty;
 
-    public ICollection<Order> Orders { get; set; }
+    public IList<Order> Orders { get; set; }
 }

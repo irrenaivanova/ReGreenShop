@@ -6,10 +6,10 @@ public class City : BaseDeletableModel<int>
 {
     public City()
     {
-        Addresses = new HashSet<Address>();
+        Addresses = new List<Address>();
     }
 
     public string Name { get; set; } = string.Empty;
 
-    public IEnumerable<Address> Addresses { get; set; }
+    public IList<Address> Addresses { get; set; }
 }

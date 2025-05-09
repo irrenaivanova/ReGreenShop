@@ -8,8 +8,8 @@ public class Order : BaseDeletableModel<string>
     public Order()
     {
         Id = Guid.NewGuid().ToString();
-        OrderDetails = new HashSet<OrderDetail>();
-        OrderGreenAlternativeDetails = new HashSet<OrderGreenAlternativeDetail>();
+        OrderDetails = new List<OrderDetail>();
+        OrderGreenAlternativeDetails = new List<OrderGreenAlternativeDetail>();
     }
 
     public string InvoiceUrl { get; set; } = string.Empty;
@@ -36,7 +36,7 @@ public class Order : BaseDeletableModel<string>
 
     public DiscountVoucher? DiscountVoucher { get; set; }
 
-    public IEnumerable<OrderDetail> OrderDetails { get; set; }
+    public IList<OrderDetail> OrderDetails { get; set; }
 
-    public IEnumerable<OrderGreenAlternativeDetail> OrderGreenAlternativeDetails { get; set; }
+    public IList<OrderGreenAlternativeDetail> OrderGreenAlternativeDetails { get; set; }
 }

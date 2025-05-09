@@ -1,5 +1,5 @@
 using System.Text;
-using System.Xml.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +22,7 @@ public class TestController : ControllerBase
 
     public TestController(IImageDownloader downloader,
                     IStorage storage, IEmailSender sender,
-                    IPdfGenerator pdfGenerator,IWebHostEnvironment web,
+                    IPdfGenerator pdfGenerator, IWebHostEnvironment web,
                     IData data)
     {
         this.downloader = downloader;
@@ -59,7 +59,7 @@ public class TestController : ControllerBase
             Content = fileBytes,
             MimeType = "application/pdf"
         };
-        await this.sender.SendEmailAsync(SystemEmailSender, SystemEmailSenderName, email, "Test", html.ToString(),new List<EmailAttachment> { attachment });
+        await this.sender.SendEmailAsync(SystemEmailSender, SystemEmailSenderName, email, "Test", html.ToString(), new List<EmailAttachment> { attachment });
     }
 
 
@@ -80,7 +80,7 @@ public class TestController : ControllerBase
     public async Task MakePdf(InvoiceItem model)
     {
         var bytes = this.pdfGenerator.GenerateReceiptPdfAsync(model);
-        await this.storage.SaveInvoicesAsync(bytes,"Invoice");
+        await this.storage.SaveInvoicesAsync(bytes, "Invoice");
     }
 
     [HttpGet("AllcategoriesName")]
@@ -92,6 +92,8 @@ public class TestController : ControllerBase
         return categorynames!;
     }
 
+
+    [Authorize]
     [HttpGet("RenameCategories")]
     public async Task Rename()
     {

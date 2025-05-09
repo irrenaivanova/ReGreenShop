@@ -6,7 +6,7 @@ internal class PaymentMethodsSeeder : ISeeder
 {
     public async Task SeedAsync(ApplicationDbContext data, IServiceProvider serviceProvider)
     {
-        if(data.PaymentMethods.Any())
+        if (data.PaymentMethods.Any())
         {
             return;
         }

@@ -1,5 +1,5 @@
 namespace ReGreenShop.Application.Categories.Queries.GetSubCategoriesByRootCategoryId.Models;
-public class SubSubCategoryModel 
+public class SubSubCategoryModel
 {
     public int Id { get; set; }
 

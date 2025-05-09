@@ -3,7 +3,7 @@ public class RootCategoryModel
 {
     public RootCategoryModel()
     {
-        this.SubCategories = new List<SubCategoryModel>();
+        SubCategories = new List<SubCategoryModel>();
     }
 
     public int Id { get; set; }

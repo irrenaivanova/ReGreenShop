@@ -1,3 +1,4 @@
+using Hangfire;
 using MediatR;
 using MediatR.Pipeline;
 using Microsoft.EntityFrameworkCore;
@@ -6,9 +7,10 @@ using ReGreenShop.Application.Categories.Queries.GetRootCategories;
 using ReGreenShop.Application.Common;
 using ReGreenShop.Application.Common.Behaviors;
 using ReGreenShop.Application.Common.Mappings;
-using ReGreenShop.Application.Common.Services;
+using ReGreenShop.Infrastructure.Jobs;
 using ReGreenShop.Infrastructure.Persistence;
 using ReGreenShop.Infrastructure.Persistence.Seeding.Common;
+using ReGreenShop.Startup.AuthorizationFilter;
 using ReGreenShop.Web;
 using ReGreenShop.Web.Middleware;
 using Serilog;
@@ -57,13 +59,20 @@ builder.Services.AddSwaggerJwToken();
 builder.Services.AddMediatR(typeof(GetRootCategoriesQuery).Assembly);
 builder.Services.AddTransient(typeof(IRequestPreProcessor<>), typeof(RequestLogger<>));
 
-
 builder.Host.UseSerilog();
+
+builder.Services.AddHangfire(config =>
+    config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnectionHangFire")));
+builder.Services.AddHangfireServer();
+
+builder.Services.AddTransient<PromoJob>();
 
 var app = builder.Build();
 
 // QuestPDF is free if the organization earns less than $1million USD per year
 QuestPDF.Settings.License = LicenseType.Community;
+
+
 
 // Perform database migration and seeding
 using (var scope = app.Services.CreateScope())
@@ -85,6 +94,19 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Enable Hangfire Dashboard
+app.UseHangfireDashboard("/hangfire");
+
+if (app.Environment.IsProduction())
+{
+    app.UseHangfireDashboard(
+        "/hangfire",
+        new DashboardOptions { Authorization = new[] { new HangFireAuthorizationFilter() } });
+}
+
+// Adding the requiring job after building the app - it don`t modify the service collection
+RecurringJob.AddOrUpdate<PromoJob>("Promotion Service", service => service.Execute(CancellationToken.None), Cron.Daily);
+
 app.UseCustomExceptionHandler();
 
 app.UseHttpsRedirection();
@@ -98,3 +120,5 @@ app.UseSession();
 app.MapControllers();
 
 app.Run();
+
+

@@ -6,10 +6,10 @@ public class PaymentMethod : BaseDeletableModel<int>
 {
     public PaymentMethod()
     {
-        Payments = new HashSet<Payment>();
+        Payments = new List<Payment>();
     }
 
     public string Name { get; set; } = string.Empty;
 
-    public IEnumerable<Payment> Payments { get; set; }
+    public IList<Payment> Payments { get; set; }
 }

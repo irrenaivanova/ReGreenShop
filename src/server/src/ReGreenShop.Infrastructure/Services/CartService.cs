@@ -65,7 +65,7 @@ public class CartService : ICart
         // exception if context null
         var context = this.contextAccessor.HttpContext;
         string sessionValue = context!.Session.GetString(SessionId)!;
-        if (sessionValue!=null)
+        if (sessionValue != null)
         {
             var sessionIdCart = this.data.Carts.FirstOrDefault(x => x.Session == sessionValue);
             if (sessionIdCart != null)
@@ -77,7 +77,7 @@ public class CartService : ICart
                 }
                 await this.data.SaveChangesAsync();
             }
-        }  
+        }
     }
 
     public async Task<string> CreateCartAsync(string userId)

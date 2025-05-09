@@ -1,5 +1,5 @@
-using AutoMapper.QueryableExtensions;
 using System.Linq.Expressions;
+using AutoMapper.QueryableExtensions;
 
 namespace ReGreenShop.Application.Common.Mappings;
 public static class MappingExtensions

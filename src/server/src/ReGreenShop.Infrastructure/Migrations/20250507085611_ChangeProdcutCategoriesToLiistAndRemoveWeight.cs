@@ -2,27 +2,26 @@
 
 #nullable disable
 
-namespace ReGreenShop.Infrastructure.Migrations
+namespace ReGreenShop.Infrastructure.Migrations;
+
+/// <inheritdoc />
+public partial class ChangeProdcutCategoriesToLiistAndRemoveWeight : Migration
 {
     /// <inheritdoc />
-    public partial class ChangeProdcutCategoriesToLiistAndRemoveWeight : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropColumn(
-                name: "Weight",
-                table: "Products");
-        }
+        migrationBuilder.DropColumn(
+            name: "Weight",
+            table: "Products");
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AddColumn<decimal>(
-                name: "Weight",
-                table: "Products",
-                type: "decimal(8,2)",
-                nullable: true);
-        }
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.AddColumn<decimal>(
+            name: "Weight",
+            table: "Products",
+            type: "decimal(8,2)",
+            nullable: true);
     }
 }

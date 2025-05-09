@@ -6,10 +6,10 @@ public class Category : BaseDeletableModel<int>
 {
     public Category()
     {
-        ProductCategories = new HashSet<ProductCategory>();
-        CartItems = new HashSet<CartItem>();
-        OrderDetails = new HashSet<OrderDetail>();
-        ChildCategories = new HashSet<Category>();
+        ProductCategories = new List<ProductCategory>();
+        CartItems = new List<CartItem>();
+        OrderDetails = new List<OrderDetail>();
+        ChildCategories = new List<Category>();
     }
 
     public string? NameInBulgarian { get; set; }
@@ -24,11 +24,11 @@ public class Category : BaseDeletableModel<int>
 
     public Image? Image { get; set; }
 
-    public IEnumerable<ProductCategory> ProductCategories { get; set; }
+    public IList<ProductCategory> ProductCategories { get; set; }
 
-    public IEnumerable<CartItem> CartItems { get; set; }
+    public IList<CartItem> CartItems { get; set; }
 
-    public IEnumerable<OrderDetail> OrderDetails { get; set; }
+    public IList<OrderDetail> OrderDetails { get; set; }
 
-    public IEnumerable<Category> ChildCategories { get; set; }
+    public IList<Category> ChildCategories { get; set; }
 }

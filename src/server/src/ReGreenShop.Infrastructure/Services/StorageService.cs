@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Hosting;
 using ReGreenShop.Application.Common.Interfaces;
 using ReGreenShop.Application.Common.Utilities;
 

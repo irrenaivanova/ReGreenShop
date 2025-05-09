@@ -6,10 +6,10 @@ public class Label : BaseDeletableModel<int>
 {
     public Label()
     {
-        LabelProducts = new HashSet<LabelProduct>();
+        LabelProducts = new List<LabelProduct>();
     }
 
     public string Name { get; set; } = string.Empty;
 
-    public IEnumerable<LabelProduct> LabelProducts { get; set; }
+    public IList<LabelProduct> LabelProducts { get; set; }
 }

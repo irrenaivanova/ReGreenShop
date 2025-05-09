@@ -1,8 +1,8 @@
+using System.Diagnostics;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using ReGreenShop.Application.Common.Identity;
 using ReGreenShop.Application.Common.Interfaces;
-using System.Diagnostics;
 
 namespace ReGreenShop.Application.Common.Behaviors;
 public class RequestPerformanceBehavior<TRequest, TResponse> :

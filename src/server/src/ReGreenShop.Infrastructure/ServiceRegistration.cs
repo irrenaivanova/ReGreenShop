@@ -52,7 +52,7 @@ public static class ServiceRegistration
         var sendSettings = configuration.GetSection(nameof(SendGridSettings)).Get<SendGridSettings>() ??
                             throw new InvalidOperationException("The SendGridSettings are missing!");
         var sendGridApiKey = sendSettings.ApiKey;
-        services.AddTransient<IEmailSender,SendGridEmailSender>();
+        services.AddTransient<IEmailSender, SendGridEmailSender>();
 
         // JWToken
         services
