@@ -1,3 +1,4 @@
+using System.Linq;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ReGreenShop.Application.Common.Exceptions;
@@ -21,47 +22,63 @@ public class SearchByStringQuery : IRequest<AllProductsPaginated>
             this.data = data;
         }
 
-        public AllProductsPaginated Handle(SearchByStringQuery request, CancellationToken cancellationToken)
+        public async Task<AllProductsPaginated> Handle(SearchByStringQuery request, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(request.SearchString))
             {
                 return null!;
             }
 
-            var wildCarts = request.SearchString.ToLower()
+            var searchs = request.SearchString.ToLower()
                     .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                    .Select(x => $"%{x.ToLower()}%").ToList();
+                    .ToList();
 
-            var query = this.data.Products
+            var query = this.data.Products.Include(x => x.LabelProducts).ThenInclude(x => x.Label)
                    .Select(product => new ProductScoreModel
                    {
                        Product = product,
-                       Score = wildCarts.Count(search =>
-                           EF.Functions.Like(product.Name, search) ||
-                           EF.Functions.Like(product.Brand, search) ||
-                           EF.Functions.Like(product.Origin, search) ||
-                           EF.Functions.Like(product.Packaging, search)
+                       Score = searchs.Count(search =>
+                           product.Name.Contains(search) ||
+                           product.Brand != null ? product.Brand!.Contains(search) : false ||
+                           product.Origin != null ? product.Origin!.Contains(search) : false ||
+                           product.Packaging != null ? product.Packaging!.Contains(search) : false
                        )
                    });
 
-            foreach (var item in query)
-            {
-                var categoryScore = wildCarts.Count(search =>
-                    item.Product.ProductCategories.Any(x => EF.Functions.Like(x.Category.NameInBulgarian, search)) ||
-                    item.Product.ProductCategories.Any(x => EF.Functions.Like(x.Category.NameInEnglish, search))
-                );
+            var categoryIds = this.data.Categories
+                 .Where(cat => searchs.Any(search =>
+                     cat.NameInBulgarian!.ToLower().Contains(search) ||
+                     cat.NameInEnglish!.ToLower().Contains(search)))
+                 .Select(cat => cat.Id);
 
-                item.Score += categoryScore;
-            }
+            var categoryQuery = this.data.Products.Include(x => x.LabelProducts).ThenInclude(x => x.Label)
+                .Where(p => p.ProductCategories.Any(pc => categoryIds.Contains(pc.CategoryId)))
+                .Select(product => new ProductScoreModel
+                {
+                    Product = product,
+                    Score = 1
+                });
 
-            var products = query
+            var combinedQuery = query.Concat(categoryQuery);
+
+            //if (item.Product.ProductCategories.Any())
+            //{
+            //    var categoryScore = searchs.Count(search =>
+            //    item.Product.ProductCategories.Any(x => x.Category.NameInBulgarian!.Contains(search) ||
+            //    item.Product.ProductCategories.Any(x => x.Category.NameInEnglish!.Contains(search))));
+
+            //    item.Score += categoryScore;
+            //}
+
+
+            var products = await combinedQuery
                 .Where(x => x.Score > 0)
                 .OrderByDescending(x => x.Score)
                 .Skip((request.Page - 1) * request.ItemsPerPage)
                 .Take(request.ItemsPerPage)
                 .Select(x => x.Product)
                 .To<ProductInList>()
-                .ToList();
+                .ToListAsync();
 
             var totalItems = query.Where(x => x.Score > 0).Count();
             var totalPages = (int)Math.Ceiling(totalItems / (double)request.ItemsPerPage);
@@ -80,11 +97,6 @@ public class SearchByStringQuery : IRequest<AllProductsPaginated>
             };
 
             return productsPaginated;
-        }
-
-        Task<AllProductsPaginated> IRequestHandler<SearchByStringQuery, AllProductsPaginated>.Handle(SearchByStringQuery request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
         }
     }
 }

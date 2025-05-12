@@ -75,7 +75,7 @@ public class ProductController : BaseController
     // Commands
 
     [Authorize]
-    [HttpGet("Like/{id}")]
+    [HttpGet(nameof(LikeAProduct) + "/{id}")]
     public async Task<IActionResult> LikeAProduct(int id)
     {
         var command = new LikeProductCommand(id);

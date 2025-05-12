@@ -18,4 +18,9 @@
     <ProjectReference Include="..\ReGreenShop.Domain\ReGreenShop.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Cart\Commands\" />
+    <Folder Include="Cart\Queries\" />
+  </ItemGroup>
+
 </Project>
