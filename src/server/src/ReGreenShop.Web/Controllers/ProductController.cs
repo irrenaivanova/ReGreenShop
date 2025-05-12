@@ -1,6 +1,8 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReGreenShop.Application.Common.Helpers;
+using ReGreenShop.Application.Products.Commands;
 using ReGreenShop.Application.Products.Queries;
 
 namespace ReGreenShop.Web.Controllers;
@@ -26,6 +28,52 @@ public class ProductController : BaseController
     {
         var query = new GetTopProductsQuery();
         var result = await this.mediator.Send(query);
+        return ApiResponseHelper.Success(result);
+    }
+
+    [HttpGet("ProductsByLabel/{id}")]
+    public async Task<IActionResult> ProductsByLabel(int id)
+    {
+        var query = new GetProductsByLabelQuery(id);
+        var result = await this.mediator.Send(query);
+        return ApiResponseHelper.Success(result);
+    }
+
+    [HttpGet("ProductsBySubCategory/{id}")]
+    public async Task<IActionResult> ProductsBySubCategory(int id)
+    {
+        var query = new GetProductsBySubCategory(id);
+        var result = await this.mediator.Send(query);
+        return ApiResponseHelper.Success(result);
+    }
+
+    [HttpGet(nameof(ProductsByRootCategory))]
+    public async Task<IActionResult> ProductsByRootCategory([FromQuery] GetProductsByRootCategory query)
+    {
+        var result = await this.mediator.Send(query);
+        return ApiResponseHelper.Success(result);
+    }
+
+
+    [Authorize]
+    [HttpGet(nameof(GetMyProducts))]
+    public async Task<IActionResult> GetMyProducts()
+    {
+        var query = new GetMyProductsQuery();
+        var result = await this.mediator.Send(query);
+        return ApiResponseHelper.Success(result);
+    }
+
+
+
+    // Commands
+
+    [Authorize]
+    [HttpGet("Like/{id}")]
+    public async Task<IActionResult> LikeAProduct(int id)
+    {
+        var command = new LikeProductCommand(id);
+        var result = await this.mediator.Send(command);
         return ApiResponseHelper.Success(result);
     }
 }

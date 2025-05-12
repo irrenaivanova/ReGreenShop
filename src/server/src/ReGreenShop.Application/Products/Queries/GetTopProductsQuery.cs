@@ -25,6 +25,7 @@ public class GetTopProductsQuery : IRequest<IEnumerable<ProductInList>>
             var topProducts = new List<ProductInList>();
             var productsTwoForOne = await this.data.Products
                 .Where(x => x.LabelProducts.Any(x => x.Label.Name == TwoForOne))
+                .OrderByDescending(x => x.Stock)
                 .To<ProductInList>()
                 .AsNoTracking()
                 .Take(ProductsInRow)
@@ -33,6 +34,7 @@ public class GetTopProductsQuery : IRequest<IEnumerable<ProductInList>>
             var productsPromo = await this.data.Products
                 .Where(x => x.LabelProducts.Any(x => x.Label.Name == Offer))
                 .OrderByDescending(x => x.LabelProducts.FirstOrDefault(x => x.Label.Name == Offer)!.PercentageDiscount)
+                .OrderBy(x => x.Stock)
                 .To<ProductInList>()
                 .AsNoTracking()
                 .Take(ProductsInRow)

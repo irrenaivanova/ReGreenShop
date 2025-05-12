@@ -35,16 +35,22 @@ public record GetMyProductsQuery() : IRequest<IEnumerable<ProductInList>>
                 .To<ProductInList>()
                 .AsNoTracking()
                 .ToListAsync();
+            myProducts.AddRange(likedProducts);
 
-            var lastOrderId = await this.data.Orders.Where(x => x.UserId == userId)
+            var lastOrder = await this.data.Orders.Where(x => x.UserId == userId)
                 .OrderByDescending(x => x.CreatedOn)
+                .AsNoTracking()
                 .FirstOrDefaultAsync();
 
+            if (lastOrder != null)
+            {
+                var lastOrderId = lastOrder.Id;
+                var productFromLastOrder = await this.data.Products
+                            .Where(x => x.OrderDetails.Any(x => x.OrderId == lastOrderId))
+                            .To<ProductInList>().ToListAsync();
+                myProducts.AddRange(productFromLastOrder);
+            }
 
-            // to take the products from the last order
-
-            //myProducts.AddRange(likedProducts);
-            //myProducts.AddRange(productFromLastOrder);
 
             foreach (var prod in myProducts)
             {
