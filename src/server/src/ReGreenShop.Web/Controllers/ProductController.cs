@@ -54,6 +54,13 @@ public class ProductController : BaseController
         return ApiResponseHelper.Success(result);
     }
 
+    [HttpGet(nameof(ProductsBySearchString))]
+    public async Task<IActionResult> ProductsBySearchString([FromQuery] SearchByStringQuery query)
+    {
+        var result = await this.mediator.Send(query);
+        return ApiResponseHelper.Success(result);
+    }
+
 
     [Authorize]
     [HttpGet(nameof(GetMyProducts))]
@@ -63,7 +70,6 @@ public class ProductController : BaseController
         var result = await this.mediator.Send(query);
         return ApiResponseHelper.Success(result);
     }
-
 
 
     // Commands

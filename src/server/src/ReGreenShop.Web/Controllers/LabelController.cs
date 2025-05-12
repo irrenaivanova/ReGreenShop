@@ -1,13 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using ReGreenShop.Application.Common.Helpers;
 using ReGreenShop.Application.Labels.Queries;
-using ReGreenShop.Application.Products.Queries;
-using MediatR;
 
 namespace ReGreenShop.Web.Controllers;
 public class LabelController : BaseController

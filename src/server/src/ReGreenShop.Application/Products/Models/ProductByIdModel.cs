@@ -1,11 +1,7 @@
 using System.Globalization;
 using AutoMapper;
-using MediatR;
-using ReGreenShop.Application.Common.Interfaces;
 using ReGreenShop.Application.Common.Mappings;
 using ReGreenShop.Domain.Entities;
-using ReGreenShop.Domain.Services;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Application.Products.Models;

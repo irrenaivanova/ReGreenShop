@@ -1,15 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MediatR;
 using ReGreenShop.Application.Common.Exceptions;
 using ReGreenShop.Application.Common.Interfaces;
 using ReGreenShop.Domain.Entities;
 
 namespace ReGreenShop.Application.Products.Commands;
-public record  LikeProductCommand(int id) : IRequest<Unit>
+public record LikeProductCommand(int id) : IRequest<Unit>
 {
     public class LikeProductHandler : IRequestHandler<LikeProductCommand, Unit>
     {
@@ -29,7 +24,7 @@ public record  LikeProductCommand(int id) : IRequest<Unit>
             {
                 throw new NotFoundException("User", "null");
             }
-            var product =  this.data.Products.FirstOrDefault(x => x.Id == request.id);
+            var product = this.data.Products.FirstOrDefault(x => x.Id == request.id);
             if (product == null)
             {
                 throw new NotFoundException("Product", request.id);

@@ -1,18 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ReGreenShop.Application.Common.Exceptions;
 using ReGreenShop.Application.Common.Interfaces;
-using ReGreenShop.Application.Products.Models;
-using ReGreenShop.Domain.Entities;
 using ReGreenShop.Application.Common.Mappings;
+using ReGreenShop.Application.Products.Models;
 
 namespace ReGreenShop.Application.Products.Queries;
-public record  GetProductsByLabelQuery(int id) : IRequest<IEnumerable<ProductInList>>
+public record GetProductsByLabelQuery(int id) : IRequest<IEnumerable<ProductInList>>
 {
     public class GetProductsByLabelHandler : IRequestHandler<GetProductsByLabelQuery, IEnumerable<ProductInList>>
     {

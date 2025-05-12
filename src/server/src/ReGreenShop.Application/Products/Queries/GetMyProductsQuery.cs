@@ -1,12 +1,10 @@
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ReGreenShop.Application.Common.Exceptions;
 using ReGreenShop.Application.Common.Interfaces;
 using ReGreenShop.Application.Common.Mappings;
 using ReGreenShop.Application.Products.Models;
 using ReGreenShop.Domain.Services;
-using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Application.Products.Queries;
 public record GetMyProductsQuery() : IRequest<IEnumerable<ProductInList>>
@@ -27,7 +25,7 @@ public record GetMyProductsQuery() : IRequest<IEnumerable<ProductInList>>
             string? userId = this.userService.UserId;
             if (userId == null)
             {
-                throw new NotFoundException("User","null");
+                throw new NotFoundException("User", "null");
             }
             var myProducts = new List<ProductInList>();
             var likedProducts = await this.data.Products
