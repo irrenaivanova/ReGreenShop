@@ -22,7 +22,6 @@ public class GetRootCategoriesQuery : IRequest<IEnumerable<RootCategoriesModel>>
                 .To<RootCategoriesModel>()
                 .ToListAsync();
 
-
             return categories;
         }
     }

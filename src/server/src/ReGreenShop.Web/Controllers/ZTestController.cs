@@ -11,7 +11,7 @@ namespace ReGreenShop.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class TestController : ControllerBase
+public class ZTestController : ControllerBase
 {
     private readonly IImageDownloader downloader;
     private readonly IStorage storage;
@@ -20,7 +20,7 @@ public class TestController : ControllerBase
     private readonly IWebHostEnvironment web;
     private readonly IData data;
 
-    public TestController(IImageDownloader downloader,
+    public ZTestController(IImageDownloader downloader,
                     IStorage storage, IEmailSender sender,
                     IPdfGenerator pdfGenerator, IWebHostEnvironment web,
                     IData data)

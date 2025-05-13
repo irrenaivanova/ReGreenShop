@@ -10,4 +10,6 @@ public interface ICart : IService
     Task MergeCartIfAnyAsync(string userId);
 
     Task<string> CreateCartAsync(string userId);
+
+    Task ClearCartAsync();
 }

@@ -57,13 +57,18 @@ public class CartService : ICart
         return this.data.Carts.FirstOrDefault(x => x.UserId == userId)!.Id;
     }
 
-
-    // GetCartItems - in query ?
-
     public async Task<int> GetCountProductsInCartAsync()
     {
         var cartId = await GetCartIdAsync();
-        return this.data.Carts.FirstOrDefault(x => x.Id == cartId)!.CartItems.Count();
+        return this.data.Carts.Include(x => x.CartItems).FirstOrDefault(x => x.Id == cartId)!.CartItems.Sum(x => x.Quantity);
+    }
+
+    public async Task ClearCartAsync()
+    {
+        var cartId = await GetCartIdAsync();
+        var itemsToRemove = this.data.CartItems.Where(x => x.CartId == cartId);
+        this.data.CartItems.RemoveRange(itemsToRemove);
+        await this.data.SaveChangesAsync();
     }
 
     public async Task MergeCartIfAnyAsync(string userId)
