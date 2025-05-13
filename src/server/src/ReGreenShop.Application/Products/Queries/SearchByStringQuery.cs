@@ -29,21 +29,27 @@ public class SearchByStringQuery : IRequest<AllProductsPaginated>
                 return null!;
             }
 
-            var searchs = request.SearchString.ToLower()
-                    .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                    .ToList();
+            var wildCarts = request.SearchString.ToLower()
+                .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Select(x => $"%{x}%").ToList();
 
-            var query = this.data.Products.Include(x => x.LabelProducts).ThenInclude(x => x.Label)
+            var query = this.data.Products
                    .Select(product => new ProductScoreModel
                    {
                        Product = product,
-                       Score = searchs.Count(search =>
-                           product.Name.Contains(search) ||
-                           product.Brand != null ? product.Brand!.Contains(search) : false ||
-                           product.Origin != null ? product.Origin!.Contains(search) : false ||
-                           product.Packaging != null ? product.Packaging!.Contains(search) : false
+                       Score = wildCarts.Count(search =>
+                           EF.Functions.Like(product.Name, search) ||
+                           EF.Functions.Like(product.Brand, search) ||
+                           EF.Functions.Like(product.Origin, search) ||
+                           EF.Functions.Like(product.Packaging, search)
                        )
                    });
+
+
+
+            var searchs = request.SearchString.ToLower()
+                   .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                   .ToList();
 
             var categoryIds = this.data.Categories
                  .Where(cat => searchs.Any(search =>
@@ -61,22 +67,20 @@ public class SearchByStringQuery : IRequest<AllProductsPaginated>
 
             var combinedQuery = query.Concat(categoryQuery);
 
-            //if (item.Product.ProductCategories.Any())
-            //{
-            //    var categoryScore = searchs.Count(search =>
-            //    item.Product.ProductCategories.Any(x => x.Category.NameInBulgarian!.Contains(search) ||
-            //    item.Product.ProductCategories.Any(x => x.Category.NameInEnglish!.Contains(search))));
 
-            //    item.Score += categoryScore;
-            //}
-
-
-            var products = await combinedQuery
+            var productsId = await combinedQuery
                 .Where(x => x.Score > 0)
                 .OrderByDescending(x => x.Score)
                 .Skip((request.Page - 1) * request.ItemsPerPage)
                 .Take(request.ItemsPerPage)
-                .Select(x => x.Product)
+                .Select(x => x.Product.Id)
+                .ToListAsync();
+
+            var products = await this.data.Products
+                .Where(x => productsId.Contains(x.Id))
+                .Include(x => x.UserLikes)
+                .Include(x => x.LabelProducts)
+                .ThenInclude(x => x.Product)
                 .To<ProductInList>()
                 .ToListAsync();
 
