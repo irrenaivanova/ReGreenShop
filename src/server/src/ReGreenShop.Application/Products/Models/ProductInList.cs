@@ -26,7 +26,7 @@ public class ProductInList : IMapFrom<Product>, IMapExplicitly
 
     public bool HasPromoDiscount { get; set; }
 
-    public int DiscountPercentage { get; set; }
+    public int? DiscountPercentage { get; set; }
 
     public string? ValidTo { get; set; }
 
@@ -34,7 +34,7 @@ public class ProductInList : IMapFrom<Product>, IMapExplicitly
 
     public bool HasTwoForOneDiscount { get; set; }
 
-    public decimal DiscountPrice { get; set; }
+    public decimal? DiscountPrice { get; set; }
 
     public List<string> Labels { get; set; }
 
@@ -46,7 +46,7 @@ public class ProductInList : IMapFrom<Product>, IMapExplicitly
             .ForMember(x => x.HasPromoDiscount, cfg => cfg.MapFrom(x => x.LabelProducts.Any(y => y.Label.Name == Offer)))
             .ForMember(x => x.HasTwoForOneDiscount, cfg => cfg.MapFrom(x => x.LabelProducts.Any(y => y.Label.Name == TwoForOne)))
             .ForMember(x => x.DiscountPercentage, cfg => cfg.MapFrom(x => x.LabelProducts.Any(y => y.Label.Name == Offer) ?
-                                                            x.LabelProducts.FirstOrDefault(y => y.Label.Name == Offer)!.PercentageDiscount : 0))
+                                                            x.LabelProducts.FirstOrDefault(y => y.Label.Name == Offer)!.PercentageDiscount : null))
             .ForMember(x => x.ValidTo, cfg => cfg.MapFrom(x => x.LabelProducts.Any()
                                        ? x.LabelProducts.FirstOrDefault()!.CreatedOn.AddDays(x.LabelProducts.FirstOrDefault()!.Duration)
                                       .ToString(DateTimeCustomFormat, CultureInfo.InvariantCulture) : string.Empty))

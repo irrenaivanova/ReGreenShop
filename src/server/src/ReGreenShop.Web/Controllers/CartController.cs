@@ -1,7 +1,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using ReGreenShop.Application.Carts.Commands;
-using ReGreenShop.Application.Carts.Queries;
+using ReGreenShop.Application.Carts.Queries.GetNumberOfProductInCart;
+using ReGreenShop.Application.Carts.Queries.GetNumberOfProductsInCart;
+using ReGreenShop.Application.Carts.Queries.ViewProductsInCartQuery;
 using ReGreenShop.Application.Common.Helpers;
 
 namespace ReGreenShop.Web.Controllers;
@@ -18,6 +20,22 @@ public class CartController : BaseController
     public async Task<IActionResult> NumberOfProductsInCart()
     {
         var query = new GetNumberOfProductsInCart();
+        var result = await this.mediator.Send(query);
+        return ApiResponseHelper.Success(result);
+    }
+
+    [HttpGet(nameof(NumberOfConcreteProductInCart) + "/{id}")]
+    public async Task<IActionResult> NumberOfConcreteProductInCart(int id)
+    {
+        var query = new GetNumberOfConcreteProductInCart(id);
+        var result = await this.mediator.Send(query);
+        return ApiResponseHelper.Success(result);
+    }
+
+    [HttpGet(nameof(ViewProductsInCart))]
+    public async Task<IActionResult> ViewProductsInCart()
+    {
+        var query = new ViewProductsInCartQuery();
         var result = await this.mediator.Send(query);
         return ApiResponseHelper.Success(result);
     }

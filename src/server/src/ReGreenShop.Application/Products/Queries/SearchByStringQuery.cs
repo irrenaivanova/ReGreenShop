@@ -1,13 +1,14 @@
-using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ReGreenShop.Application.Common.Exceptions;
 using ReGreenShop.Application.Common.Interfaces;
 using ReGreenShop.Application.Common.Mappings;
 using ReGreenShop.Application.Products.Models;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace ReGreenShop.Application.Products.Queries;
-public class SearchByStringQuery : IRequest<AllProductsPaginated>
+public  class SearchByStringQuery : IRequest<AllProductsPaginated>
 {
     public string SearchString { get; set; } = string.Empty;
     public int Page { get; set; } = 1;
@@ -30,10 +31,10 @@ public class SearchByStringQuery : IRequest<AllProductsPaginated>
             }
 
             var wildCarts = request.SearchString.ToLower()
-                .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                .Select(x => $"%{x}%").ToList();
+                    .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                    .Select(x => $"%{x.ToLower()}%").ToList();
 
-            var query = this.data.Products
+            var query =  this.data.Products
                    .Select(product => new ProductScoreModel
                    {
                        Product = product,
@@ -45,43 +46,26 @@ public class SearchByStringQuery : IRequest<AllProductsPaginated>
                        )
                    });
 
-            var searchs = request.SearchString.ToLower()
-                   .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                   .ToList();
+            foreach (var item in query)
+            {
+                var categoryScore = wildCarts.Count(search =>
+                    item.Product.ProductCategories.Any(x => EF.Functions.Like(x.Category.NameInBulgarian, search)) ||
+                    item.Product.ProductCategories.Any(x => EF.Functions.Like(x.Category.NameInEnglish, search)) 
+                );
 
-            var categoryIds = this.data.Categories
-                 .Where(cat => searchs.Any(search =>
-                     cat.NameInBulgarian!.ToLower().Contains(search) ||
-                     cat.NameInEnglish!.ToLower().Contains(search)))
-                 .Select(cat => cat.Id);
+                item.Score += categoryScore;
+            }
 
-            var categoryQuery = this.data.Products.Include(x => x.LabelProducts).ThenInclude(x => x.Label)
-                .Where(p => p.ProductCategories.Any(pc => categoryIds.Contains(pc.CategoryId)))
-                .Select(product => new ProductScoreModel
-                {
-                    Product = product,
-                    Score = 2
-                });
-
-            var combinedQuery = query.Concat(categoryQuery).Where(x => x.Score > 0);
-
-            var productsId = await combinedQuery
+            var products = await query
                 .Where(x => x.Score > 0)
                 .OrderByDescending(x => x.Score)
                 .Skip((request.Page - 1) * request.ItemsPerPage)
                 .Take(request.ItemsPerPage)
-                .Select(x => x.Product.Id)
-                .ToListAsync();
-
-            var products = await this.data.Products
-                .Where(x => productsId.Contains(x.Id))
-                .Include(x => x.UserLikes)
-                .Include(x => x.LabelProducts)
-                .ThenInclude(x => x.Product)
+                .Select(x => x.Product)
                 .To<ProductInList>()
                 .ToListAsync();
 
-            var totalItems = combinedQuery.Where(x => x.Score > 0).Count();
+            var totalItems = query.Where(x => x.Score > 0).Count();
             var totalPages = (int)Math.Ceiling(totalItems / (double)request.ItemsPerPage);
             if (request.Page < 1 || request.Page > totalPages)
             {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using MediatR;
 using ReGreenShop.Application.Common.Interfaces;
 
-namespace ReGreenShop.Application.Carts.Queries;
+namespace ReGreenShop.Application.Carts.Queries.GetNumberOfProductsInCart;
 public record GetNumberOfProductsInCart : IRequest<int>
 {
     public class GetNumberOfProductsInCartHandler : IRequestHandler<GetNumberOfProductsInCart, int>

@@ -1,7 +1,11 @@
 using System.Globalization;
 using AutoMapper;
+using MediatR;
+using ReGreenShop.Application.Common.Interfaces;
 using ReGreenShop.Application.Common.Mappings;
 using ReGreenShop.Domain.Entities;
+using ReGreenShop.Domain.Services;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Application.Products.Models;
@@ -38,7 +42,7 @@ public class ProductByIdModel : IMapFrom<Product>, IMapExplicitly
 
     public bool HasPromoDiscount { get; set; }
 
-    public int DiscountPercentage { get; set; }
+    public int? DiscountPercentage { get; set; }
 
     public string? ValidTo { get; set; }
 
@@ -46,7 +50,7 @@ public class ProductByIdModel : IMapFrom<Product>, IMapExplicitly
 
     public bool HasTwoForOneDiscount { get; set; }
 
-    public decimal DiscountPrice { get; set; }
+    public decimal? DiscountPrice { get; set; }
 
     public List<CategoryModel> Categories { get; set; }
 
@@ -61,7 +65,7 @@ public class ProductByIdModel : IMapFrom<Product>, IMapExplicitly
             .ForMember(x => x.HasPromoDiscount, cfg => cfg.MapFrom(x => x.LabelProducts.Any(y => y.Label.Name == Offer)))
             .ForMember(x => x.HasTwoForOneDiscount, cfg => cfg.MapFrom(x => x.LabelProducts.Any(y => y.Label.Name == TwoForOne)))
             .ForMember(x => x.DiscountPercentage, cfg => cfg.MapFrom(x => x.LabelProducts.Any(y => y.Label.Name == Offer) ?
-                                                            x.LabelProducts.FirstOrDefault(y => y.Label.Name == Offer)!.PercentageDiscount : 0))
+                                                            x.LabelProducts.FirstOrDefault(y => y.Label.Name == Offer)!.PercentageDiscount : null))
             .ForMember(x => x.ValidTo, cfg => cfg.MapFrom(x => x.LabelProducts.Any()
                                        ? x.LabelProducts.FirstOrDefault()!.CreatedOn.AddDays(x.LabelProducts.FirstOrDefault()!.Duration)
                                       .ToString(DateTimeCustomFormat, CultureInfo.InvariantCulture) : string.Empty))

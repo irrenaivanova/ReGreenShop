@@ -27,5 +27,5 @@ public static class GlobalConstants
 
     public const string DateTimeCustomFormat = "dd.MMMM.yyyy";
 
-    public const int ItemsPerPage = ProductsInRow * 4;
+    public const int ItemsPerPage = ProductsInRow*4;
 }

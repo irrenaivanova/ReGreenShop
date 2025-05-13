@@ -52,9 +52,9 @@ public record GetMyProductsQuery() : IRequest<IEnumerable<ProductInList>>
 
             foreach (var prod in myProducts)
             {
-                if (prod.HasPromoDiscount && !prod.HasTwoForOneDiscount)
+                if (prod.HasPromoDiscount && !prod.HasTwoForOneDiscount && prod.DiscountPercentage.HasValue)
                 {
-                    prod.DiscountPrice = PriceCalculator.CalculateDiscountedPrice(prod.Price, prod.DiscountPercentage);
+                    prod.DiscountPrice = PriceCalculator.CalculateDiscountedPrice(prod.Price, prod.DiscountPercentage.Value);
                     prod.Labels.Add($"SAVE {prod.DiscountPercentage}%");
                 }
 

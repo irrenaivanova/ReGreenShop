@@ -32,9 +32,9 @@ public record GetProductByIdQuery(int id) : IRequest<ProductByIdModel>
                 throw new NotFoundException("Product", request.id);
             }
 
-            if (prod.HasPromoDiscount && !prod.HasTwoForOneDiscount)
+            if (prod.HasPromoDiscount && !prod.HasTwoForOneDiscount && prod.DiscountPercentage.HasValue)
             {
-                prod.DiscountPrice = PriceCalculator.CalculateDiscountedPrice(prod.Price, prod.DiscountPercentage);
+                prod.DiscountPrice = PriceCalculator.CalculateDiscountedPrice(prod.Price, prod.DiscountPercentage.Value);
                 prod.Labels.Add($"SAVE {prod.DiscountPercentage}%");
             }
 

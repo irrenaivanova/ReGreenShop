@@ -62,6 +62,16 @@ public class CartService : ICart
         var cartId = await GetCartIdAsync();
         return this.data.Carts.Include(x => x.CartItems).FirstOrDefault(x => x.Id == cartId)!.CartItems.Sum(x => x.Quantity);
     }
+    public async Task<int> GetCountOfConcreteProductInCartAsync(int id)
+    {
+        var cartId = await GetCartIdAsync();
+        var cartItem = await this.data.CartItems.FirstOrDefaultAsync(x => x.CartId == cartId && x.ProductId == id);
+        if (cartItem == null)
+        {
+            throw new NotFoundException("CartItem", "null");
+        }
+        return cartItem.Quantity;
+    }
 
     public async Task ClearCartAsync()
     {

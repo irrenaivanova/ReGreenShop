@@ -12,4 +12,6 @@ public interface ICart : IService
     Task<string> CreateCartAsync(string userId);
 
     Task ClearCartAsync();
+
+    Task<int> GetCountOfConcreteProductInCartAsync(int id);
 }
