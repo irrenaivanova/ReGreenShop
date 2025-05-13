@@ -1,5 +1,6 @@
 using System.Net;
 using System.Security;
+using System.Threading;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
@@ -43,6 +44,10 @@ public class ExceptionHandlerMiddleware
             case AuthenticationException authEx:
                 code = HttpStatusCode.BadRequest;
                 result = JsonConvert.SerializeObject(new { error = authEx.Message });
+                break;
+            case InsufficientQuantityException ex:
+                code = HttpStatusCode.BadRequest;
+                result = JsonConvert.SerializeObject(new { error = ex.Message });
                 break;
             // 401 Unauthorized
             case UnauthorizedAccessException _:

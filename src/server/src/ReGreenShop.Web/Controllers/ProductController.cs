@@ -31,7 +31,7 @@ public class ProductController : BaseController
         return ApiResponseHelper.Success(result);
     }
 
-    [HttpGet("ProductsByLabel/{id}")]
+    [HttpGet(nameof(ProductsByLabel) + "/{id}")]
     public async Task<IActionResult> ProductsByLabel(int id)
     {
         var query = new GetProductsByLabelQuery(id);
@@ -39,7 +39,7 @@ public class ProductController : BaseController
         return ApiResponseHelper.Success(result);
     }
 
-    [HttpGet("ProductsBySubCategory/{id}")]
+    [HttpGet(nameof(ProductsBySubCategory) + "/{id}")]
     public async Task<IActionResult> ProductsBySubCategory(int id)
     {
         var query = new GetProductsBySubCategory(id);
@@ -73,7 +73,6 @@ public class ProductController : BaseController
 
 
     // Commands
-
     [Authorize]
     [HttpGet(nameof(LikeAProduct) + "/{id}")]
     public async Task<IActionResult> LikeAProduct(int id)

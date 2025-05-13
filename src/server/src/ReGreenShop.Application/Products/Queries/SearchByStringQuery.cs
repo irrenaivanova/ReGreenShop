@@ -45,8 +45,6 @@ public class SearchByStringQuery : IRequest<AllProductsPaginated>
                        )
                    });
 
-
-
             var searchs = request.SearchString.ToLower()
                    .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
                    .ToList();
@@ -62,11 +60,10 @@ public class SearchByStringQuery : IRequest<AllProductsPaginated>
                 .Select(product => new ProductScoreModel
                 {
                     Product = product,
-                    Score = 1
+                    Score = 2
                 });
 
-            var combinedQuery = query.Concat(categoryQuery);
-
+            var combinedQuery = query.Concat(categoryQuery).Where(x => x.Score > 0);
 
             var productsId = await combinedQuery
                 .Where(x => x.Score > 0)
@@ -84,7 +81,7 @@ public class SearchByStringQuery : IRequest<AllProductsPaginated>
                 .To<ProductInList>()
                 .ToListAsync();
 
-            var totalItems = query.Where(x => x.Score > 0).Count();
+            var totalItems = combinedQuery.Where(x => x.Score > 0).Count();
             var totalPages = (int)Math.Ceiling(totalItems / (double)request.ItemsPerPage);
             if (request.Page < 1 || request.Page > totalPages)
             {

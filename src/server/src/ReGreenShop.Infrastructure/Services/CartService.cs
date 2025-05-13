@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using ReGreenShop.Application.Common.Exceptions;
 using ReGreenShop.Application.Common.Interfaces;
 using ReGreenShop.Domain.Entities;
@@ -25,7 +26,7 @@ public class CartService : ICart
         this.userManager = userManager;
     }
 
-    public async Task<string> GetCartId()
+    public async Task<string> GetCartIdAsync()
     {
         // Exception of context is null ?
         var context = this.contextAccessor.HttpContext;
@@ -40,23 +41,28 @@ public class CartService : ICart
             }
 
             string sessionValue = context!.Session.GetString(SessionId)!;
-            var cart = new Cart()
+            var cart = await this.data.Carts.FirstOrDefaultAsync(x => x.Session == sessionValue);
+            if (cart == null)
             {
-                Session = sessionValue
-            };
-            this.data.Carts.Add(cart);
-            await this.data.SaveChangesAsync();
+                 cart = new Cart()
+                {
+                    Session = sessionValue
+                };
+                this.data.Carts.Add(cart);
+                await this.data.SaveChangesAsync();
+            }
             return cart.Id;
         }
 
         return this.data.Carts.FirstOrDefault(x => x.UserId == userId)!.Id;
     }
 
+
     // GetCartItems - in query ?
 
-    public async Task<int> GetCountProductsInCart()
+    public async Task<int> GetCountProductsInCartAsync()
     {
-        var cartId = await GetCartId();
+        var cartId = await GetCartIdAsync();
         return this.data.Carts.FirstOrDefault(x => x.Id == cartId)!.CartItems.Count();
     }
 
@@ -67,14 +73,26 @@ public class CartService : ICart
         string sessionValue = context!.Session.GetString(SessionId)!;
         if (sessionValue != null)
         {
-            var sessionIdCart = this.data.Carts.FirstOrDefault(x => x.Session == sessionValue);
+            var sessionIdCart = this.data.Carts.Include(x => x.CartItems).FirstOrDefault(x => x.Session == sessionValue);
             if (sessionIdCart != null)
             {
                 var userCartId = this.data.Carts.FirstOrDefault(x => x.UserId == userId)!.Id;
                 foreach (var item in sessionIdCart.CartItems)
                 {
-                    item.CartId = userCartId;
+                    var newItem = new CartItem
+                    {
+                        CartId = userCartId,
+                        ProductId = item.ProductId,
+                        Quantity = item.Quantity,
+                        BaseCategoryId = item.BaseCategoryId
+                    };
+
+                    this.data.CartItems.Add(newItem);
+                    this.data.CartItems.Remove(item);
                 }
+
+                // delete the old cart
+                this.data.Carts.Remove(sessionIdCart);
                 await this.data.SaveChangesAsync();
             }
         }

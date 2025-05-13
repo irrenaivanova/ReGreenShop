@@ -3,9 +3,9 @@ using ReGreenShop.Application.Common.Services;
 namespace ReGreenShop.Application.Common.Interfaces;
 public interface ICart : IService
 {
-    Task<string> GetCartId();
+    Task<string> GetCartIdAsync();
 
-    Task<int> GetCountProductsInCart();
+    Task<int> GetCountProductsInCartAsync();
 
     Task MergeCartIfAnyAsync(string userId);
 
