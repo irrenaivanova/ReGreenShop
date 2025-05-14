@@ -27,6 +27,16 @@ public static class PriceCalculator
         return Math.Round(paidUnits * pricePerUnit, 2);
     }
 
+    public static decimal CalculateTwoForOnePriceSinglePrice(decimal pricePerUnit)
+    {
+        if (pricePerUnit < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(pricePerUnit));
+        }
+
+        return Math.Round(pricePerUnit/2, 2);
+    }
+
     public static decimal CalculateTotalPrice(decimal price, int quantity)
     {
         if (price < 0 || quantity < 0)

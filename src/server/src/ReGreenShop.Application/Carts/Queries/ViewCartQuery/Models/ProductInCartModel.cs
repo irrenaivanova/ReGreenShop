@@ -1,6 +1,7 @@
 using AutoMapper;
 using ReGreenShop.Application.Common.Mappings;
 using ReGreenShop.Domain.Entities;
+using ReGreenShop.Domain.Services;
 using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Application.Carts.Queries.ViewProductsInCartQuery.Models;
@@ -14,6 +15,8 @@ public class ProductInCartModel : IMapFrom<Product>, IMapExplicitly
 
     public string? Packaging { get; set; }
 
+    public string? LabelTwoForOne { get; set; } 
+
     public string ImagePath { get; set; } = string.Empty;
 
     public bool HasPromoDiscount { get; set; }
@@ -25,6 +28,8 @@ public class ProductInCartModel : IMapFrom<Product>, IMapExplicitly
     public decimal? DiscountPrice { get; set; }
 
     public int QuantityInCart { get; set; }
+
+    public decimal TotalPriceProduct { get; set; }
 
 
     public void CreateMappings(IProfileExpression configuration)

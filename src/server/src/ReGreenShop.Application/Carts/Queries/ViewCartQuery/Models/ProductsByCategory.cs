@@ -8,7 +8,7 @@ public class ProductsByCategory
 
     public int Id { get; set; }
 
-    public int CategoryName { get; set; }
+    public string CategoryName { get; set; }
 
     public IList<ProductInCartModel> Products { get; set; }
 }
