@@ -52,6 +52,8 @@ public class ProductByIdModel : IMapFrom<Product>, IMapExplicitly
 
     public decimal? DiscountPrice { get; set; }
 
+    public int ProductCartQuantity { get; set; }
+
     public List<CategoryModel> Categories { get; set; }
 
     public List<string> Labels { get; set; }

@@ -13,11 +13,13 @@ public record GetProductByIdQuery(int id) : IRequest<ProductByIdModel>
     {
         private readonly IData data;
         private readonly ICurrentUser userService;
+        private readonly ICart cartService;
 
-        public GetProductByIdQueryHandler(IData data, ICurrentUser userService)
+        public GetProductByIdQueryHandler(IData data, ICurrentUser userService, ICart cartService)
         {
             this.data = data;
             this.userService = userService;
+            this.cartService = cartService;
         }
         public async Task<ProductByIdModel> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
         {
@@ -44,6 +46,7 @@ public record GetProductByIdQuery(int id) : IRequest<ProductByIdModel>
                 prod.IsLiked = this.data.Products.Where(x => x.Id == request.id).Any(x => x.UserLikes.Any(x => x.UserId == userId));
             }
 
+            prod.ProductCartQuantity = await this.cartService.GetCountOfConcreteProductInCartAsync(prod.Id);
             return prod;
         }
     }

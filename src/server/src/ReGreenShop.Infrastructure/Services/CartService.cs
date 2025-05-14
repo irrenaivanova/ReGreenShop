@@ -68,7 +68,7 @@ public class CartService : ICart
         var cartItem = await this.data.CartItems.FirstOrDefaultAsync(x => x.CartId == cartId && x.ProductId == id);
         if (cartItem == null)
         {
-            throw new NotFoundException("CartItem", "null");
+            return 0;
         }
         return cartItem.Quantity;
     }

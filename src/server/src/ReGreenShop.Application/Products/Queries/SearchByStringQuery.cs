@@ -17,10 +17,12 @@ public  class SearchByStringQuery : IRequest<AllProductsPaginated>
     public class SearchByStringQueryHandler : IRequestHandler<SearchByStringQuery, AllProductsPaginated>
     {
         private readonly IData data;
+        private readonly ICart cartService;
 
-        public SearchByStringQueryHandler(IData data)
+        public SearchByStringQueryHandler(IData data, ICart cartService)
         {
             this.data = data;
+            this.cartService = cartService;
         }
 
         public async Task<AllProductsPaginated> Handle(SearchByStringQuery request, CancellationToken cancellationToken)
@@ -64,6 +66,11 @@ public  class SearchByStringQuery : IRequest<AllProductsPaginated>
                 .Select(x => x.Product)
                 .To<ProductInList>()
                 .ToListAsync();
+
+            foreach (var prod in products)
+            {
+                prod.ProductCartQuantity = await this.cartService.GetCountOfConcreteProductInCartAsync(prod.Id);
+            }
 
             var totalItems = query.Where(x => x.Score > 0).Count();
             var totalPages = (int)Math.Ceiling(totalItems / (double)request.ItemsPerPage);

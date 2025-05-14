@@ -13,11 +13,13 @@ public record GetMyProductsQuery() : IRequest<IEnumerable<ProductInList>>
     {
         private readonly IData data;
         private readonly ICurrentUser userService;
+        private readonly ICart cartService;
 
-        public GetTopProductsQueryHandler(IData data, ICurrentUser userService)
+        public GetTopProductsQueryHandler(IData data, ICurrentUser userService, ICart cartService)
         {
             this.data = data;
             this.userService = userService;
+            this.cartService = cartService;
         }
 
         public async Task<IEnumerable<ProductInList>> Handle(GetMyProductsQuery request, CancellationToken cancellationToken)
@@ -62,6 +64,8 @@ public record GetMyProductsQuery() : IRequest<IEnumerable<ProductInList>>
                 {
                     prod.IsLiked = this.data.Products.Where(x => x.Id == prod.Id).Any(x => x.UserLikes.Any(x => x.UserId == userId));
                 }
+
+                prod.ProductCartQuantity = await this.cartService.GetCountOfConcreteProductInCartAsync(prod.Id);
             }
 
             return myProducts;

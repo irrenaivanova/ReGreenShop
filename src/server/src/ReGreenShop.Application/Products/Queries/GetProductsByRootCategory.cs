@@ -17,11 +17,13 @@ public class  GetProductsByRootCategory() : IRequest<AllProductsPaginated>
     {
         private readonly IData data;
         private readonly ICurrentUser userService;
+        private readonly ICart cartService;
 
-        public GetProductsByRootCategoryHandler(IData data, ICurrentUser userService)
+        public GetProductsByRootCategoryHandler(IData data, ICurrentUser userService, ICart cartService)
         {
             this.data = data;
             this.userService = userService;
+            this.cartService = cartService;
         }
 
         public async Task<AllProductsPaginated> Handle(GetProductsByRootCategory request, CancellationToken cancellationToken)
@@ -61,6 +63,8 @@ public class  GetProductsByRootCategory() : IRequest<AllProductsPaginated>
                 {
                     prod.IsLiked = this.data.Products.Where(x => x.Id == prod.Id).Any(x => x.UserLikes.Any(x => x.UserId == userId));
                 }
+
+                prod.ProductCartQuantity = await this.cartService.GetCountOfConcreteProductInCartAsync(prod.Id);
             }
 
             var productsPaginated = new AllProductsPaginated()

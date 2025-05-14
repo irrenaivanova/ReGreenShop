@@ -19,11 +19,13 @@ public record  GetProductsByLabelQuery(int id) : IRequest<IEnumerable<ProductInL
     {
         private readonly IData data;
         private readonly ICurrentUser userService;
+        private readonly ICart cartService;
 
-        public GetProductsByLabelHandler(IData data, ICurrentUser userService)
+        public GetProductsByLabelHandler(IData data, ICurrentUser userService, ICart cartService)
         {
             this.data = data;
             this.userService = userService;
+            this.cartService = cartService;
         }
 
         public async Task<IEnumerable<ProductInList>> Handle(GetProductsByLabelQuery request, CancellationToken cancellationToken)
@@ -47,6 +49,8 @@ public record  GetProductsByLabelQuery(int id) : IRequest<IEnumerable<ProductInL
                 {
                     prod.IsLiked = this.data.Products.Where(x => x.Id == prod.Id).Any(x => x.UserLikes.Any(x => x.UserId == userId));
                 }
+
+                prod.ProductCartQuantity = await this.cartService.GetCountOfConcreteProductInCartAsync(prod.Id);
             }
 
             if (!products.Any())

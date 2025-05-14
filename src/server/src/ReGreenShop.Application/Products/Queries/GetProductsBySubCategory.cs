@@ -19,11 +19,13 @@ public record  GetProductsBySubCategory(int id) : IRequest<IEnumerable<ProductIn
     {
         private readonly IData data;
         private readonly ICurrentUser userService;
+        private readonly ICart cartService;
 
-        public GetProductBySubCategoryHandler(IData data, ICurrentUser userService)
+        public GetProductBySubCategoryHandler(IData data, ICurrentUser userService, ICart cartService)
         {
             this.data = data;
             this.userService = userService;
+            this.cartService = cartService;
         }
 
         public async Task<IEnumerable<ProductInList>> Handle(GetProductsBySubCategory request, CancellationToken cancellationToken)
@@ -53,6 +55,8 @@ public record  GetProductsBySubCategory(int id) : IRequest<IEnumerable<ProductIn
                 {
                     prod.IsLiked = this.data.Products.Where(x => x.Id == prod.Id).Any(x => x.UserLikes.Any(x => x.UserId == userId));
                 }
+
+                prod.ProductCartQuantity = await this.cartService.GetCountOfConcreteProductInCartAsync(prod.Id);
             }
 
             return products;

@@ -36,6 +36,8 @@ public class ProductInList : IMapFrom<Product>, IMapExplicitly
 
     public decimal? DiscountPrice { get; set; }
 
+    public int ProductCartQuantity { get; set; }
+
     public List<string> Labels { get; set; }
 
     public void CreateMappings(IProfileExpression configuration)
