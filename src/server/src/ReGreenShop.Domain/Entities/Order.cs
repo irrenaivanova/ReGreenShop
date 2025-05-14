@@ -34,6 +34,8 @@ public class Order : BaseDeletableModel<string>
 
     public int? DiscountVoucherId { get; set; }
 
+    public DateTime DeliveryDate { get; set; }
+
     public DiscountVoucher? DiscountVoucher { get; set; }
 
     public IList<OrderDetail> OrderDetails { get; set; }
