@@ -1,10 +1,12 @@
 using System.Linq.Expressions;
 using System.Security.Claims;
+using Azure.Core;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ReGreenShop.Application.Common.Exceptions;
 using ReGreenShop.Application.Common.Identity;
 using ReGreenShop.Application.Common.Interfaces;
+using ReGreenShop.Application.Orders.Commands.MakeAnOrder;
 using ReGreenShop.Application.Users.Queries.GetUserInfoForOrderQuery;
 using ReGreenShop.Infrastructure.Persistence.Identity;
 using static ReGreenShop.Application.Common.GlobalConstants;
@@ -132,5 +134,29 @@ public class IdentityService : IIdentity
         };
 
         return userInfo;
+    }
+
+    public async Task ChangeUserInfoAsync(ChangeUserModel model)
+    {
+        var userId = this.currentUser.UserId;
+        if (userId == null)
+        {
+            throw new NotFoundException("User");
+        }
+        var user = await this.userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            throw new NotFoundException("User");
+        }
+        user.FirstName = model.FirstName;
+        user.LastName = model.LastName;
+
+        var result = await this.userManager.UpdateAsync(user);
+        if (!result.Succeeded)
+        {
+            // Handle errors, for example:
+            var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+            throw new InvalidOperationException($"Failed to update user: {errors}");
+        }
     }
 }

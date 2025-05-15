@@ -28,5 +28,9 @@ public class OrderDetailConfiguration : IEntityTypeConfiguration<OrderDetail>
         builder
             .Property(x => x.PricePerUnit)
             .HasColumnType("decimal(8,2)");
+
+        builder
+            .Property(x => x.TotalPrice)
+            .HasColumnType("decimal(8,2)");
     }
 }

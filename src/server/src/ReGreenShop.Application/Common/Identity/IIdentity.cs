@@ -1,4 +1,5 @@
 using ReGreenShop.Application.Common.Services;
+using ReGreenShop.Application.Orders.Commands.MakeAnOrder;
 using ReGreenShop.Application.Users.Queries.GetUserInfoForOrderQuery;
 
 namespace ReGreenShop.Application.Common.Identity;
@@ -11,4 +12,6 @@ public interface IIdentity : IScopedService
     Task<string?> GetUserName(string userId);
 
     Task<UserInfoForOrderModel> GetUserWithAdditionalInfo();
+
+    Task ChangeUserInfoAsync(ChangeUserModel model);
 }

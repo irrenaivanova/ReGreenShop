@@ -78,7 +78,6 @@ public class CartService : ICart
         var cartId = await GetCartIdAsync();
         var itemsToRemove = this.data.CartItems.Where(x => x.CartId == cartId);
         this.data.CartItems.RemoveRange(itemsToRemove);
-        await this.data.SaveChangesAsync();
     }
 
     public async Task MergeCartIfAnyAsync(string userId)

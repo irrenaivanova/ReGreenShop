@@ -24,11 +24,6 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
             .HasMaxLength(MaxLengthLongName);
 
         builder
-            .HasOne(x => x.DeliveryPrice)
-            .WithMany(x => x.Orders)
-            .HasForeignKey(x => x.DeliveryPriceId);
-
-        builder
             .HasOne(x => x.Address)
             .WithMany(x => x.Orders)
             .HasForeignKey(x => x.AddressId);
@@ -42,5 +37,9 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
             .HasOne(x => x.DiscountVoucher)
             .WithMany(x => x.Orders)
             .HasForeignKey(x => x.DiscountVoucherId);
+
+        builder
+            .Property(x => x.TotalPrice)
+            .HasColumnType("decimal(8,2)");
     }
 }

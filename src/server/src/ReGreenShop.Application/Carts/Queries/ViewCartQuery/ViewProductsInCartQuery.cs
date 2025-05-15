@@ -12,11 +12,13 @@ public record ViewProductsInCartQuery : IRequest<CartModel>
     {
         private readonly ICart cartService;
         private readonly IData data;
+        private readonly IDelivery deliveryService;
 
-        public ViewProductsInCartQueryHandler(ICart cartService, IData data)
+        public ViewProductsInCartQueryHandler(ICart cartService, IData data, IDelivery deliveryService)
         {
             this.cartService = cartService;
             this.data = data;
+            this.deliveryService = deliveryService;
         }
 
         public async Task<CartModel> Handle(ViewProductsInCartQuery request, CancellationToken cancellationToken)
@@ -78,46 +80,17 @@ public record ViewProductsInCartQuery : IRequest<CartModel>
                     }
                 }
             }
-
-            decimal? deliveryCost;
-            string deliveryMessage = string.Empty;
-
             var totalPriceProducts = cartItems.SelectMany(x => x.Products).Sum(x => x.TotalPriceProduct);
-            var deliveryTiers = await this.data.DeliveryPrices
-                        .OrderBy(x => x.MinPriceOrder)
-                        .ToListAsync();
 
-            var minDeliveryTier = deliveryTiers.First();
-            var freeDeliveryTier = deliveryTiers.Last();
 
-            var deliveryPriceTier = deliveryTiers
-                        .FirstOrDefault(x =>
-                         totalPriceProducts >= x.MinPriceOrder && totalPriceProducts <= x.MaxPriceOrder);
-
-            if (deliveryPriceTier == null)
-            {
-                deliveryCost = null;
-                deliveryMessage = $"Minimum order value for delivery is {minDeliveryTier.MinPriceOrder}";
-            }
-            else
-            {
-                deliveryCost = deliveryPriceTier.Price;
-                if (deliveryPriceTier.Price > 0m)
-                {
-                    deliveryMessage = $"Add items worth {freeDeliveryTier.MinPriceOrder - totalPriceProducts: 0.00}lv more to get a free delivery";
-                }
-                else
-                {
-                    deliveryMessage = "You get free delivery!";
-                }
-            }
+            (decimal? deliveryCost, string deliveryMessage) =  this.deliveryService.CalculateTheDeliveryPrice(totalPriceProducts);
 
             var cartModel = new CartModel
             {
                 ProductsByCategories = cartItems,
                 TotalPrice = totalPriceProducts,
                 DeliveryMessage = deliveryMessage,
-                DeliveryPriceProducts = deliveryCost,
+                DeliveryPriceProducts = deliveryCost != null ? Math.Round(deliveryCost.Value,2) : default!
             };
 
             return cartModel;

@@ -16,6 +16,8 @@ public class OrderDetail : IDeletableEntity
 
     public decimal PricePerUnit { get; set; }
 
+    public decimal TotalPrice { get; set; }
+
     public bool IsDeleted { get; set; }
 
     public DateTime? DeletedOn { get; set; }

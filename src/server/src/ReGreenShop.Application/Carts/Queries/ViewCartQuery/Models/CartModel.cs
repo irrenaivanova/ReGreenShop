@@ -9,7 +9,7 @@ public class CartModel
 
     public decimal TotalPrice { get; set; }
 
-    public decimal? DeliveryPriceProducts { get; set; }
+    public decimal DeliveryPriceProducts { get; set; }
 
     public string? DeliveryMessage { get; set; }
 }

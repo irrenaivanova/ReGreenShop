@@ -1,13 +1,256 @@
+
+using System.IO;
+using System.Reflection;
 using MediatR;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using ReGreenShop.Application.Carts.Queries.ViewProductsInCartQuery.Models;
+using ReGreenShop.Application.Common.Exceptions;
+using ReGreenShop.Application.Common.Identity;
+using ReGreenShop.Application.Common.Interfaces;
+using ReGreenShop.Application.Common.Mappings;
+using ReGreenShop.Application.Common.Models;
+using ReGreenShop.Domain.Entities;
+using ReGreenShop.Domain.Services;
+using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Application.Orders.Commands.MakeAnOrder;
-public record MakeAnOrderCommand(MakeAnOrderModel model) : IRequest<int>
+public record MakeAnOrderCommand(MakeAnOrderModel model) : IRequest<string>
 {
-    public class MakeAnOrderCommandHandler : IRequestHandler<MakeAnOrderCommand, int>
+    public class MakeAnOrderCommandHandler : IRequestHandler<MakeAnOrderCommand, string>
     {
-        public Task<int> Handle(MakeAnOrderCommand request, CancellationToken cancellationToken)
+        private readonly ICurrentUser currentUser;
+        private readonly IData data;
+        private readonly ICart cartService;
+        private readonly IDelivery deliveryService;
+        private readonly IIdentity userService;
+        private readonly IPdfGenerator pdfGenerator;
+        private readonly IStorage storage;
+        private readonly IEmailSender emailSender;
+        private readonly IWebHostEnvironment web;
+
+        public MakeAnOrderCommandHandler(ICurrentUser currentUser,
+                                        IData data,
+                                        ICart cartService,
+                                        IDelivery deliveryService,
+                                        IIdentity userService,
+                                        IPdfGenerator pdfGenerator,
+                                        IStorage storage,
+                                        IEmailSender emailSender,
+                                        IWebHostEnvironment web)
         {
-            throw new NotImplementedException();
+            this.currentUser = currentUser;
+            this.data = data;
+            this.cartService = cartService;
+            this.deliveryService = deliveryService;
+            this.userService = userService;
+            this.pdfGenerator = pdfGenerator;
+            this.storage = storage;
+            this.emailSender = emailSender;
+            this.web = web;
+        }
+
+        public async Task<string> Handle(MakeAnOrderCommand request, CancellationToken cancellationToken)
+        {
+            // check if the user is authenticated
+            var userId =  this.currentUser.UserId;
+            if (userId == null)
+            {
+                throw new AuthenticationException("Please log in to complete your purchase.");
+            }
+
+            var cartId = await this.cartService.GetCartIdAsync();
+            var cartItems = await this.data.CartItems.Where(x => x.CartId == cartId)
+                .To<ProductInCartModel>()
+                .ToListAsync();
+
+            // check the stock of the products
+            foreach (var item in cartItems)
+            {
+                var product = await this.data.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == item.Id);
+                if (product == null)
+                {
+                    throw new NotFoundException("Product", "null");
+                }
+                var stock = product.Stock;
+                if (item.QuantityInCart > stock)
+                {
+                    throw new InsufficientQuantityException(item.Name, stock);
+                }
+            }
+
+            // Calculate the price including promotions
+            foreach (var item in cartItems)
+            {
+                if (item.HasTwoForOneDiscount)
+                {
+                    item.DiscountPrice = PriceCalculator.CalculateTwoForOnePriceSinglePrice(item.Price);
+                    item.TotalPriceProduct = PriceCalculator.CalculateTwoForOnePrice(item.Price, item.QuantityInCart);
+                    item.LabelTwoForOne = "TwoForOne";
+                }
+                else if (item.HasPromoDiscount && !item.HasTwoForOneDiscount && item.DiscountPercentage.HasValue)
+                {
+                    item.DiscountPrice = PriceCalculator.CalculateDiscountedPrice(item.Price, item.DiscountPercentage.Value);
+                    item.TotalPriceProduct = PriceCalculator.CalculateTotalPrice(item.DiscountPrice.Value, item.QuantityInCart);
+                }
+                else
+                {
+                    item.TotalPriceProduct = PriceCalculator.CalculateTotalPrice(item.Price, item.QuantityInCart);
+                }
+            }
+
+            var totalPriceProducts = cartItems.Sum(x => x.TotalPriceProduct);
+
+            // Calculate the delivery price
+            (decimal? deliveryCost, string deliveryMessage) = this.deliveryService.CalculateTheDeliveryPrice(totalPriceProducts);
+
+            if (deliveryCost == null)
+            {
+                throw new BusinessRulesException(deliveryMessage);
+            }
+
+            // Apply discount to total price if a discount voucher is used
+            int? voucherId = request.model.DiscountVoucherId;
+            var discount = 0m;
+            int greenPoints = 0;
+
+            if (voucherId != null)
+            {
+                var voucher = await this.data.DiscountVouchers.FirstOrDefaultAsync(x => x.Id == voucherId);
+                if (voucher == null)
+                {
+                    throw new NotFoundException("Voucher");
+                }
+                discount = voucher.PriceDiscount;
+                greenPoints = voucher.GreenPoints;
+
+                var userDto = await this.userService.GetUserWithAdditionalInfo();
+                if (greenPoints < userDto.TotalGreenPoints)
+                {
+                    throw new BusinessRulesException("Insufficient green points to apply this voucher.");
+                }
+            }
+
+            // Calculate the total price including delivery price and discounts
+            var totalPriceOrder = Math.Round(totalPriceProducts + deliveryCost.Value - discount,2);
+
+            // Create a new delivery address if one does not already exist
+            var address = await this.data.Addresses.Where(x => x.UserId == userId)
+                .FirstOrDefaultAsync(x => x.CityId == request.model.CityId && x.Street == request.model.Street && x.Number == request.model.Number);
+
+            if (address == null)
+            {
+                address = new Address()
+                {
+                    CityId = request.model.CityId,
+                    Street = request.model.Street,
+                    Number = request.model.Number,
+                    UserId = userId,
+                };
+
+                this.data.Addresses.Add(address);
+            }
+
+            // Create new order
+            var newOrder = new Order()
+            {
+                UserId = userId,
+                DeliveryDate = request.model.DeliveryDateTime,
+                TotalPrice = totalPriceOrder,
+                Status = Domain.Entities.Enum.OrderStatus.Pending,
+                AddressId = address.Id,
+                PaymentId = request.model.PaymentMethodId,
+                DiscountVoucherId = request.model.DiscountVoucherId,    
+            };
+
+            // Add order details
+            foreach (var item in cartItems)
+            {
+                var orderDetail = new OrderDetail()
+                {
+                    ProductId = item.Id,
+                    OrderId = newOrder.Id,
+                    Quantity = item.QuantityInCart,
+                    PricePerUnit = item.DiscountPrice ?? item.Price
+                };
+
+                this.data.OrderDetails.Add(orderDetail);
+            }
+
+            // Reduce the quantity available in stock
+            foreach (var item in cartItems)
+            {
+                var product = await this.data.Products.FirstOrDefaultAsync(x => x.Id == item.Id);
+
+                if (product == null)
+                {
+                    throw new NotFoundException("Product");
+                }
+
+                if (product.Stock < item.QuantityInCart)
+                {
+                    throw new InsufficientQuantityException(product.Name, item.QuantityInCart);
+                }
+                product!.Stock -= item.QuantityInCart;
+            }
+
+            // Clear the user cart
+            await this.cartService.ClearCartAsync();
+            await this.data.SaveChangesAsync();
+
+
+            // Update user info and decrease ReGreenPoints if a voucher is applied
+            var changeUserDto = new ChangeUserModel()
+            {
+                AddressId = address.Id,
+                FirstName = request.model.FirstName,
+                LastName = request.model.LastName,
+                GreenPoints = greenPoints
+            };
+
+            await this.userService.ChangeUserInfoAsync(changeUserDto);
+
+            var invoiceItem = new InvoiceItem()
+            {
+                TotalPrice = totalPriceOrder,
+                TotalPriceProducts = totalPriceProducts,
+                DeliveryPrice = deliveryCost.Value,
+                Discount = discount,
+                Products = cartItems.Select(x => new ProductForInvoice()
+                {
+                    Name = x.Name,
+                    Quantity = x.QuantityInCart,
+                    PricePerUnit = x.DiscountPrice ?? x.Price
+                }).ToList()
+            };
+
+            // Create invoice
+            var invoice = this.pdfGenerator.GenerateReceiptPdfAsync(invoiceItem);
+            var invoiceUrl = await this.storage.SaveInvoicesAsync(invoice, $"Invoice {newOrder.Id}");
+            newOrder.InvoiceUrl = invoiceUrl;
+            await this.data.SaveChangesAsync();
+
+            // Send an email with the Poly policy attached
+
+            string templateId = "d-5e226b6ae4c4434cadfee761ff05ea51";
+            var dynamicDta = new Dictionary<string, object>
+                    {
+                        { "name1", $"John Doe" },
+                        { "name2", $"{newOrder.Id.Substring(0,6)} / {newOrder.CreatedOn.ToString("dd MMM yyyy")}" },
+                    };
+
+            var path = Path.Combine(this.web.WebRootPath, "invoices", "invoice.pdf");
+            var fileBytes = await System.IO.File.ReadAllBytesAsync(path);
+            var attachment = new EmailAttachment
+            {
+                FileName = "invoice.pdf",
+                Content = fileBytes,
+                MimeType = "application/pdf"
+            };
+
+            var userName = await this.userService.GetUserName(userId);
+            await this.emailSender.SendTemplateEmailAsync(SystemEmailSender, SystemEmailSenderName,userName!,templateId, dynamicDta, new List<EmailAttachment> { attachment });
+            return newOrder.Id;
         }
     }
 }

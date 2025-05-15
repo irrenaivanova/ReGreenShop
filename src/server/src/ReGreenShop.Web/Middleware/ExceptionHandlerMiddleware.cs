@@ -48,6 +48,10 @@ public class ExceptionHandlerMiddleware
                 code = HttpStatusCode.BadRequest;
                 result = JsonConvert.SerializeObject(new { error = ex.Message });
                 break;
+            case BusinessRulesException ex:
+                code = HttpStatusCode.BadRequest;
+                result = JsonConvert.SerializeObject(new { error = ex.Message });
+                break;
             // 401 Unauthorized
             case UnauthorizedAccessException _:
                 code = HttpStatusCode.Unauthorized;
