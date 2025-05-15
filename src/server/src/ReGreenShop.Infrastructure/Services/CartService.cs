@@ -44,7 +44,7 @@ public class CartService : ICart
             var cart = await this.data.Carts.FirstOrDefaultAsync(x => x.Session == sessionValue);
             if (cart == null)
             {
-                 cart = new Cart()
+                cart = new Cart()
                 {
                     Session = sessionValue
                 };

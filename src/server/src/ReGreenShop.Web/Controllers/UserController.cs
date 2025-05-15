@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ReGreenShop.Application.Common.Helpers;
 using ReGreenShop.Application.Common.Identity.Login;
 using ReGreenShop.Application.Common.Identity.Register;
+using ReGreenShop.Application.Users.Queries.GetUserInfoForOrderQuery;
 
 namespace ReGreenShop.Web.Controllers;
 public class UserController : BaseController
@@ -14,6 +15,16 @@ public class UserController : BaseController
         this.mediator = mediator;
     }
 
+    [HttpGet(nameof(GetUserInfoForOrder))]
+    public async Task<IActionResult> GetUserInfoForOrder()
+    {
+        var query = new GetUserInfoForOrderQuery();
+        var result = await this.mediator.Send(query);
+        return ApiResponseHelper.Success(result);
+    }
+
+
+    // commands
     [HttpPost(nameof(Login))]
     public async Task<IActionResult> Login([FromBody] LoginCommand command)
     {

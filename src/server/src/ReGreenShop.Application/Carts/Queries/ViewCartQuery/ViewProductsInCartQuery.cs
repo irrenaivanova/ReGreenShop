@@ -22,7 +22,7 @@ public record ViewProductsInCartQuery : IRequest<CartModel>
         public async Task<CartModel> Handle(ViewProductsInCartQuery request, CancellationToken cancellationToken)
         {
             var cartId = await this.cartService.GetCartIdAsync();
-   
+
             var cartItemDtos = await this.data.CartItems
                 .Where(x => x.CartId == cartId)
                 .Select(x => new
@@ -52,7 +52,7 @@ public record ViewProductsInCartQuery : IRequest<CartModel>
                                     dto.QuantityInCart = quantity;
                                     return dto;
                                 }).ToList()
-      
+
                 })
                 .ToList();
 
@@ -83,7 +83,7 @@ public record ViewProductsInCartQuery : IRequest<CartModel>
             string deliveryMessage = string.Empty;
 
             var totalPriceProducts = cartItems.SelectMany(x => x.Products).Sum(x => x.TotalPriceProduct);
-            var deliveryTiers =  await this.data.DeliveryPrices
+            var deliveryTiers = await this.data.DeliveryPrices
                         .OrderBy(x => x.MinPriceOrder)
                         .ToListAsync();
 
@@ -104,7 +104,7 @@ public record ViewProductsInCartQuery : IRequest<CartModel>
                 deliveryCost = deliveryPriceTier.Price;
                 if (deliveryPriceTier.Price > 0m)
                 {
-                    deliveryMessage = $"Add items worth {freeDeliveryTier.MinPriceOrder - totalPriceProducts : 0.00}lv more to get a free delivery";
+                    deliveryMessage = $"Add items worth {freeDeliveryTier.MinPriceOrder - totalPriceProducts: 0.00}lv more to get a free delivery";
                 }
                 else
                 {

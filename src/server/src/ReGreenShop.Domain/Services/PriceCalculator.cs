@@ -34,7 +34,7 @@ public static class PriceCalculator
             throw new ArgumentOutOfRangeException(nameof(pricePerUnit));
         }
 
-        return Math.Round(pricePerUnit/2, 2);
+        return Math.Round(pricePerUnit / 2, 2);
     }
 
     public static decimal CalculateTotalPrice(decimal price, int quantity)

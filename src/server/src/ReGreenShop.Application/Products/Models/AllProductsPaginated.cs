@@ -3,7 +3,7 @@ public class AllProductsPaginated : PageInfo
 {
     public AllProductsPaginated()
     {
-        this.Products = new List<ProductInList>();
+        Products = new List<ProductInList>();
     }
 
     public IEnumerable<ProductInList> Products { get; set; }

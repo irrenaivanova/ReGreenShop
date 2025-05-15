@@ -3,12 +3,12 @@ public class ProductsByCategory
 {
     public ProductsByCategory()
     {
-        this.Products = new List<ProductInCartModel>();
+        Products = new List<ProductInCartModel>();
     }
 
     public int Id { get; set; }
 
-    public string CategoryName { get; set; }
+    public string CategoryName { get; set; } = string.Empty;
 
     public IList<ProductInCartModel> Products { get; set; }
 }

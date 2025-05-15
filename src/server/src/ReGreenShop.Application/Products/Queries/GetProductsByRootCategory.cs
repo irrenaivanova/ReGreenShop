@@ -2,12 +2,12 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ReGreenShop.Application.Common.Exceptions;
 using ReGreenShop.Application.Common.Interfaces;
-using ReGreenShop.Application.Products.Models;
 using ReGreenShop.Application.Common.Mappings;
+using ReGreenShop.Application.Products.Models;
 using ReGreenShop.Domain.Services;
 
 namespace ReGreenShop.Application.Products.Queries;
-public class  GetProductsByRootCategory() : IRequest<AllProductsPaginated>
+public class GetProductsByRootCategory() : IRequest<AllProductsPaginated>
 {
     public int CategoryId { get; set; }
     public int Page { get; set; } = 1;
@@ -38,14 +38,14 @@ public class  GetProductsByRootCategory() : IRequest<AllProductsPaginated>
             var totalItems = query.Count();
             var totalPages = (int)Math.Ceiling(totalItems / (double)request.ItemsPerPage);
 
-            if(request.Page < 1 || request.Page > totalPages)
+            if (request.Page < 1 || request.Page > totalPages)
             {
                 throw new NotFoundException("Page", request.Page);
             }
 
             var products = await query
                 .OrderByDescending(x => x.Stock)
-                .Skip((request.Page-1)*request.ItemsPerPage)
+                .Skip((request.Page - 1) * request.ItemsPerPage)
                 .Take(request.ItemsPerPage)
                 .To<ProductInList>().ToListAsync();
 

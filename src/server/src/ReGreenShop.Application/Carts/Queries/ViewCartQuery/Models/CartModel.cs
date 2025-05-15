@@ -3,7 +3,7 @@ public class CartModel
 {
     public CartModel()
     {
-        this.ProductsByCategories = new List<ProductsByCategory>();
+        ProductsByCategories = new List<ProductsByCategory>();
     }
     public IList<ProductsByCategory> ProductsByCategories { get; set; }
 

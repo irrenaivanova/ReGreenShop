@@ -1,19 +1,13 @@
-using System;
-using System.Collections.Frozen;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ReGreenShop.Application.Common.Exceptions;
 using ReGreenShop.Application.Common.Interfaces;
-using ReGreenShop.Application.Products.Models;
 using ReGreenShop.Application.Common.Mappings;
+using ReGreenShop.Application.Products.Models;
 using ReGreenShop.Domain.Services;
 
 namespace ReGreenShop.Application.Products.Queries;
-public record  GetProductsBySubCategory(int id) : IRequest<IEnumerable<ProductInList>>
+public record GetProductsBySubCategory(int id) : IRequest<IEnumerable<ProductInList>>
 {
     public class GetProductBySubCategoryHandler : IRequestHandler<GetProductsBySubCategory, IEnumerable<ProductInList>>
     {

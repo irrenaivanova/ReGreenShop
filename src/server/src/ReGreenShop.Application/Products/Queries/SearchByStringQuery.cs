@@ -1,14 +1,12 @@
-using System.Security.Cryptography.X509Certificates;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ReGreenShop.Application.Common.Exceptions;
 using ReGreenShop.Application.Common.Interfaces;
 using ReGreenShop.Application.Common.Mappings;
 using ReGreenShop.Application.Products.Models;
-using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace ReGreenShop.Application.Products.Queries;
-public  class SearchByStringQuery : IRequest<AllProductsPaginated>
+public class SearchByStringQuery : IRequest<AllProductsPaginated>
 {
     public string SearchString { get; set; } = string.Empty;
     public int Page { get; set; } = 1;
@@ -36,7 +34,7 @@ public  class SearchByStringQuery : IRequest<AllProductsPaginated>
                     .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
                     .Select(x => $"%{x.ToLower()}%").ToList();
 
-            var query =  this.data.Products
+            var query = this.data.Products
                    .Select(product => new ProductScoreModel
                    {
                        Product = product,
@@ -52,7 +50,7 @@ public  class SearchByStringQuery : IRequest<AllProductsPaginated>
             {
                 var categoryScore = wildCarts.Count(search =>
                     item.Product.ProductCategories.Any(x => EF.Functions.Like(x.Category.NameInBulgarian, search)) ||
-                    item.Product.ProductCategories.Any(x => EF.Functions.Like(x.Category.NameInEnglish, search)) 
+                    item.Product.ProductCategories.Any(x => EF.Functions.Like(x.Category.NameInEnglish, search))
                 );
 
                 item.Score += categoryScore;

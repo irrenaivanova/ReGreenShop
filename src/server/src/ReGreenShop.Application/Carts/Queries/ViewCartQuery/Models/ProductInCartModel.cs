@@ -1,7 +1,6 @@
 using AutoMapper;
 using ReGreenShop.Application.Common.Mappings;
 using ReGreenShop.Domain.Entities;
-using ReGreenShop.Domain.Services;
 using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Application.Carts.Queries.ViewProductsInCartQuery.Models;
@@ -15,7 +14,7 @@ public class ProductInCartModel : IMapFrom<Product>, IMapExplicitly
 
     public string? Packaging { get; set; }
 
-    public string? LabelTwoForOne { get; set; } 
+    public string? LabelTwoForOne { get; set; }
 
     public string ImagePath { get; set; } = string.Empty;
 

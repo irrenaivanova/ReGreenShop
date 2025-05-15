@@ -1,9 +1,11 @@
+using System.Linq.Expressions;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ReGreenShop.Application.Common.Exceptions;
 using ReGreenShop.Application.Common.Identity;
 using ReGreenShop.Application.Common.Interfaces;
+using ReGreenShop.Application.Users.Queries.GetUserInfoForOrderQuery;
 using ReGreenShop.Infrastructure.Persistence.Identity;
 using static ReGreenShop.Application.Common.GlobalConstants;
 
@@ -12,12 +14,15 @@ public class IdentityService : IIdentity
 {
     private readonly ITokenGenerator tokenGenerator;
     private readonly UserManager<User> userManager;
+    private readonly ICurrentUser currentUser;
 
     public IdentityService(ITokenGenerator tokenGenerator,
-                           UserManager<User> userManager)
+                           UserManager<User> userManager,
+                           ICurrentUser currentUser)
     {
         this.tokenGenerator = tokenGenerator;
         this.userManager = userManager;
+        this.currentUser = currentUser;
     }
 
     public async Task<string?> GetUserName(string userId)
@@ -94,5 +99,38 @@ public class IdentityService : IIdentity
             UserName = user.UserName ?? "",
             AccessToken = accessToken
         };
+    }
+
+
+    public async Task<UserInfoForOrderModel> GetUserWithAdditionalInfo()
+    {
+        var userId = this.currentUser.UserId;
+        if (userId == null)
+        {
+            throw new NotFoundException("User", "null");
+        }
+
+        var user = await this.userManager.Users
+            .Include(x => x.Addresses)
+            .ThenInclude(x => x.City)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null)
+        {
+            throw new NotFoundException("User", "null");
+        }
+
+        var userInfo = new UserInfoForOrderModel()
+        {
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            TotalGreenPoints = user.TotalGreenPoints,
+            Street = user.Addresses.LastOrDefault()!= null ? user.Addresses.LastOrDefault()!.Street : null,
+            Number = user.Addresses.LastOrDefault() != null ? user.Addresses.LastOrDefault()!.Number : null,
+            CityId = user.Addresses.LastOrDefault() != null ? user.Addresses.LastOrDefault()!.CityId : null,
+            CityName = user.Addresses.LastOrDefault() != null ? user.Addresses.LastOrDefault()!.City.Name : null,
+        };
+
+        return userInfo;
     }
 }

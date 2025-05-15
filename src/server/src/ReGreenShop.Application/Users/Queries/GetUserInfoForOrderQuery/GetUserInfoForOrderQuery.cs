@@ -1,13 +1,23 @@
 using MediatR;
+using ReGreenShop.Application.Common.Identity;
+using ReGreenShop.Application.Common.Interfaces;
 
 namespace ReGreenShop.Application.Users.Queries.GetUserInfoForOrderQuery;
-public record GetUserInfoForOrderQuery : IRequest<GetUserInfoForOrderModel>
+public record GetUserInfoForOrderQuery : IRequest<UserInfoForOrderModel>
 {
-    public class GetUserInfoForOrderQueryHandler : IRequestHandler<GetUserInfoForOrderQuery, GetUserInfoForOrderModel>
+    public class GetUserInfoForOrderQueryHandler : IRequestHandler<GetUserInfoForOrderQuery, UserInfoForOrderModel>
     {
-        public Task<GetUserInfoForOrderModel> Handle(GetUserInfoForOrderQuery request, CancellationToken cancellationToken)
+        private readonly IIdentity identityService;
+
+        public GetUserInfoForOrderQueryHandler(IIdentity identityService)
         {
-            throw new NotImplementedException();
+            this.identityService = identityService;
+        }
+
+        public async Task<UserInfoForOrderModel> Handle(GetUserInfoForOrderQuery request, CancellationToken cancellationToken)
+        {
+            var userInfo = await this.identityService.GetUserWithAdditionalInfo();
+            return userInfo;
         }
     }
 }

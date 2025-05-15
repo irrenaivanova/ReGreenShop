@@ -1,11 +1,9 @@
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using ReGreenShop.Application.Common.Exceptions;
 using ReGreenShop.Application.Common.Interfaces;
-using ReGreenShop.Domain.Entities;
 
 namespace ReGreenShop.Application.Carts.Commands;
- public record  RemoveFromCartCommand(int id) : IRequest<Unit>
+public record RemoveFromCartCommand(int id) : IRequest<Unit>
 {
     public class RemoveFromCartCommandHandler : IRequestHandler<RemoveFromCartCommand, Unit>
     {
@@ -29,7 +27,7 @@ namespace ReGreenShop.Application.Carts.Commands;
             var cartItem = this.data.CartItems.SingleOrDefault(x => x.CartId == cartId && x.ProductId == request.id);
             if (cartItem == null)
             {
-                throw new NotFoundException("CartItem","null");
+                throw new NotFoundException("CartItem", "null");
             }
 
             if (cartItem != null)
