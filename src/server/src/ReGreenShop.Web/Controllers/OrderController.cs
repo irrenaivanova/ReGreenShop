@@ -16,9 +16,10 @@ public class OrderController : BaseController
 
     // commands
     [HttpPost(nameof(MakeAnOrder))]
-    public async Task<IActionResult> MakeAnOrder([FromBody] MakeAnOrderModel command)
+    public async Task<IActionResult> MakeAnOrder([FromBody] MakeAnOrderModel model)
     {
+        var command = new MakeAnOrderCommand(model);
         var result = await this.mediator.Send(command);
-        return ApiResponseHelper.Success(result!, "Login successful");
+        return ApiResponseHelper.Success(result!, "Your order has been placed successfully. You will receive a confirmation email along with an invoice for your purchase.");
     }
 }

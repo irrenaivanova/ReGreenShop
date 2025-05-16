@@ -29,14 +29,8 @@ public record MakeAnOrderCommand(MakeAnOrderModel model) : IRequest<string>
         private readonly IEmailSender emailSender;
         private readonly IWebHostEnvironment web;
 
-        public MakeAnOrderCommandHandler(ICurrentUser currentUser,
-                                        IData data,
-                                        ICart cartService,
-                                        IDelivery deliveryService,
-                                        IIdentity userService,
-                                        IPdfGenerator pdfGenerator,
-                                        IStorage storage,
-                                        IEmailSender emailSender,
+        public MakeAnOrderCommandHandler(ICurrentUser currentUser, IData data, ICart cartService, IDelivery deliveryService,
+                                        IIdentity userService, IPdfGenerator pdfGenerator,IStorage storage, IEmailSender emailSender,
                                         IWebHostEnvironment web)
         {
             this.currentUser = currentUser;
@@ -61,8 +55,15 @@ public record MakeAnOrderCommand(MakeAnOrderModel model) : IRequest<string>
 
             var cartId = await this.cartService.GetCartIdAsync();
             var cartItems = await this.data.CartItems.Where(x => x.CartId == cartId)
+                .Select(x => x.Product)
                 .To<ProductInCartModel>()
                 .ToListAsync();
+
+            foreach (var item in cartItems)
+            {
+                var quantity = this.data.CartItems.First(x => x.ProductId == item.Id && x.CartId == cartId).Quantity;
+                item.QuantityInCart = quantity;
+            }
 
             // check the stock of the products
             foreach (var item in cartItems)
@@ -84,7 +85,6 @@ public record MakeAnOrderCommand(MakeAnOrderModel model) : IRequest<string>
             {
                 if (item.HasTwoForOneDiscount)
                 {
-                    item.DiscountPrice = PriceCalculator.CalculateTwoForOnePriceSinglePrice(item.Price);
                     item.TotalPriceProduct = PriceCalculator.CalculateTwoForOnePrice(item.Price, item.QuantityInCart);
                     item.LabelTwoForOne = "TwoForOne";
                 }
@@ -99,6 +99,7 @@ public record MakeAnOrderCommand(MakeAnOrderModel model) : IRequest<string>
                 }
             }
 
+            // TODO : Check if any product prices have changed and notify the user
             var totalPriceProducts = cartItems.Sum(x => x.TotalPriceProduct);
 
             // Calculate the delivery price
@@ -125,7 +126,8 @@ public record MakeAnOrderCommand(MakeAnOrderModel model) : IRequest<string>
                 greenPoints = voucher.GreenPoints;
 
                 var userDto = await this.userService.GetUserWithAdditionalInfo();
-                if (greenPoints < userDto.TotalGreenPoints)
+                var userPoints = userDto.TotalGreenPoints;
+                if (!userPoints.HasValue || greenPoints > userPoints!.Value)
                 {
                     throw new BusinessRulesException("Insufficient green points to apply this voucher.");
                 }
@@ -140,6 +142,12 @@ public record MakeAnOrderCommand(MakeAnOrderModel model) : IRequest<string>
 
             if (address == null)
             {
+                var city = await this.data.Cities.FirstOrDefaultAsync(x => x.Id == request.model.CityId);
+                if (city == null)
+                {
+                    throw new NotFoundException("City", request.model.CityId);
+                }
+
                 address = new Address()
                 {
                     CityId = request.model.CityId,
@@ -158,7 +166,7 @@ public record MakeAnOrderCommand(MakeAnOrderModel model) : IRequest<string>
                 DeliveryDate = request.model.DeliveryDateTime,
                 TotalPrice = totalPriceOrder,
                 Status = Domain.Entities.Enum.OrderStatus.Pending,
-                AddressId = address.Id,
+                Address = address,
                 PaymentId = request.model.PaymentMethodId,
                 DiscountVoucherId = request.model.DiscountVoucherId,    
             };
@@ -169,9 +177,9 @@ public record MakeAnOrderCommand(MakeAnOrderModel model) : IRequest<string>
                 var orderDetail = new OrderDetail()
                 {
                     ProductId = item.Id,
-                    OrderId = newOrder.Id,
+                    Order = newOrder,
                     Quantity = item.QuantityInCart,
-                    PricePerUnit = item.DiscountPrice ?? item.Price
+                    PricePerUnit = item.DiscountPrice ?? item.Price,
                 };
 
                 this.data.OrderDetails.Add(orderDetail);
@@ -218,15 +226,17 @@ public record MakeAnOrderCommand(MakeAnOrderModel model) : IRequest<string>
                 Discount = discount,
                 Products = cartItems.Select(x => new ProductForInvoice()
                 {
-                    Name = x.Name,
+                    Name = x.HasTwoForOneDiscount ? x.Name + "   Promo: 2 For 1" : x.Name,
                     Quantity = x.QuantityInCart,
-                    PricePerUnit = x.DiscountPrice ?? x.Price
+                    PricePerUnit = x.DiscountPrice ?? x.Price,
+                    TotalPrice = x.TotalPriceProduct,
+
                 }).ToList()
             };
 
             // Create invoice
             var invoice = this.pdfGenerator.GenerateReceiptPdfAsync(invoiceItem);
-            var invoiceUrl = await this.storage.SaveInvoicesAsync(invoice, $"Invoice {newOrder.Id}");
+            var invoiceUrl = await this.storage.SaveInvoicesAsync(invoice, $"invoice {newOrder.Id}");
             newOrder.InvoiceUrl = invoiceUrl;
             await this.data.SaveChangesAsync();
 
@@ -235,11 +245,11 @@ public record MakeAnOrderCommand(MakeAnOrderModel model) : IRequest<string>
             string templateId = "d-5e226b6ae4c4434cadfee761ff05ea51";
             var dynamicDta = new Dictionary<string, object>
                     {
-                        { "name1", $"John Doe" },
+                        { "name1", $"{request.model.FirstName} {request.model.LastName}" },
                         { "name2", $"{newOrder.Id.Substring(0,6)} / {newOrder.CreatedOn.ToString("dd MMM yyyy")}" },
                     };
 
-            var path = Path.Combine(this.web.WebRootPath, "invoices", "invoice.pdf");
+            var path = Path.Combine(this.web.WebRootPath, "invoices", $"invoice {newOrder.Id}.pdf");
             var fileBytes = await System.IO.File.ReadAllBytesAsync(path);
             var attachment = new EmailAttachment
             {

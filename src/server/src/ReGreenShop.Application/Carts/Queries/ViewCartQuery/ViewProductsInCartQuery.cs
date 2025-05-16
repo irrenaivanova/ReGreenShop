@@ -58,7 +58,7 @@ public record ViewProductsInCartQuery : IRequest<CartModel>
                 })
                 .ToList();
 
-
+            // TODO : Calvculating the price of the products in the cart in a service
             foreach (var productList in cartItems.Select(x => x.Products))
             {
                 foreach (var prod in productList)

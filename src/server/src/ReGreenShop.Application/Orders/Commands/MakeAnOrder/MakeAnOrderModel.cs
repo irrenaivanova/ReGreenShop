@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 namespace ReGreenShop.Application.Orders.Commands.MakeAnOrder;
 public class MakeAnOrderModel
 {
@@ -15,6 +17,7 @@ public class MakeAnOrderModel
 
     public DateTime DeliveryDateTime { get; set; }
 
+    [DefaultValue(null)]
     public int? DiscountVoucherId { get; set; }
 
 }

@@ -150,6 +150,7 @@ public class IdentityService : IIdentity
         }
         user.FirstName = model.FirstName;
         user.LastName = model.LastName;
+        user.TotalGreenPoints -= model.GreenPoints;
 
         var result = await this.userManager.UpdateAsync(user);
         if (!result.Succeeded)

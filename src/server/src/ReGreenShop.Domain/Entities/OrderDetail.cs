@@ -22,7 +22,7 @@ public class OrderDetail : IDeletableEntity
 
     public DateTime? DeletedOn { get; set; }
 
-    public Category BaseCategory { get; set; } = default!;
+    public Category? BaseCategory { get; set; } = default!;
 
-    public int BaseCategoryId { get; set; }
+    public int? BaseCategoryId { get; set; }
 }

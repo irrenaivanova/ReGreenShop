@@ -47,17 +47,17 @@ public class PdfGeneratorService : IPdfGenerator
                         {
                             table.Cell().Element(CellStyle).Text(product.Name);
                             table.Cell().Element(CellStyle).AlignRight().Text(product.Quantity.ToString());
-                            table.Cell().Element(CellStyle).AlignRight().Text($"{product.PricePerUnit:C}");
-                            table.Cell().Element(CellStyle).AlignRight().Text($"{product.TotalPrice:C}");
+                            table.Cell().Element(CellStyle).AlignRight().Text($"{product.PricePerUnit} lv");
+                            table.Cell().Element(CellStyle).AlignRight().Text($"{product.TotalPrice} lv");
                         }
                     });
 
                     column.Item().LineHorizontal(1);
 
-                    column.Item().AlignRight().Text($"Subtotal: {model.TotalPriceProducts:C}");
-                    column.Item().AlignRight().Text($"Delivery: {model.DeliveryPrice:C}");
-                    column.Item().AlignRight().Text($"Discount: {model.Discount:C}");
-                    column.Item().AlignRight().Text($"Total: {model.TotalPrice:C}").Bold();
+                    column.Item().AlignRight().Text($"Subtotal: {model.TotalPriceProducts} lv");
+                    column.Item().AlignRight().Text($"Delivery: {model.DeliveryPrice} lv");
+                    column.Item().AlignRight().Text($"Discount: {model.Discount} lv");
+                    column.Item().AlignRight().Text($"Total: {model.TotalPrice} lv").Bold();
                 });
 
                 page.Footer()
