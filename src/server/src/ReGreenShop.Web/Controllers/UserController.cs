@@ -1,8 +1,11 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReGreenShop.Application.Common.Helpers;
 using ReGreenShop.Application.Common.Identity.Login;
 using ReGreenShop.Application.Common.Identity.Register;
+using ReGreenShop.Application.Orders.Queries.GetMyOrdersQuery;
+using ReGreenShop.Application.Users.Queries.GetUserInfo;
 using ReGreenShop.Application.Users.Queries.GetUserInfoForOrderQuery;
 
 namespace ReGreenShop.Web.Controllers;
@@ -22,6 +25,18 @@ public class UserController : BaseController
         var result = await this.mediator.Send(query);
         return ApiResponseHelper.Success(result);
     }
+
+    [Authorize]
+    [HttpGet(nameof(GetUserInfo))]
+    public async Task<IActionResult> GetUserInfo()
+    {
+        var query = new GetUserInfoQuery();
+        var result = await this.mediator.Send(query);
+        return ApiResponseHelper.Success(result);
+    }
+
+
+
 
 
     // commands

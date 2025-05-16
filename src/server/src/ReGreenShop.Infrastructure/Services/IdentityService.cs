@@ -7,6 +7,7 @@ using ReGreenShop.Application.Common.Exceptions;
 using ReGreenShop.Application.Common.Identity;
 using ReGreenShop.Application.Common.Interfaces;
 using ReGreenShop.Application.Orders.Commands.MakeAnOrder;
+using ReGreenShop.Application.Users.Queries.GetUserInfo;
 using ReGreenShop.Application.Users.Queries.GetUserInfoForOrderQuery;
 using ReGreenShop.Infrastructure.Persistence.Identity;
 using static ReGreenShop.Application.Common.GlobalConstants;
@@ -155,9 +156,42 @@ public class IdentityService : IIdentity
         var result = await this.userManager.UpdateAsync(user);
         if (!result.Succeeded)
         {
-            // Handle errors, for example:
             var errors = string.Join(", ", result.Errors.Select(e => e.Description));
             throw new InvalidOperationException($"Failed to update user: {errors}");
         }
+    }
+
+    public async Task<GetUserInfoModel> GetUserInfoAsync()
+    {
+        var userId = this.currentUser.UserId;
+        if (userId == null)
+        {
+            throw new NotFoundException("User", "null");
+        }
+
+        var user = await this.userManager.Users
+            .Include(x => x.Addresses)
+            .ThenInclude(x => x.City)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null)
+        {
+            throw new NotFoundException("User", "null");
+        }
+
+        var userInfo = new GetUserInfoModel()
+        {
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            TotalGreenPoints = user.TotalGreenPoints,
+            Addresses = user.Addresses.Select(x => new UserInfoAddress()
+            {
+                CityName = x.City.Name,
+                Street = x.Street,
+                Number = x.Number,
+            })
+        };
+
+        return userInfo;
     }
 }

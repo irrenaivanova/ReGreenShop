@@ -1,8 +1,12 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReGreenShop.Application.Common.Helpers;
 using ReGreenShop.Application.Common.Identity.Login;
 using ReGreenShop.Application.Orders.Commands.MakeAnOrder;
+using ReGreenShop.Application.Orders.Queries.GetMyOrdersQuery;
+using ReGreenShop.Application.Orders.Queries.GetPendingOrdersQuery;
+using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Web.Controllers;
 public class OrderController : BaseController
@@ -13,6 +17,25 @@ public class OrderController : BaseController
     {
         this.mediator = mediator;
     }
+
+    [Authorize]
+    [HttpGet(nameof(GetMyOrders))]
+    public async Task<IActionResult> GetMyOrders()
+    {
+        var query = new GetMyOrdersQuery();
+        var result = await this.mediator.Send(query);
+        return ApiResponseHelper.Success(result);
+    }
+
+    [Authorize(Roles = AdminName)]
+    [HttpGet(nameof(GetPendingOrders))]
+    public async Task<IActionResult> GetPendingOrders()
+    {
+        var query = new GetPendingOrdersQuery();
+        var result = await this.mediator.Send(query);
+        return ApiResponseHelper.Success(result);
+    }
+
 
     // commands
     [HttpPost(nameof(MakeAnOrder))]

@@ -159,6 +159,13 @@ public record MakeAnOrderCommand(MakeAnOrderModel model) : IRequest<string>
                 this.data.Addresses.Add(address);
             }
 
+            // TODO : Integrate Stripe for payment processing and status tracking
+            var newPayment = new Payment()
+            {
+                PaymentMethodId = request.model.PaymentMethodId,
+                Status = Domain.Entities.Enum.PaymentStatus.Pending,
+            };
+
             // Create new order
             var newOrder = new Order()
             {
@@ -167,7 +174,7 @@ public record MakeAnOrderCommand(MakeAnOrderModel model) : IRequest<string>
                 TotalPrice = totalPriceOrder,
                 Status = Domain.Entities.Enum.OrderStatus.Pending,
                 Address = address,
-                PaymentId = request.model.PaymentMethodId,
+                Payment = newPayment,
                 DiscountVoucherId = request.model.DiscountVoucherId,    
             };
 
