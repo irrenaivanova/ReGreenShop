@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using ReGreenShop.Application.Common.Interfaces;
 using ReGreenShop.Application.Common.Mappings;
 
-namespace ReGreenShop.Application.GreenAlternatives;
+namespace ReGreenShop.Application.GreenAlternatives.GetAllGreenAlternativesQuery;
 public class GetAllGreenAlternativesQuery : IRequest<IEnumerable<GreenAlternativesModel>>
 {
     public class GetAllGreenAlternativesQueryHandler : IRequestHandler<GetAllGreenAlternativesQuery, IEnumerable<GreenAlternativesModel>>
-{
+    {
         private readonly IData data;
 
         public GetAllGreenAlternativesQueryHandler(IData data)

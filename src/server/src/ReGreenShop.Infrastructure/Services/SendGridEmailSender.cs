@@ -12,12 +12,12 @@ namespace ReGreenShop.Infrastructure.Services;
 public class SendGridEmailSender : IEmailSender
 {
     private readonly SendGridClient client;
-    private readonly IAdminNotifier adminNotifier;
+    private readonly INotifier adminNotifier;
     private readonly AsyncRetryPolicy retryPolicy;
     private readonly ILogger<SendGridEmailSender> logger;
 
     public SendGridEmailSender(IOptions<SendGridSettings> options,
-                                IAdminNotifier adminNotifier,
+                                INotifier adminNotifier,
                                 ILogger<SendGridEmailSender> logger)
     {
         var apiKey = options?.Value?.ApiKey ?? throw new ArgumentException("API Key is missing.");
@@ -101,7 +101,7 @@ public class SendGridEmailSender : IEmailSender
             string body = $"Email to {recipientEmail} failed. Reason: {ex.Message}";
 
             this.logger.LogError(ex, "Failed to send email. Notifying admin...");
-            await this.adminNotifier.NotifyAsync(title, body);
+            await this.adminNotifier.NotifyAdminAsync(title, body);
         }
     }
 

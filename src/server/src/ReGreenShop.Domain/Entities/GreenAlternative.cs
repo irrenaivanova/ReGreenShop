@@ -13,5 +13,7 @@ public class GreenAlternative : BaseDeletableModel<int>
 
     public int RewardPoints { get; set; }
 
+    public int MaximumQuantity { get; set; }
+
     public IList<OrderGreenAlternativeDetail> OrderGreenAlternativeDetails { get; set; }
 }

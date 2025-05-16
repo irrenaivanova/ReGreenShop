@@ -6,14 +6,14 @@ using ReGreenShop.Infrastructure.Persistence.Identity;
 using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Infrastructure.Services;
-public class AdminNotifierService : IAdminNotifier
+public class NotifierService : INotifier
 {
     private readonly IData data;
     private readonly ILogger logger;
     private readonly UserManager<User> userManager;
 
-    public AdminNotifierService(IData data,
-                ILogger<AdminNotifierService> logger,
+    public NotifierService(IData data,
+                ILogger<NotifierService> logger,
                 UserManager<User> userManager)
     {
         this.data = data;
@@ -21,7 +21,7 @@ public class AdminNotifierService : IAdminNotifier
         this.userManager = userManager;
     }
 
-    public async Task NotifyAsync(string title, string message)
+    public async Task NotifyAdminAsync(string title, string message)
     {
         var admin = await this.userManager.FindByEmailAsync(AdminEmail);
         var notification = new Notification()
@@ -34,5 +34,17 @@ public class AdminNotifierService : IAdminNotifier
         await this.data.SaveChangesAsync();
 
         this.logger.LogInformation("Admin alert: {@Title} - {@Message}", title, message);
+    }
+
+    public async Task NotifyUserAsync(string userId, string title, string message)
+    {
+        var notification = new Notification()
+        {
+            UserId = userId,
+            Text = message,
+            Title = title,
+        };
+        this.data.Notifications.Add(notification);
+        await this.data.SaveChangesAsync();
     }
 }

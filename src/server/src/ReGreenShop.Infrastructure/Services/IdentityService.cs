@@ -194,4 +194,23 @@ public class IdentityService : IIdentity
 
         return userInfo;
     }
+
+    public async Task UpdateGreenPoints(string userId, int greenPoints)
+    {
+        var user = await this.userManager.Users
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null)
+        {
+            throw new NotFoundException("User", "null");
+        }
+
+        user.TotalGreenPoints += greenPoints;
+        var result = await this.userManager.UpdateAsync(user);
+        if (!result.Succeeded)
+        {
+            var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+            throw new InvalidOperationException($"Failed to update user: {errors}");
+        }
+    }
 }

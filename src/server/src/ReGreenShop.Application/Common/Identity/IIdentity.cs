@@ -17,4 +17,6 @@ public interface IIdentity : IScopedService
     Task ChangeUserInfoAsync(ChangeUserModel model);
 
     Task<GetUserInfoModel> GetUserInfoAsync();
+
+    Task UpdateGreenPoints(string userId, int greenPoints);
 }

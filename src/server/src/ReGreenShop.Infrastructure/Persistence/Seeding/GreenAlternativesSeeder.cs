@@ -11,13 +11,13 @@ internal class GreenAlternativesSeeder : ISeeder
             return;
         }
 
-        var greenAlternatives = new List<(string Name, int Points)>
+        var greenAlternatives = new List<(string Name, int Points, int maxQuantiy)>
         {
-            ("1 plastic bottle", 5),
-            ("1 glass bottle", 5),
-            ("1 metal can", 5),
-            ("1 delivery paper bag", 1),
-            ("1 plastic freezer bag (~22×33cm) full of plastic caps", 20)
+            ("1 plastic bottle", 5, 10),
+            ("1 glass bottle", 5, 10),
+            ("1 metal can", 5, 10),
+            ("1 delivery paper bag", 1,20),
+            ("1 plastic freezer bag (~22×33cm) full of plastic caps", 20, 1)
         };
 
         foreach (var alternative in greenAlternatives)
