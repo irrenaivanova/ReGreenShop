@@ -17,13 +17,14 @@ const CategoryList: React.FC = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/api/Category/GetRootCategories`);
+        const response = await axios.get(`${baseUrl}/Category/GetRootCategories`);
         
-        if (!Array.isArray(response.data)) {
+        const categoryList = response.data?.data;
+        if (!Array.isArray(categoryList)) {
           throw new Error("Unexpected response type");
         }
-  
-        setCategories(response.data);
+    
+        setCategories(categoryList);
       } catch (err) {
         console.error(err);
         setError('Failed to load categories');
@@ -31,7 +32,6 @@ const CategoryList: React.FC = () => {
         setLoading(false);
       }
     };
-  
     fetchCategories();
   }, []);
 
