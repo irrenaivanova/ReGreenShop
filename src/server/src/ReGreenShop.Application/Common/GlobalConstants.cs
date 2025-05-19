@@ -19,7 +19,7 @@ public static class GlobalConstants
 
     public const string SystemEmailReceiver = "irrenka_@abv.bg";
 
-    public const int ProductsInRow = 7;
+    public const int ProductsInRow = 6;
 
     public const string Offer = "Top Offer";
 

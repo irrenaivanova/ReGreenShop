@@ -1,19 +1,17 @@
 import { useState } from 'react'
 import './App.css'
-import Logo from './Components/Logo'
-import CategoryList from './Components/CategoryList'
-import ReGreenMission from './Components/ReGreenMission'
-import Navbar from './Components/Navbar'
+import { Routes, Route } from 'react-router-dom';
+import TopProducts from './Components/TopProducts';
+import ProductDetails from './Components/ProductDetails';
 
 function App() {
 
   return (
     <>
-    <ReGreenMission />
-    <div><Logo /></div>
-    <CategoryList />
-    <Navbar/>
-
+      <Routes>
+      <Route path="/" element={<TopProducts/>}/>
+      {/* <Route path="/products/:id" element={<ProductDetails />} /> */}
+    </Routes>
     </>
   )
 }
