@@ -22,7 +22,7 @@ public record LikeProductCommand(int id) : IRequest<Unit>
             var userId = this.userService.UserId;
             if (userId == null)
             {
-                throw new NotFoundException("User", "null");
+                throw new BusinessRulesException("You must be logged in to use this feature");
             }
             var product = this.data.Products.FirstOrDefault(x => x.Id == request.id);
             if (product == null)

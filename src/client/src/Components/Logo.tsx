@@ -1,11 +1,17 @@
 import { GiFairyWings } from "react-icons/gi";
 
-const Logo = () => {
-  return (
-    <div>
-      <GiFairyWings color="#157f83" size={100}/>
-    </div>
-  )
+interface LogoProps {
+  size?: number;
+  color?: string;
+  style?: React.CSSProperties;
 }
 
-export default Logo
+const Logo = ({ size = 100, color = "#157f83", style }: LogoProps) => {
+  return (
+    <div style={style}>
+      <GiFairyWings size={size} color={color} />
+    </div>
+  );
+};
+
+export default Logo;

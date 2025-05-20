@@ -1,8 +1,9 @@
-import { Product } from '../types/Product';
-import { baseUrl } from '../Constants/baseUrl';
-import { Link } from 'react-router-dom';
-import LikeButton from './LikeButton';
-import CartControls from './CartControls';
+import { Product } from "../types/Product";
+import { baseUrl } from "../Constants/baseUrl";
+import { Link } from "react-router-dom";
+import LikeButton from "./LikeButton";
+import CartControls from "./CartButton";
+import CartButton from "./CartButton";
 
 interface Props {
   product: Product;
@@ -12,61 +13,86 @@ interface Props {
   handleDecrement: (id: number) => void;
 }
 
-const ProductCard = ({ product, handleLike, handleAddToCart, handleIncrement, handleDecrement }: Props) => {
+const ProductCard = ({
+  product,
+  handleLike,
+  handleAddToCart,
+  handleIncrement,
+  handleDecrement,
+}: Props) => {
   return (
-    <div className="card h-100 shadow-sm border-primary position-relative">
-      
-      {/* Image with overlay badges */}
-      <div style={{ height: '150px', overflow: 'hidden', position: 'relative' }}>
-        {product.labels.map(label => (
-          <span key={label} className="badge bg-info text-dark position-absolute top-0 start-0 m-1 small">
-            {label}
-          </span>
-        ))}
+    <div className="card h-100 shadow-sm border-light position-relative p-2">
+      <div
+        style={{ height: "150px", position: "relative" }}
+        className="text-center"
+      >
+        <div className="position-absolute top-0 start-0 m-1 d-flex flex-column gap-1 align-items-start">
+          {product.labels.map((label) => (
+            <span key={label} className="badge bg-danger small">
+              {label}
+            </span>
+          ))}
+        </div>
+
         <img
           src={`${baseUrl}${product.imagePath}`}
           alt={product.name}
-          className="img-fluid w-100 h-100"
-          style={{ objectFit: 'contain' }}
+          className="img-fluid mt-2"
+          style={{ maxHeight: "120px", objectFit: "contain" }}
         />
-        <LikeButton isLiked={product.isLiked} onToggle={() => handleLike(product.id)} />
+
+        <div
+          className="position-absolute top-0 end-0 m-1"
+          style={{ fontSize: "1.25rem" }}
+        >
+          <LikeButton
+            isLiked={product.isLiked}
+            onToggle={() => handleLike(product.id)}
+          />
+        </div>
       </div>
 
-      {/* Card body */}
       <div className="card-body d-flex flex-column justify-content-between p-2">
-        <h6 className="card-title text-center fw-bold">
-          <Link to={`/products/${product.id}`} className="text-decoration-none text-dark">
+        <h6
+          className="card-title text-center fw-bold fs-6 text-truncate"
+          style={{ whiteSpace: "normal" }}
+        >
+          <Link
+            to={`/products/${product.id}`}
+            className="text-decoration-none text-dark"
+            title={product.name}
+          >
             {product.name}
           </Link>
         </h6>
+        {product.validTo && (
+          <small className="text-danger text-center">
+            Valid until: {product.validTo}
+          </small>
+        )}
 
-        <span className="badge bg-secondary small mb-2">{product.packaging}</span>
-
-        {/* Pricing logic */}
+        <div className="text-center mb-2">
+          <span className="badge bg-secondary text-light small">
+            {product.packaging}
+          </span>
+        </div>
         {product.hasPromoDiscount ? (
-          <>
-            <p className="mb-0 text-muted small">
+          <div className="d-flex justify-content-center gap-2 align-items-center">
+            <p className="mb-0 text-primary-emphasis small text-center">
               <del>{product.price.toFixed(2)} lv</del>
             </p>
-            <p className="text-danger fw-bold mb-1">{product.discountPrice?.toFixed(2)} lv</p>
-          </>
+            <p className="text-danger fw-bold mb-1 text-center fs-5">
+              {product.discountPrice?.toFixed(2)} lv
+            </p>
+          </div>
         ) : (
-          <p className="mb-1 text-muted small">Price: {product.price.toFixed(2)} lv</p>
+          <p className="mb-1 text-primary-emphasis fw-bold mb-1 text-center fs-5">
+            {product.price.toFixed(2)} lv
+          </p>
         )}
 
-        {/* Special Offer */}
-        {product.hasTwoForOneDiscount && (
-          <span className="badge bg-danger mb-2">2 for 1 Offer!</span>
-        )}
-
-        {/* Promotion text */}
-        {product.validTo && (
-          <small className="text-muted">The promotion is valid to: {product.validTo}</small>
-        )}
-
-        {/* Cart controls */}
-        <div className="mt-2">
-          <CartControls
+        <div className="d-flex justify-content-center mt-auto">
+          <CartButton
             quantity={product.productCartQuantity}
             onAdd={() => handleAddToCart(product.id)}
             onIncrement={() => handleIncrement(product.id)}

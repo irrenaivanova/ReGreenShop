@@ -5,6 +5,7 @@ using ReGreenShop.Application.Carts.Queries.GetNumberOfProductInCart;
 using ReGreenShop.Application.Carts.Queries.GetNumberOfProductsInCart;
 using ReGreenShop.Application.Carts.Queries.ViewProductsInCartQuery;
 using ReGreenShop.Application.Common.Helpers;
+using ReGreenShop.Domain.Entities;
 
 namespace ReGreenShop.Web.Controllers;
 public class CartController : BaseController
@@ -46,7 +47,7 @@ public class CartController : BaseController
     {
         var command = new AddToCartCommand(id);
         var result = await this.mediator.Send(command);
-        return ApiResponseHelper.Success(result);
+        return ApiResponseHelper.Success(result, "Successfully added to cart");
     }
 
     [HttpGet(nameof(RemoveFromCart) + "/{id}")]
@@ -54,7 +55,7 @@ public class CartController : BaseController
     {
         var command = new RemoveFromCartCommand(id);
         var result = await this.mediator.Send(command);
-        return ApiResponseHelper.Success(result);
+        return ApiResponseHelper.Success(result, "Successfully removed from cart");
     }
 
     [HttpGet(nameof(CleanCart))]
