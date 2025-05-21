@@ -1,14 +1,13 @@
 interface Props {
   quantity: number;
-  onAdd: () => void;
   onIncrement: () => void;
   onDecrement: () => void;
 }
 
-const CartButton = ({ quantity, onAdd, onIncrement, onDecrement }: Props) => {
+const CartButton = ({ quantity, onIncrement, onDecrement }: Props) => {
   if (quantity === 0) {
     return (
-      <button className="btn btn-primary" onClick={onAdd}>
+      <button className="btn btn-primary" onClick={onIncrement}>
         Add to Cart
       </button>
     );

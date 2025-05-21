@@ -51,7 +51,7 @@ const Header = () => {
             id="categoriesDropdown"
             className="d-flex align-items-center"
           >
-            <FaList className="me-2" />
+            <FaList className="me-2 text-warning" />
             Categories
           </Dropdown.Toggle>
           <Dropdown.Menu

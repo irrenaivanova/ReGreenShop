@@ -35,6 +35,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = () => {
     localStorage.removeItem("auth");
+    localStorage.removeItem("jwt");
     setUser(null);
   };
 

@@ -12,7 +12,6 @@ const MainRoutes = () => {
         <Route path="/" element={<TopProducts />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        {/* Add more routes inside layout here */}
       </Route>
     </Routes>
   );

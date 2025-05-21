@@ -8,13 +8,13 @@ export const ErrorModal = ({
   onClose: () => void;
 }) => {
   useEffect(() => {
-    const timer = setTimeout(onClose, 5000);
+    const timer = setTimeout(onClose, 3000);
     return () => clearTimeout(timer);
   }, [onClose]);
 
   return (
     <div
-      className="position-fixed top-0 end-0 p-3"
+      className="position-fixed end-0 p-3"
       style={{ zIndex: 1055, top: "150px" }}
     >
       <div
