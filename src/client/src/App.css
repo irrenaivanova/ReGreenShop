@@ -1,0 +1,34 @@
+.centered-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-page-background {
+  background-image: url("/images/blurred.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #fff;
+}
+
+.login-side-image {
+  background-image: url("/images/login-image.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+}
+
+body,
+html,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+main {
+  min-height: calc(100vh - 120px); /* Adjust based on Header/Footer height */
+}

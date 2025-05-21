@@ -6,32 +6,35 @@ import { useNavigate } from "react-router-dom";
 import Logo from "../Components/Logo";
 import "../App.css";
 
-interface LoginFormInputs {
-  email: string;
+interface RegisterFormInputs {
+  userName: string;
   password: string;
 }
 
-const Login = () => {
+const Register = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormInputs>();
+  } = useForm<RegisterFormInputs>();
   const { login } = useAuth();
   const { showModal } = useModal();
   const navigate = useNavigate();
 
-  const onSubmit = async (data: LoginFormInputs) => {
+  const onSubmit = async (data: RegisterFormInputs) => {
     try {
-      const response = await authService.login(data.email, data.password);
+      const response = await authService.register(data.userName, data.password);
       const { accessToken, userId, userName, isAdmin } = response.data.data;
-      const successMessage = response.data.message || "Login successful!";
+      const successMessage =
+        response.data.message || "Registration successful!";
 
+      // Automatically login user after registration
       login({ accessToken, userId, userName, isAdmin });
       showModal?.("success", successMessage);
       navigate("/");
     } catch (error: any) {
-      const errorMessage = error.response?.data?.error || "Login failed.";
+      const errorMessage =
+        error.response?.data?.error || "Registration failed.";
       showModal?.("error", errorMessage);
     }
   };
@@ -50,17 +53,21 @@ const Login = () => {
           style={{ flex: 1.5 }}
         ></div>
         <div style={{ flex: 1, padding: "50px" }}>
-          <h2 className="text-center mb-4">Login</h2>
+          <h2 className="text-center mb-4">Register</h2>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-4">
-              <label>Email</label>
+              <label>Username</label>
               <input
-                type="email"
-                className={`form-control ${errors.email ? "is-invalid" : ""}`}
-                {...register("email", { required: "Email is required" })}
+                type="text"
+                className={`form-control ${
+                  errors.userName ? "is-invalid" : ""
+                }`}
+                {...register("userName", { required: "Username is required" })}
               />
-              {errors.email && (
-                <div className="invalid-feedback">{errors.email.message}</div>
+              {errors.userName && (
+                <div className="invalid-feedback">
+                  {errors.userName.message}
+                </div>
               )}
             </div>
 
@@ -71,7 +78,13 @@ const Login = () => {
                 className={`form-control ${
                   errors.password ? "is-invalid" : ""
                 }`}
-                {...register("password", { required: "Password is required" })}
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: {
+                    value: 6,
+                    message: "Password must be at least 6 characters",
+                  },
+                })}
               />
               {errors.password && (
                 <div className="invalid-feedback">
@@ -81,7 +94,7 @@ const Login = () => {
             </div>
 
             <button type="submit" className="btn btn-primary small w-100 py-2">
-              Login
+              Register
             </button>
           </form>
 
@@ -99,4 +112,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

@@ -37,12 +37,12 @@ public class IdentityService : IIdentity
     public async Task<AuthResponse> LoginUserAsync(string username, string password)
     {
         var user = await this.userManager.FindByNameAsync(username)
-            ?? throw new AuthenticationException("Invalid username or password.");
+            ?? throw new AuthenticationException("Invalid username or password!");
 
         var passwordValid = await this.userManager.CheckPasswordAsync(user, password);
         if (!passwordValid)
         {
-            throw new AuthenticationException("Invalid username or password.");
+            throw new AuthenticationException("Invalid username or password!");
         }
         var isAdmin = await this.userManager.IsInRoleAsync(user, AdminName);
 
@@ -71,12 +71,12 @@ public class IdentityService : IIdentity
     {
         if (string.IsNullOrWhiteSpace(username))
         {
-            throw new AuthenticationException("Username is required.");
+            throw new AuthenticationException("Username is required!");
         }
 
         if (await this.userManager.FindByNameAsync(username) is not null)
         {
-            throw new AuthenticationException("Username already exists.");
+            throw new AuthenticationException("Username already exists!");
         }
 
         var user = new User { UserName = username };
@@ -84,7 +84,7 @@ public class IdentityService : IIdentity
 
         if (!result.Succeeded)
         {
-            throw new AuthenticationException("Failed to create user account.");
+            throw new AuthenticationException("Failed to create user account!");
         }
 
         var claims = new List<Claim>

@@ -3,8 +3,7 @@ import { productService } from "../services/productService";
 import { Product } from "../types/Product";
 import Spinner from "./Spinner";
 import ProductCard from "./ProductCard";
-import { SuccessModal } from "./SuccessModal";
-import { ErrorModal } from "./ErrorModal";
+import { Link } from "react-router-dom";
 
 const TopProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -95,11 +94,23 @@ const TopProducts = () => {
     // TODO: call API to decrement cart quantity
   };
 
-  if (loading) return <Spinner />;
+  if (loading) {
+    return (
+      <div className="centered-spinner">
+        <Spinner />
+      </div>
+    );
+  }
   if (error) return <div>{error}</div>;
 
   return (
     <div className="container mt-4">
+      <Link
+        to="/login"
+        style={{ padding: "10px", display: "inline-block", marginTop: "20px" }}
+      >
+        Login
+      </Link>
       <h2 className="mb-4">Top Products</h2>
       <div className="row g-3">
         {products.map((product) => (

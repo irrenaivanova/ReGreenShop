@@ -2,7 +2,6 @@ import { Product } from "../types/Product";
 import { baseUrl } from "../Constants/baseUrl";
 import { Link } from "react-router-dom";
 import LikeButton from "./LikeButton";
-import CartControls from "./CartButton";
 import CartButton from "./CartButton";
 
 interface Props {
@@ -59,6 +58,7 @@ const ProductCard = ({
         >
           <Link
             to={`/products/${product.id}`}
+            state={{ backgroundLocation: location }}
             className="text-decoration-none text-dark"
             title={product.name}
           >

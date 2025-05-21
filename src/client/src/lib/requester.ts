@@ -2,7 +2,7 @@ import axios from "axios";
 import { baseUrl } from "../Constants/baseUrl";
 
 export const requestFactory = () => {
-  const token = localStorage.getItem("jwt"); // assuming you store it there
+  const token = localStorage.getItem("jwt");
 
   const instance = axios.create({
     baseURL: baseUrl,
