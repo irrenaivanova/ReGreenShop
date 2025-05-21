@@ -41,7 +41,7 @@ const Register = () => {
 
   return (
     <div
-      className="d-flex justify-content-center align-items-center vh-100 login-page-background"
+      className="d-flex justify-content-center align-items-center vh-100"
       style={{ padding: "20px" }}
     >
       <div

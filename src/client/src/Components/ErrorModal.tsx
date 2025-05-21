@@ -13,7 +13,10 @@ export const ErrorModal = ({
   }, [onClose]);
 
   return (
-    <div className="position-fixed top-0 end-0 p-3" style={{ zIndex: 1055 }}>
+    <div
+      className="position-fixed top-0 end-0 p-3"
+      style={{ zIndex: 1055, top: "150px" }}
+    >
       <div
         className="toast show text-white bg-danger border-0 shadow-sm"
         style={{ minWidth: "300px" }}

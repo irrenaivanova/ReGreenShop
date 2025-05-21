@@ -104,13 +104,7 @@ const TopProducts = () => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="container mt-4">
-      <Link
-        to="/login"
-        style={{ padding: "10px", display: "inline-block", marginTop: "20px" }}
-      >
-        Login
-      </Link>
+    <div className="container mt-1">
       <h2 className="mb-4">Top Products</h2>
       <div className="row g-3">
         {products.map((product) => (

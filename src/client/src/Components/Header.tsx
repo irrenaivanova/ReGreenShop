@@ -1,216 +1,182 @@
 import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { FaList, FaShoppingCart, FaSearch } from "react-icons/fa";
+import { Dropdown, Form, InputGroup, Button, Badge } from "react-bootstrap";
 import { categoriesService } from "../services/categoriesService";
-import { requestFactory } from "../lib/requester";
-
-const request = requestFactory();
+import { cartService } from "../services/cartService";
+import { RootCategory } from "../types/RootCategory";
+import { baseUrl } from "../Constants/baseUrl";
+import { useAuth } from "../context/AuthContext";
 
 const Header = () => {
-  const [rootCategories, setRootCategories] = useState([]);
-  const [subCategories, setSubCategories] = useState([]);
-  const [showSubcategoriesFor, setShowSubcategoriesFor] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [cartCount, setCartCount] = useState(0);
-  const [userLoggedIn, setUserLoggedIn] = useState(
-    !!localStorage.getItem("jwt")
-  );
+  const [rootCategories, setRootCategories] = useState<RootCategory[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [cartCount, setCartCount] = useState<number>(0);
+  const { isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
 
-  // Fetch root categories and cart count, and user logged-in status on mount
   useEffect(() => {
     categoriesService
       .getRootCategories()
-      .then((res) => setRootCategories(res.data))
+      .then((res) => setRootCategories(res.data.data))
       .catch(() => setRootCategories([]));
 
-    request
-      .get("/api/cart")
-      .then((res) => setCartCount(res.data.totalItems || 0))
+    cartService
+      .getNumberOfProductsInCart()
+      .then((res) => setCartCount(res.data.data || 0))
       .catch(() => setCartCount(0));
   }, []);
 
-  // Fetch subcategories when a root category is clicked
-  const handleRootCategoryClick = (categoryId) => {
-    if (showSubcategoriesFor === categoryId) {
-      // Hide subcategories if clicked again
-      setShowSubcategoriesFor(null);
-      setSubCategories([]);
-      return;
-    }
-    request
-      .get(`/Category/GetSubCategoriesByRootCategory?categoryId=${categoryId}`)
-      .then((res) => {
-        setSubCategories(res.data);
-        setShowSubcategoriesFor(categoryId);
-      })
-      .catch(() => {
-        setSubCategories([]);
-        setShowSubcategoriesFor(null);
-      });
-  };
-
-  // Handle search submission
-  const handleSearch = (e) => {
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchTerm.trim()) return;
-
-    request
-      .get(
-        `/Product/ProductsBySearchString?searchString=${encodeURIComponent(
-          searchTerm
-        )}`
-      )
-      .then((res) => {
-        console.log("Search results:", res.data);
-        // Handle displaying search results or redirect
-      })
-      .catch((err) => {
-        console.error("Search failed", err);
-      });
+    navigate(`/search?query=${encodeURIComponent(searchTerm.trim())}`);
   };
 
-  // Logout
   const handleLogout = () => {
-    localStorage.removeItem("jwt");
-    setUserLoggedIn(false);
+    logout();
+    navigate("/");
   };
 
   return (
-    <header style={{ backgroundColor: "var(--bs-primary)", width: "100%" }}>
-      <div className="container text-white py-3">
-        {/* Logo and slogan */}
-        <h1 className="mb-0">ReGreen Shop</h1>
-        <small className="d-block mb-3">Shop Smart. Live Green.</small>
-
-        {/* Buttons and Search */}
-        <div className="d-flex align-items-center gap-3 flex-wrap">
-          {/* Categories dropdown */}
-          <div className="dropdown">
-            <button
-              className="btn btn-dark btn-lg dropdown-toggle d-flex align-items-center"
-              type="button"
-              id="categoriesDropdown"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              // Prevent bootstrap toggling dropdown automatically because we control sub-menu visibility manually
-              onClick={(e) => e.preventDefault()}
-            >
-              <FaList className="me-2" /> Categories
-            </button>
-            <ul
-              className="dropdown-menu p-2"
-              aria-labelledby="categoriesDropdown"
-              style={{
-                maxHeight: "400px",
-                overflowY: "auto",
-                minWidth: "300px",
-              }}
-            >
-              {rootCategories.length === 0 && (
-                <li className="dropdown-item disabled">Loading...</li>
-              )}
-
-              {rootCategories.map((cat) => (
-                <li key={cat.id}>
-                  <button
-                    type="button"
-                    className="dropdown-item d-flex justify-content-between align-items-center"
-                    onClick={() => handleRootCategoryClick(cat.id)}
+    <header className="bg-primary text-white">
+      <div className="container py-3 d-flex flex-wrap align-items-center justify-content-between">
+        <Link to="/" className="text-white text-decoration-none">
+          <h3 className="mb-0 me-4">ReGreenShop</h3>
+        </Link>
+        <Dropdown>
+          <Dropdown.Toggle
+            variant="outline-light"
+            size="lg"
+            id="categoriesDropdown"
+            className="d-flex align-items-center"
+          >
+            <FaList className="me-2" />
+            Categories
+          </Dropdown.Toggle>
+          <Dropdown.Menu
+            className="dropdown-menu-end shadow"
+            style={{
+              maxHeight: "1000px",
+              overflowY: "auto",
+              minWidth: "40vw",
+              maxWidth: "50vw",
+              padding: "0",
+            }}
+          >
+            {rootCategories.length === 0 ? (
+              <Dropdown.Item disabled>Loading...</Dropdown.Item>
+            ) : (
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  borderTop: "2px solid var(--bs-warning)",
+                  borderLeft: "2px solid var(--bs-warning)",
+                }}
+              >
+                {rootCategories.map((cat) => (
+                  <Dropdown.Item
+                    as={Link}
+                    to={`/category/${cat.id}`}
+                    key={cat.id}
+                    className="d-flex align-items-center"
                     style={{
-                      width: "100%",
-                      textAlign: "left",
-                      whiteSpace: "normal",
+                      padding: "10px",
+                      borderRight: "2px solid var(--bs-warning)",
+                      borderBottom: "2px solid var(--bs-warning)",
                     }}
                   >
-                    {cat.name}
-                    {/* Show indicator if subcategories shown */}
-                    {showSubcategoriesFor === cat.id ? "▲" : "▼"}
-                  </button>
-
-                  {/* Show subcategories if this category is active */}
-                  {showSubcategoriesFor === cat.id &&
-                    subCategories.length > 0 && (
-                      <ul className="list-unstyled ps-3 mt-1">
-                        {subCategories.map((sub) => (
-                          <li key={sub.id}>
-                            <a
-                              href={`/category/${sub.slug}`}
-                              className="dropdown-item"
-                              style={{ paddingLeft: "1rem" }}
-                            >
-                              {sub.name}
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Search form */}
-          <form
-            onSubmit={handleSearch}
-            className="flex-grow-1 position-relative"
-            style={{ maxWidth: "500px" }}
-          >
-            <input
+                    <img
+                      src={`${baseUrl}${cat.imagePath}`}
+                      alt={cat.name}
+                      style={{
+                        width: 80,
+                        height: 80,
+                        objectFit: "cover",
+                        marginRight: 10,
+                        borderRadius: 4,
+                      }}
+                    />
+                    <span
+                      style={{
+                        fontSize: "1.25rem",
+                        fontWeight: "400",
+                      }}
+                    >
+                      {cat.name}
+                    </span>
+                  </Dropdown.Item>
+                ))}
+              </div>
+            )}
+          </Dropdown.Menu>
+        </Dropdown>
+        <Form
+          onSubmit={handleSearch}
+          className="d-flex align-items-center flex-grow-1 mx-3"
+          style={{ maxWidth: "800px" }}
+        >
+          <InputGroup>
+            <InputGroup.Text className="bg-white">
+              <FaSearch style={{ color: "bg-primary" }} />
+            </InputGroup.Text>
+            <Form.Control
               type="search"
-              className="form-control form-control-lg ps-5"
               placeholder="Find everything you need"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              aria-label="Search"
             />
-            <FaSearch
-              style={{
-                position: "absolute",
-                top: "50%",
-                left: "15px",
-                transform: "translateY(-50%)",
-                color: "yellow",
-                pointerEvents: "none",
-              }}
-              size={20}
-            />
-          </form>
+            <Button variant="warning" type="submit">
+              Search
+            </Button>
+          </InputGroup>
+        </Form>
 
-          {/* Auth buttons */}
-          {!userLoggedIn ? (
-            <>
-              <a href="/login" className="btn btn-outline-light btn-lg">
-                Login
-              </a>
-              <a href="/register" className="btn btn-outline-light btn-lg">
-                Register
-              </a>
-            </>
-          ) : (
-            <>
-              <button
-                onClick={handleLogout}
-                className="btn btn-outline-light btn-lg"
-                type="button"
-              >
-                Logout
-              </button>
-            </>
-          )}
+        {!isAuthenticated ? (
+          <>
+            <Link to="/login" className="btn btn-outline-light btn-lg me-2">
+              Login
+            </Link>
+            <Link to="/register" className="btn btn-outline-light btn-lg me-2">
+              Register
+            </Link>
+          </>
+        ) : (
+          <Button
+            variant="outline-light"
+            size="lg"
+            className="me-2"
+            onClick={handleLogout}
+          >
+            Logout
+          </Button>
+        )}
 
-          {/* Shopping cart */}
-          <a href="/cart" className="position-relative text-white fs-4">
-            <FaShoppingCart />
-            {cartCount > 0 && (
-              <span
-                className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                style={{ fontSize: "0.7rem" }}
-              >
-                {cartCount}
-                <span className="visually-hidden">items in cart</span>
-              </span>
-            )}
-          </a>
-        </div>
+        <Button
+          as={Link as any}
+          to="/cart"
+          variant="outline-light"
+          className="d-flex align-items-center"
+          style={{ textDecoration: "none" }}
+        >
+          <FaShoppingCart size={24} />
+          <Badge
+            bg="warning"
+            pill
+            className="ms-2"
+            style={{
+              fontSize: "0.75rem",
+              minWidth: "1.2em",
+              textAlign: "center",
+              lineHeight: 1,
+              textDecoration: "none",
+              userSelect: "none",
+            }}
+          >
+            {cartCount ?? 0}
+          </Badge>
+        </Button>
       </div>
     </header>
   );
