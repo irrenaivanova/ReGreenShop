@@ -23,6 +23,7 @@ public class RegisterCommand : IRequest<AuthResponse>
         {
             var authResponse = await this.identityService.RegisterUserAsync(request.UserName, request.Password);
             await this.cartService.CreateCartAsync(authResponse.UserId);
+            await this.cartService.MergeCartIfAnyAsync(authResponse.UserId);
             return authResponse;
         }
     }
