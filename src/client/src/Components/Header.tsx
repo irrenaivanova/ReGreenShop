@@ -11,9 +11,10 @@ import { useAuth } from "../context/AuthContext";
 const Header = () => {
   const [rootCategories, setRootCategories] = useState<RootCategory[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [cartCount, setCartCount] = useState<number>(0);
+  const [cartCount, setCartCount] = useState<number | null>(null);
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const [cartLoading, setCartLoading] = useState(true);
 
   useEffect(() => {
     categoriesService
@@ -21,11 +22,16 @@ const Header = () => {
       .then((res) => setRootCategories(res.data.data))
       .catch(() => setRootCategories([]));
 
+    setCartLoading(true);
     cartService
       .getNumberOfProductsInCart()
-      .then((res) => setCartCount(res.data.data || 0))
-      .catch(() => setCartCount(0));
-  }, []);
+      .then((res) => {
+        console.log("Cart count response:", res);
+        setCartCount(res.data.data || 0);
+      })
+      .catch(() => setCartCount(0))
+      .finally(() => setCartLoading(false));
+  }, [isAuthenticated]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,6 +41,7 @@ const Header = () => {
 
   const handleLogout = () => {
     logout();
+    setCartCount(null);
     navigate("/");
   };
 
@@ -127,7 +134,7 @@ const Header = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <Button variant="warning" type="submit">
+            <Button variant="warning" type="submit" className="text-black">
               Search
             </Button>
           </InputGroup>
@@ -161,21 +168,16 @@ const Header = () => {
           style={{ textDecoration: "none" }}
         >
           <FaShoppingCart size={24} />
-          <Badge
-            bg="warning"
-            pill
-            className="ms-2"
-            style={{
-              fontSize: "0.75rem",
-              minWidth: "1.2em",
-              textAlign: "center",
-              lineHeight: 1,
-              textDecoration: "none",
-              userSelect: "none",
-            }}
-          >
-            {cartCount ?? 0}
-          </Badge>
+          {cartLoading ? (
+            <div
+              className="ms-2 spinner-border text-warning"
+              style={{ width: 16, height: 16 }}
+            />
+          ) : (
+            <Badge bg="warning" pill className="ms-2 text-black">
+              {cartCount}
+            </Badge>
+          )}
         </Button>
       </div>
     </header>

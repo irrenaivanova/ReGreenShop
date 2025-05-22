@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  ReactNode,
-} from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 
 interface AuthData {
   accessToken: string;
@@ -15,6 +9,7 @@ interface AuthData {
 
 interface AuthContextType {
   isAuthenticated: boolean;
+  isAdmin: boolean;
   user: AuthData | null;
   login: (data: AuthData) => void;
   logout: () => void;
@@ -42,7 +37,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const isAuthenticated = !!user?.accessToken;
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, isAuthenticated, isAdmin: !!user?.isAdmin, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

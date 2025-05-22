@@ -7,7 +7,6 @@ import CartButton from "./CartButton";
 interface Props {
   product: Product;
   handleLike: (id: number) => void;
-  handleAddToCart: (id: number) => void;
   handleIncrement: (id: number) => void;
   handleDecrement: (id: number) => void;
 }
@@ -15,7 +14,6 @@ interface Props {
 const ProductCard = ({
   product,
   handleLike,
-  handleAddToCart,
   handleIncrement,
   handleDecrement,
 }: Props) => {
@@ -33,13 +31,14 @@ const ProductCard = ({
           ))}
         </div>
 
-        <img
-          src={`${baseUrl}${product.imagePath}`}
-          alt={product.name}
-          className="img-fluid mt-2"
-          style={{ maxHeight: "120px", objectFit: "contain" }}
-        />
-
+        <Link to={`/product/${product.id}`}>
+          <img
+            src={`${baseUrl}${product.imagePath}`}
+            alt={product.name}
+            className="img-fluid mt-2"
+            style={{ maxHeight: "120px", objectFit: "contain" }}
+          />
+        </Link>
         <div
           className="position-absolute top-0 end-0 m-1"
           style={{ fontSize: "1.25rem" }}
@@ -94,7 +93,6 @@ const ProductCard = ({
         <div className="d-flex justify-content-center mt-auto">
           <CartButton
             quantity={product.productCartQuantity}
-            onAdd={() => handleAddToCart(product.id)}
             onIncrement={() => handleIncrement(product.id)}
             onDecrement={() => handleDecrement(product.id)}
           />
