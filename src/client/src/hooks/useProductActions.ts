@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { productService } from "../services/productService";
 import { cartService } from "../services/cartService";
 import { data } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 
 export const useProductActions = (fetchProducts: () => Promise<Product[]>) => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -14,7 +15,7 @@ export const useProductActions = (fetchProducts: () => Promise<Product[]>) => {
     message: string;
   } | null>(null);
   const { isAuthenticated } = useAuth();
-
+  const { refreshCartCount } = useCart();
   const refetch = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -83,6 +84,7 @@ export const useProductActions = (fetchProducts: () => Promise<Product[]>) => {
     try {
       await cartService.addToCart(id);
       setModal({ type: "success", message: "Product added to cart" });
+      await refreshCartCount();
     } catch (err: any) {
       setProducts((prev) =>
         prev.map((product) =>
@@ -124,6 +126,7 @@ export const useProductActions = (fetchProducts: () => Promise<Product[]>) => {
     try {
       await cartService.removeFromCart(id);
       setModal({ type: "success", message: "Product removed from cart" });
+      await refreshCartCount();
     } catch (err: any) {
       setProducts((prev) =>
         prev.map((product) =>

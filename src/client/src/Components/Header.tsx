@@ -3,35 +3,30 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaList, FaShoppingCart, FaSearch } from "react-icons/fa";
 import { Dropdown, Form, InputGroup, Button, Badge } from "react-bootstrap";
 import { categoriesService } from "../services/categoriesService";
-import { cartService } from "../services/cartService";
 import { RootCategory } from "../types/RootCategory";
 import { baseUrl } from "../Constants/baseUrl";
 import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
 
 const Header = () => {
   const [rootCategories, setRootCategories] = useState<RootCategory[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [cartCount, setCartCount] = useState<number | null>(null);
   const { isAuthenticated, logout } = useAuth();
+  const { cartCount, loading, refreshCartCount } = useCart();
   const navigate = useNavigate();
-  const [cartLoading, setCartLoading] = useState(true);
 
+  // Fetch categories on mount
   useEffect(() => {
     categoriesService
       .getRootCategories()
       .then((res) => setRootCategories(res.data.data))
       .catch(() => setRootCategories([]));
+  }, []);
 
-    setCartLoading(true);
-    cartService
-      .getNumberOfProductsInCart()
-      .then((res) => {
-        console.log("Cart count response:", res);
-        setCartCount(res.data.data || 0);
-      })
-      .catch(() => setCartCount(0))
-      .finally(() => setCartLoading(false));
-  }, [isAuthenticated]);
+  // Refresh cart count when auth status changes
+  useEffect(() => {
+    refreshCartCount();
+  }, [isAuthenticated, refreshCartCount]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,7 +36,6 @@ const Header = () => {
 
   const handleLogout = () => {
     logout();
-    setCartCount(null);
     navigate("/");
   };
 
@@ -51,6 +45,7 @@ const Header = () => {
         <Link to="/" className="text-white text-decoration-none">
           <h3 className="mb-0 me-4">ReGreenShop</h3>
         </Link>
+
         <Dropdown>
           <Dropdown.Toggle
             variant="outline-light"
@@ -105,12 +100,7 @@ const Header = () => {
                         borderRadius: 4,
                       }}
                     />
-                    <span
-                      style={{
-                        fontSize: "1.25rem",
-                        fontWeight: "400",
-                      }}
-                    >
+                    <span style={{ fontSize: "1.25rem", fontWeight: "400" }}>
                       {cat.name}
                     </span>
                   </Dropdown.Item>
@@ -119,6 +109,7 @@ const Header = () => {
             )}
           </Dropdown.Menu>
         </Dropdown>
+
         <Form
           onSubmit={handleSearch}
           className="d-flex align-items-center flex-grow-1 mx-3"
@@ -165,17 +156,16 @@ const Header = () => {
           to="/cart"
           variant="outline-light"
           className="d-flex align-items-center"
-          style={{ textDecoration: "none" }}
         >
           <FaShoppingCart size={24} />
-          {cartLoading ? (
+          {loading ? (
             <div
               className="ms-2 spinner-border text-warning"
               style={{ width: 16, height: 16 }}
             />
           ) : (
             <Badge bg="warning" pill className="ms-2 text-black">
-              {cartCount}
+              {cartCount ?? 0}
             </Badge>
           )}
         </Button>
