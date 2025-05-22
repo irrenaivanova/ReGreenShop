@@ -30,6 +30,8 @@ public class ProductInList : IMapFrom<Product>, IMapExplicitly
 
     public string? ValidTo { get; set; }
 
+    public int Stock { get; set; }
+
     public string? AdditionalTextForPromotion { get; set; }
 
     public bool HasTwoForOneDiscount { get; set; }

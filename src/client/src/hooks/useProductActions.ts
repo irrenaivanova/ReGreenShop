@@ -2,6 +2,8 @@ import { useEffect, useState, useCallback } from "react";
 import { Product } from "../types/Product";
 import { useAuth } from "../context/AuthContext";
 import { productService } from "../services/productService";
+import { cartService } from "../services/cartService";
+import { data } from "react-router-dom";
 
 export const useProductActions = (fetchProducts: () => Promise<Product[]>) => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -60,13 +62,13 @@ export const useProductActions = (fetchProducts: () => Promise<Product[]>) => {
       const errorMessage =
         err?.response?.status === 401
           ? "Please log in to like products"
-          : err?.response?.data?.message || "Something went wrong";
+          : err?.response?.data?.error || "Something went wrong";
 
       setModal({ type: "error", message: errorMessage });
     }
   };
 
-  const handleIncrement = (id: number) => {
+  const handleIncrement = async (id: number) => {
     setProducts((prev) =>
       prev.map((product) =>
         product.id === id
@@ -77,18 +79,68 @@ export const useProductActions = (fetchProducts: () => Promise<Product[]>) => {
           : product
       )
     );
+
+    try {
+      await cartService.addToCart(id);
+      setModal({ type: "success", message: "Product added to cart" });
+    } catch (err: any) {
+      setProducts((prev) =>
+        prev.map((product) =>
+          product.id === id &&
+          product.productCartQuantity &&
+          product.productCartQuantity > 0
+            ? {
+                ...product,
+                productCartQuantity: product.productCartQuantity - 1,
+              }
+            : product
+        )
+      );
+
+      const errorMessage =
+        err?.response?.data?.error || "Failed to add product to cart";
+
+      setModal({ type: "error", message: errorMessage });
+    }
   };
 
-  const handleDecrement = (id: number) => {
+  const handleDecrement = async (id: number) => {
+    const product = products.find((p) => p.id === id);
+    if (
+      !product ||
+      !product.productCartQuantity ||
+      product.productCartQuantity === 0
+    )
+      return;
+
     setProducts((prev) =>
       prev.map((product) =>
-        product.id === id &&
-        product.productCartQuantity &&
-        product.productCartQuantity > 0
+        product.id === id
           ? { ...product, productCartQuantity: product.productCartQuantity - 1 }
           : product
       )
     );
+
+    try {
+      await cartService.removeFromCart(id);
+      setModal({ type: "success", message: "Product removed from cart" });
+    } catch (err: any) {
+      setProducts((prev) =>
+        prev.map((product) =>
+          product.id === id
+            ? {
+                ...product,
+                productCartQuantity: (product.productCartQuantity || 0) + 1,
+              }
+            : product
+        )
+      );
+
+      const errorMessage =
+        err?.response?.data?.error || "Failed to remove product from cart";
+
+      setModal({ type: "error", message: errorMessage });
+    }
   };
 
   return {

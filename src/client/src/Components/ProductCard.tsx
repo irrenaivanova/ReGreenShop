@@ -95,6 +95,7 @@ const ProductCard = ({
             quantity={product.productCartQuantity}
             onIncrement={() => handleIncrement(product.id)}
             onDecrement={() => handleDecrement(product.id)}
+            availableQuantity={product.stock}
           />
         </div>
       </div>

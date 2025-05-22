@@ -16,6 +16,7 @@ using ReGreenShop.Web.Middleware;
 using Serilog;
 using static ReGreenShop.Application.ServiceRegistration;
 using static ReGreenShop.Web.ServiceRegistration;
+using static ReGreenShop.Application.Common.GlobalConstants;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -34,12 +35,12 @@ builder.Configuration
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("AllowFrontend", policy =>
     {
-        policy
-            .AllowAnyOrigin()
-            .AllowAnyHeader()
-            .AllowAnyMethod();
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
     });
 });
 
@@ -85,7 +86,7 @@ using (var scope = app.Services.CreateScope())
 }
 AutoMapperConfig.RegisterMappings(typeof(GlobalConstants).Assembly);
 
-app.UseCors();
+app.UseCors("AllowFrontend");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

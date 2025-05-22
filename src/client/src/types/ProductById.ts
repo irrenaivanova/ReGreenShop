@@ -6,6 +6,7 @@ export interface ProductById {
   description: string;
   price: number;
   productCode: string;
+  stock: number;
   brand: string;
   origin: string;
   packaging: string;

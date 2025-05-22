@@ -32,6 +32,8 @@ public class ProductByIdModel : IMapFrom<Product>, IMapExplicitly
 
     public string? OriginalUrl { get; set; }
 
+    public int Stock { get; set; }
+
     public string ImagePath { get; set; } = string.Empty;
 
     public bool IsLiked { get; set; }

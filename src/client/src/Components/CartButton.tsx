@@ -2,9 +2,23 @@ interface Props {
   quantity: number;
   onIncrement: () => void;
   onDecrement: () => void;
+  availableQuantity: number;
 }
 
-const CartButton = ({ quantity, onIncrement, onDecrement }: Props) => {
+const CartButton = ({
+  quantity,
+  onIncrement,
+  onDecrement,
+  availableQuantity,
+}: Props) => {
+  if (availableQuantity === 0) {
+    return (
+      <button className="btn btn-sm btn-outline-secondary text-black" disabled>
+        Out of Stock
+      </button>
+    );
+  }
+
   if (quantity === 0) {
     return (
       <button className="btn btn-primary" onClick={onIncrement}>
@@ -19,13 +33,10 @@ const CartButton = ({ quantity, onIncrement, onDecrement }: Props) => {
         className="btn btn-sm btn-outline-secondary"
         onClick={onDecrement}
       >
-        –
+        -
       </button>
       <div className="fs-6">{quantity}</div>
-      <button
-        className="btn btn-sm btn-outline-secondary"
-        onClick={onIncrement}
-      >
+      <button className="btn btn-sm btn-primary" onClick={onIncrement}>
         +
       </button>
     </div>
@@ -33,3 +44,5 @@ const CartButton = ({ quantity, onIncrement, onDecrement }: Props) => {
 };
 
 export default CartButton;
+
+// className="btn btn-sm btn-outline-secondary"
