@@ -10,11 +10,15 @@ export const productService = {
   getProductsByLabel: (id: number) =>
     request.get(`/Product/ProductsByLabel/${id}`),
 
-  getProductsBySubCategory: (id: number) =>
-    request.get(`/Product/ProductsBySubCategory/${id}`),
+  getProductsBySubCategory: (categoryId: number) =>
+    request.get("/Product/ProductsBySubCategory", {
+      params: { id: categoryId },
+    }),
 
-  getProductsByRootCategory: () =>
-    request.get("/Product/ProductsByRootCategory"),
+  getProductsByRootCategory: (categoryId: number, page: number = 1) =>
+    request.get("/Product/ProductsByRootCategory", {
+      params: { CategoryId: categoryId, Page: page },
+    }),
 
   getProductsBySearchString: (searchString: string) =>
     request.get(`/Product/ProductsBySearchString?SearchString=${searchString}`),

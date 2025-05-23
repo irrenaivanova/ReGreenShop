@@ -23,7 +23,7 @@ export const requestFactory = () => {
   });
 
   return {
-    get: (url: string) => instance.get(url),
+    get: (url: string, config?: any) => instance.get(url, config),
     post: (url: string, data: any) => instance.post(url, data),
   };
 };
