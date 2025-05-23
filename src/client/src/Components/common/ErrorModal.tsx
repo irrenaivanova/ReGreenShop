@@ -14,8 +14,8 @@ export const ErrorModal = ({
 
   return (
     <div
-      className="position-fixed end-0 p-3"
-      style={{ zIndex: 1055, top: "150px" }}
+      className="position-fixed p-3"
+      style={{ zIndex: 1055, top: "150px", right: "40px" }}
     >
       <div
         className="toast show text-white bg-danger border-0 shadow-sm"

@@ -12,11 +12,11 @@ const ProductsBySubCategory = () => {
 
   const fetchProducts = useCallback(async () => {
     if (!categoryId) return [];
-    const response = await productService.getProductsByRootCategory(
+    const response = await productService.getProductsBySubCategory(
       Number(categoryId)
     );
 
-    const data = response.data?.data.products;
+    const data = response.data?.data;
     return Array.isArray(data) ? data : [];
   }, [categoryId]);
 

@@ -73,8 +73,8 @@ const Header = () => {
                 style={{
                   display: "grid",
                   gridTemplateColumns: "1fr 1fr",
-                  borderTop: "2px solid var(--bs-warning)",
-                  borderLeft: "2px solid var(--bs-warning)",
+                  borderTop: "2px solid var(--bs-light)",
+                  borderLeft: "2px solid var(--bs-light)",
                 }}
               >
                 {rootCategories.map((cat) => (
@@ -85,8 +85,8 @@ const Header = () => {
                     className="d-flex align-items-center"
                     style={{
                       padding: "10px",
-                      borderRight: "2px solid var(--bs-warning)",
-                      borderBottom: "2px solid var(--bs-warning)",
+                      borderRight: "2px solid var(--bs-light)",
+                      borderBottom: "2px solid var(--bs-light)",
                     }}
                   >
                     <img
