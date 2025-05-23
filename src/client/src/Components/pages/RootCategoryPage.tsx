@@ -7,6 +7,7 @@ import { ErrorModal } from "../common/ErrorModal";
 import { SuccessModal } from "../common/SuccessModal";
 import { useProductActions } from "../../hooks/useProductActions";
 import { FaAngleDoubleLeft, FaAngleDoubleRight } from "react-icons/fa";
+import SubCategoriesList from "../common/SubCategoryList";
 
 const RootCategoryPage = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
@@ -51,8 +52,10 @@ const RootCategoryPage = () => {
 
   return (
     <div className="container mt-3">
+      <div className="mb-4">
+        <SubCategoriesList rootCategoryId={Number(categoryId)} />
+      </div>
       <h4>Products</h4>
-
       {loading && (
         <div className="centered-spinner">
           <Spinner />

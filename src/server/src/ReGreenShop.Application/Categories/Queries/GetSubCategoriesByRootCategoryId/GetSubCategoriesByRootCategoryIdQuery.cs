@@ -26,6 +26,7 @@ public record GetSubCategoriesByRootCategoryIdQuery(int id) : IRequest<RootCateg
                 {
                     Id = r.Id,
                     Name = r.NameInEnglish ?? r.NameInBulgarian ?? string.Empty,
+                    ImagePath = r.Image.BlobPath ?? r.Image.LocalPath,
                     SubCategories = r.ChildCategories.Select(x => new SubCategoryModel
                     {
                         Id = x.Id,
