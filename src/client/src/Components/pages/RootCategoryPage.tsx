@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Button, Spinner } from "react-bootstrap";
 import { productService } from "../../services/productService";
@@ -12,6 +12,9 @@ const RootCategoryPage = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  useEffect(() => {
+    setPage(1);
+  }, [categoryId]);
 
   const fetchProducts = useCallback(async () => {
     if (!categoryId) return [];
