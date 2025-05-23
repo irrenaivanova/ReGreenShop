@@ -1,9 +1,9 @@
-import Spinner from "./Spinner";
-import ProductGrid from "./ProductGrid";
-import { useProductActions } from "../hooks/useProductActions";
-import { productService } from "../services/productService";
-import { ErrorModal } from "./ErrorModal";
-import { SuccessModal } from "./SuccessModal";
+import Spinner from "../common/Spinner";
+import ProductGrid from "../common/ProductGrid";
+import { useProductActions } from "../../hooks/useProductActions";
+import { productService } from "../../services/productService";
+import { ErrorModal } from "../common/ErrorModal";
+import { SuccessModal } from "../common/SuccessModal";
 import { useCallback } from "react";
 
 const TopProducts = () => {

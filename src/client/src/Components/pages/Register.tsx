@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
-import { useAuth } from "../context/AuthContext";
-import { useModal } from "../context/ModalContext";
-import { authService } from "../services/authService";
+import { useAuth } from "../../context/AuthContext";
+import { useModal } from "../../context/ModalContext";
+import { authService } from "../../services/authService";
 import { useNavigate } from "react-router-dom";
-import Logo from "../Components/Logo";
+import Logo from "../common/Logo";
 import "../App.css";
 
 interface RegisterFormInputs {

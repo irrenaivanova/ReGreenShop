@@ -1,8 +1,8 @@
 // src/MainRoutes.tsx
 import { Routes, Route } from "react-router-dom";
-import TopProducts from "./TopProducts";
-import Login from "./Login";
-import Register from "./Register";
+import TopProducts from "../pages/TopProducts";
+import Login from "../pages/Login";
+import Register from "../pages/Register";
 import Layout from "./Layout";
 
 const MainRoutes = () => {

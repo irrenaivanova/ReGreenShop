@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaList, FaShoppingCart, FaSearch } from "react-icons/fa";
 import { Dropdown, Form, InputGroup, Button, Badge } from "react-bootstrap";
-import { categoriesService } from "../services/categoriesService";
-import { RootCategory } from "../types/RootCategory";
-import { baseUrl } from "../Constants/baseUrl";
-import { useAuth } from "../context/AuthContext";
-import { useCart } from "../context/CartContext";
+import { categoriesService } from "../../services/categoriesService";
+import { RootCategory } from "../../types/RootCategory";
+import { baseUrl } from "../../Constants/baseUrl";
+import { useAuth } from "../../context/AuthContext";
+import { useCart } from "../../context/CartContext";
 
 const Header = () => {
   const [rootCategories, setRootCategories] = useState<RootCategory[]>([]);

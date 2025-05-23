@@ -1,5 +1,5 @@
 import { SuccessModal } from "./SuccessModal";
-import { ErrorModal } from "./ErrorModal";
+import { ErrorModal } from "./common/ErrorModal";
 import { useModal } from "../context/ModalContext";
 
 const ModalManager = () => {

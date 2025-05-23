@@ -1,5 +1,5 @@
-import { Product } from "../types/Product";
-import { baseUrl } from "../Constants/baseUrl";
+import { Product } from "../../types/Product";
+import { baseUrl } from "../../Constants/baseUrl";
 import { Link } from "react-router-dom";
 import LikeButton from "./LikeButton";
 import CartButton from "./CartButton";
