@@ -1,9 +1,8 @@
-import "./App.css";
-import { ModalProvider, useModal } from "./context/ModalContext";
-import { AuthProvider } from "./context/AuthContext";
-import MainRoutes from "./Components/layout/MainRoutes";
-import { SuccessModal } from "./Components/common/SuccessModal";
 import { ErrorModal } from "./Components/common/ErrorModal";
+import { SuccessModal } from "./Components/common/SuccessModal";
+import MainRoutes from "./Components/layout/MainRoutes";
+import { AuthProvider } from "./context/AuthContext";
+import { ModalProvider, useModal } from "./context/ModalContext";
 
 function ModalRenderer() {
   const { modal, hideModal } = useModal();

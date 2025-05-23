@@ -17,11 +17,7 @@ export const productService = {
     request.get("/Product/ProductsByRootCategory"),
 
   getProductsBySearchString: (searchString: string) =>
-    request.get(
-      `/Product/ProductsBySearchString?search=${encodeURIComponent(
-        searchString
-      )}`
-    ),
+    request.get(`/Product/ProductsBySearchString?SearchString=${searchString}`),
 
   getMyProducts: () => request.get("/Product/GetMyProducts"),
 

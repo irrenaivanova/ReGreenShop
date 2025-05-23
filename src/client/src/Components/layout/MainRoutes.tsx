@@ -1,9 +1,10 @@
-// src/MainRoutes.tsx
 import { Routes, Route } from "react-router-dom";
-import TopProducts from "../pages/TopProducts";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
+
+import TopProducts from "../pages/TopProducts";
 import Layout from "./Layout";
+import SearchResults from "../pages/SearchResults";
 
 const MainRoutes = () => {
   return (
@@ -12,6 +13,7 @@ const MainRoutes = () => {
         <Route path="/" element={<TopProducts />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/search" element={<SearchResults />} />
       </Route>
     </Routes>
   );

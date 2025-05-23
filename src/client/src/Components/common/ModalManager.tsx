@@ -1,6 +1,6 @@
+import { useModal } from "../../context/ModalContext";
+import { ErrorModal } from "./ErrorModal";
 import { SuccessModal } from "./SuccessModal";
-import { ErrorModal } from "./common/ErrorModal";
-import { useModal } from "../context/ModalContext";
 
 const ModalManager = () => {
   const { modal, hideModal } = useModal();

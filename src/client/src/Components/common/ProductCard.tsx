@@ -1,8 +1,8 @@
-import { Product } from "../../types/Product";
-import { baseUrl } from "../../Constants/baseUrl";
 import { Link } from "react-router-dom";
-import LikeButton from "./LikeButton";
+import { baseUrl } from "../../Constants/baseUrl";
+import { Product } from "../../types/Product";
 import CartButton from "./CartButton";
+import LikeButton from "./LikeButton";
 
 interface Props {
   product: Product;

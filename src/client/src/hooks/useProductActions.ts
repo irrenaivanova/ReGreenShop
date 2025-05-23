@@ -1,10 +1,9 @@
-import { useEffect, useState, useCallback } from "react";
-import { Product } from "../types/Product";
+import { useState, useCallback, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-import { productService } from "../services/productService";
-import { cartService } from "../services/cartService";
-import { data } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { cartService } from "../services/cartService";
+import { productService } from "../services/productService";
+import { Product } from "../types/Product";
 
 export const useProductActions = (fetchProducts: () => Promise<Product[]>) => {
   const [products, setProducts] = useState<Product[]>([]);
