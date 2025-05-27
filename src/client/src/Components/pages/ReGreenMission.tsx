@@ -43,8 +43,8 @@ const ReGreenMission = () => {
             justifyContent: "center",
             gap: "0.5rem",
             marginBottom: "1.5rem",
-            borderBottom: "1px solid #f0ad4e", // yellow underline
-            paddingBottom: "0.25rem", // some space between text and underline
+            borderBottom: "1px solid #f0ad4e",
+            paddingBottom: "0.25rem",
           }}
         >
           ReGreen Rules: Recycling with Rewards

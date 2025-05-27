@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Button, Spinner } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { productService } from "../../services/productService";
 import ProductGrid from "../common/ProductGrid";
 import { ErrorModal } from "../common/ErrorModal";
@@ -8,6 +8,7 @@ import { SuccessModal } from "../common/SuccessModal";
 import { useProductActions } from "../../hooks/useProductActions";
 import { FaAngleDoubleLeft, FaAngleDoubleRight } from "react-icons/fa";
 import SubCategoriesList from "../common/SubCategoryList";
+import Spinner from "../common/Spinner";
 
 const RootCategoryPage = () => {
   const { categoryId } = useParams<{ categoryId: string }>();

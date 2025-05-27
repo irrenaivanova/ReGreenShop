@@ -11,6 +11,7 @@ import ProductsByLabel from "../pages/ProductsByLabel";
 import MyFavorites from "../pages/MyFavorites";
 import ReGreenMission from "../pages/ReGreenMission";
 import NotFound from "../pages/NotFound";
+import ProductDetails from "../pages/ProductDetails";
 
 const MainRoutes = () => {
   return (
@@ -24,6 +25,7 @@ const MainRoutes = () => {
         <Route path="/search" element={<SearchResults />} />
         <Route path="/category/:categoryId" element={<RootCategoryPage />} />
         <Route path="/label/:labelId" element={<ProductsByLabel />} />
+        <Route path="/product/:productId" element={<ProductDetails />} />
         <Route
           path="/subcategory/:categoryId"
           element={<ProductsBySubCategory />}

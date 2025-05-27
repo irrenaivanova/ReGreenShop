@@ -1,11 +1,12 @@
 import { useCallback } from "react";
-import { Spinner } from "react-bootstrap";
+
 import { useLocation } from "react-router-dom";
 import { productService } from "../../services/productService";
 import { ErrorModal } from "../common/ErrorModal";
 import ProductGrid from "../common/ProductGrid";
 import { SuccessModal } from "../common/SuccessModal";
 import { useProductActions } from "../../hooks/useProductActions";
+import Spinner from "../common/Spinner";
 
 const useQuery = () => {
   const { search } = useLocation();

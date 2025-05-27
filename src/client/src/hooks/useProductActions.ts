@@ -19,7 +19,8 @@ export const useProductActions = (fetchProducts: () => Promise<Product[]>) => {
     setLoading(true);
     setError(null);
     try {
-      const freshProducts = await fetchProducts();
+      const fresh = await fetchProducts();
+      const freshProducts = Array.isArray(fresh) ? fresh : [fresh]; // added this line
       setProducts(freshProducts);
     } catch (error) {
       setProducts([]);

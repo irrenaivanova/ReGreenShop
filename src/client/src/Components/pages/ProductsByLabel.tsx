@@ -1,11 +1,11 @@
 import { useCallback } from "react";
 import { useParams } from "react-router-dom";
-import { Spinner } from "react-bootstrap";
 import { productService } from "../../services/productService";
 import ProductGrid from "../common/ProductGrid";
 import { ErrorModal } from "../common/ErrorModal";
 import { SuccessModal } from "../common/SuccessModal";
 import { useProductActions } from "../../hooks/useProductActions";
+import Spinner from "../common/Spinner";
 
 const ProductsByLabel = () => {
   const { labelId } = useParams<{ labelId: string }>();
