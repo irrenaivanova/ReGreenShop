@@ -12,5 +12,6 @@ export interface SubCategory {
 export interface CategoryWithSubCategories {
   id: number;
   name: string;
+  imagePath: string;
   subCategories: SubCategory[];
 }
