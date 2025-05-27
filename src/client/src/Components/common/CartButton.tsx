@@ -44,5 +44,3 @@ const CartButton = ({
 };
 
 export default CartButton;
-
-// className="btn btn-sm btn-outline-secondary"

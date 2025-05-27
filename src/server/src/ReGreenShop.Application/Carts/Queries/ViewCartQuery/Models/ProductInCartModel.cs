@@ -28,6 +28,8 @@ public class ProductInCartModel : IMapFrom<Product>, IMapExplicitly
 
     public int QuantityInCart { get; set; }
 
+    public int Stock { get; set; }
+
     public decimal TotalPriceProduct { get; set; }
 
 

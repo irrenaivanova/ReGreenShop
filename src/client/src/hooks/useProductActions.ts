@@ -20,7 +20,7 @@ export const useProductActions = (fetchProducts: () => Promise<Product[]>) => {
     setError(null);
     try {
       const fresh = await fetchProducts();
-      const freshProducts = Array.isArray(fresh) ? fresh : [fresh]; // added this line
+      const freshProducts = Array.isArray(fresh) ? fresh : [fresh];
       setProducts(freshProducts);
     } catch (error) {
       setProducts([]);

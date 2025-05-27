@@ -5,14 +5,15 @@ export interface ProductInCart {
   packaging: string;
   imagePath: string;
   isLiked?: boolean;
+  stock: number;
   hasPromoDiscount: boolean;
   discountPercentage: number | null;
   validTo?: string;
   additionalTextForPromotion?: string;
   hasTwoForOneDiscount: boolean;
   discountPrice: number | null;
-  productCartQuantity?: number;
-  quantityInCart?: number;
+  productCartQuantity: number;
+  quantityInCart: number;
   totalPriceProduct?: number;
   labels?: string[];
 }
