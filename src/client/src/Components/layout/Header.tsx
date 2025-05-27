@@ -15,7 +15,6 @@ const Header = () => {
   const { cartCount, loading, refreshCartCount } = useCart();
   const navigate = useNavigate();
 
-  // Fetch categories on mount
   useEffect(() => {
     categoriesService
       .getRootCategories()
