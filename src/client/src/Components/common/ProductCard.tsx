@@ -75,7 +75,7 @@ const ProductCard = ({
             {product.packaging}
           </span>
         </div>
-        {product.hasPromoDiscount ? (
+        {product.hasPromoDiscount && !product.hasTwoForOneDiscount ? (
           <div className="d-flex justify-content-center gap-2 align-items-center">
             <p className="mb-0 text-primary-emphasis small text-center">
               <del>{product.price.toFixed(2)} lv</del>

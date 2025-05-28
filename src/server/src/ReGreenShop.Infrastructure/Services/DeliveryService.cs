@@ -28,7 +28,7 @@ public class DeliveryService : IDelivery
         if (deliveryPriceTier == null)
         {
             deliveryCost = null;
-            deliveryMessage = $"Minimum order value for delivery is {minDeliveryTier.MinPriceOrder}";
+            deliveryMessage = $"Minimum order value for delivery is {minDeliveryTier.MinPriceOrder} lv";
         }
         else
         {

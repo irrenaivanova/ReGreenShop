@@ -39,4 +39,13 @@ public class UtilityController : BaseController
         var result = await this.mediator.Send(query);
         return ApiResponseHelper.Success(result);
     }
+
+    [HttpPost(nameof(ResetSession))]
+    public IActionResult ResetSession()
+    {
+        var context = HttpContext;
+        context.Session.Clear();
+        context.Response.Cookies.Delete(".AspNetCore.Session");
+        return Ok(new { message = "Session has been reset." });
+    }
 }

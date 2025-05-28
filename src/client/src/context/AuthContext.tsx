@@ -1,4 +1,7 @@
 import { createContext, useContext, useState, ReactNode } from "react";
+import { useCart } from "./CartContext";
+import axios from "axios";
+import { baseUrl } from "../Constants/baseUrl";
 
 interface AuthData {
   accessToken: string;
@@ -23,6 +26,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return stored ? JSON.parse(stored) : null;
   });
 
+  const { clearCart } = useCart();
+
   const login = (data: AuthData) => {
     localStorage.setItem("auth", JSON.stringify(data));
     setUser(data);
@@ -32,6 +37,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem("auth");
     localStorage.removeItem("jwt");
     setUser(null);
+    clearCart();
+    axios.post(
+      `${baseUrl}/Utility/ResetSession`,
+      {},
+      { withCredentials: true }
+    );
   };
 
   const isAuthenticated = !!user?.accessToken;

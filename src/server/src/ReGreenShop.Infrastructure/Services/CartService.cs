@@ -94,15 +94,23 @@ public class CartService : ICart
                 var userCartId = this.data.Carts.FirstOrDefault(x => x.UserId == userId)!.Id;
                 foreach (var item in sessionIdCart.CartItems)
                 {
-                    var newItem = new CartItem
+                    var cartItem = await this.data.CartItems.FirstOrDefaultAsync(x => x.CartId == userCartId && x.ProductId == item.ProductId);
+                    if (cartItem != null)
                     {
-                        CartId = userCartId,
-                        ProductId = item.ProductId,
-                        Quantity = item.Quantity,
-                        BaseCategoryId = item.BaseCategoryId
-                    };
+                        cartItem.Quantity += item.Quantity;
+                    }
+                    else
+                    {
+                        var newItem = new CartItem
+                        {
+                            CartId = userCartId,
+                            ProductId = item.ProductId,
+                            Quantity = item.Quantity,
+                            BaseCategoryId = item.BaseCategoryId
+                        };
+                        this.data.CartItems.Add(newItem);
+                    }
 
-                    this.data.CartItems.Add(newItem);
                     this.data.CartItems.Remove(item);
                 }
 

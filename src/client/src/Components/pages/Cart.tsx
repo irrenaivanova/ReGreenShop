@@ -5,14 +5,19 @@ import { cartService } from "../../services/cartService";
 import { utilityService } from "../../services/utilityService";
 import CartButton from "../common/CartButton";
 import { ProductCategoryGroup } from "../../types/ProductCategoryGroup";
-import { useProductActionsForCart } from "../../hooks/useProductActionsForCart";
 import Spinner from "../common/Spinner";
 import { baseUrl } from "../../Constants/baseUrl";
+import { useCart } from "../../context/CartContext";
+import { useProductActionsForCart } from "../../hooks/useProductActionsForCart";
+import { FaTrashAlt, FaTruck } from "react-icons/fa";
+import DeliveryInfo from "../common/DeliveryInfo";
+import { Delivery } from "../../types/Delivery";
 
 const Cart = () => {
   const navigate = useNavigate();
   const [cart, setCart] = useState<AllProductsInCart | null>(null);
-  const [deliveryInfo, setDeliveryInfo] = useState<string[]>([]);
+  const [deliveryInfo, setDeliveryInfo] = useState<Delivery[]>([]);
+  const [showPopup, setShowPopup] = useState(false);
 
   const fetchCart = useCallback(async () => {
     const response = await cartService.viewProductsInCart();
@@ -21,9 +26,10 @@ const Cart = () => {
 
   const fetchDeliveryPrices = async () => {
     const response = await utilityService.getAllDeliveryPrices();
-    setDeliveryInfo(response.data);
+    setDeliveryInfo(response.data.data);
   };
 
+  const { refreshCartCount } = useCart();
   useEffect(() => {
     fetchCart();
   }, [fetchCart]);
@@ -33,14 +39,25 @@ const Cart = () => {
 
   const handleClearCart = async () => {
     await cartService.cleanCart();
+    await refreshCartCount();
     fetchCart();
   };
 
   return (
     <div className="container my-4">
-      <h4 className="mb-4 text-decoration-underline">Products in the Cart</h4>
       <div className="row">
         <div className="col-md-9">
+          <div className="d-flex justify-content-between align-items-center mb-4">
+            <h4 className="mb-0">Products in Cart</h4>
+            <span
+              onClick={handleClearCart}
+              style={{ cursor: "pointer", textDecoration: "underline" }}
+              className="text-danger d-flex align-items-center gap-2"
+            >
+              <FaTrashAlt />
+              Clear Cart
+            </span>
+          </div>
           {cart?.productsByCategories?.length ? (
             cart.productsByCategories.map((group: ProductCategoryGroup) => (
               <div key={group.id} className="mb-4">
@@ -87,27 +104,32 @@ const Cart = () => {
                         </div>
 
                         <div
-                          className="d-flex align-items-center gap-3 justify-content-end"
-                          style={{ fontSize: "1.1rem" }}
+                          className="d-flex align-items-center gap-3"
+                          style={{ fontSize: "1.1rem", width: "340px" }}
                         >
                           <div
-                            className="d-flex flex-column"
-                            style={{ minWidth: "160px" }}
+                            className="d-flex align-items-start"
+                            style={{ fontSize: "1.1rem" }}
                           >
-                            <CartButton
-                              quantity={product.quantityInCart || 0}
-                              onIncrement={() => handleIncrement(product.id)}
-                              onDecrement={() => handleDecrement(product.id)}
-                              availableQuantity={product.stock}
-                            />
+                            <div
+                              className="d-flex"
+                              style={{ minWidth: "160px", flexShrink: 0 }}
+                            >
+                              <CartButton
+                                quantity={product.quantityInCart || 0}
+                                onIncrement={() => handleIncrement(product.id)}
+                                onDecrement={() => handleDecrement(product.id)}
+                                availableQuantity={product.stock}
+                              />
+                            </div>
                           </div>
                           <div className="d-flex gap-3 flex-grow-1 justify-content-end">
                             <p
-                              className={`fw-bold mb-0 ${
+                              className={`mb-0 ${
                                 product.hasPromoDiscount ||
                                 product.hasTwoForOneDiscount
                                   ? "text-danger"
-                                  : "text-dark"
+                                  : "text-black"
                               }`}
                             >
                               {(product.hasTwoForOneDiscount
@@ -116,7 +138,7 @@ const Cart = () => {
                               ).toFixed(2)}{" "}
                               lv
                             </p>
-                            <p className="fw-semibold mb-0">
+                            <p className="fw-bold mb-0">
                               {product.totalPriceProduct?.toFixed(2)} lv
                             </p>
                           </div>
@@ -132,33 +154,56 @@ const Cart = () => {
           )}
         </div>
 
-        {/* Right Side */}
         <div className="col-md-3">
           {cart ? (
             <div className="card p-4">
               <h5 className="mb-3">Summary</h5>
-              <p className="mb-1 fw-bold">
-                Total Price: {(cart.totalPrice ?? 0).toFixed(2)} lv
-              </p>
-              <p className="mb-1 fw-bold">
-                Delivery: {(cart.deliveryPriceProducts ?? 0).toFixed(2)} lv{" "}
+              <div className="d-flex justify-content-between mb-2">
+                <span className="text-muted">Total Price:</span>
+                <span className="fw-bold">
+                  {(cart.totalPrice ?? 0).toFixed(2)} lv
+                </span>
+              </div>
+              <div className="d-flex justify-content-between mb-2">
+                <span className="text-muted">Delivery:</span>
+                <span className="fw-bold">
+                  {(cart.deliveryPriceProducts ?? 0).toFixed(2)}lv
+                </span>
+              </div>
+              <div className="d-flex justify-content-between border-top pt-2 mt-2">
+                <span className="text-dark">Grand Total:</span>
+                <span className="fw-bold text-dark">
+                  {(
+                    (cart.deliveryPriceProducts ?? 0) + (cart.totalPrice ?? 0)
+                  ).toFixed(2)}{" "}
+                  lv
+                </span>
+              </div>
+              <div
+                className="d-flex align-items-center justify-content-between bg-white text-primary border border-primary rounded px-3 py-2 mt-3"
+                style={{ position: "relative" }}
+              >
+                <div className="d-flex align-items-center gap-2">
+                  <FaTruck size={20} style={{ flexShrink: 0 }} />
+                  <span className="small">{cart.deliveryMessage}</span>
+                </div>
+
                 <span
-                  className="badge bg-info text-dark"
+                  className="badge bg-warning text-dark ms-3"
                   style={{ cursor: "pointer" }}
-                  onMouseEnter={fetchDeliveryPrices}
-                  title={deliveryInfo.join("\n")}
+                  onMouseEnter={() => {
+                    fetchDeliveryPrices();
+                    setShowPopup(true);
+                  }}
+                  onMouseLeave={() => setShowPopup(false)}
                 >
                   ?
                 </span>
-              </p>
-              {cart.deliveryMessage && (
-                <p className="text-muted small mt-2">{cart.deliveryMessage}</p>
-              )}
-              <button className="btn btn-danger mt-3" onClick={handleClearCart}>
-                Clear Cart
-              </button>
+
+                {showPopup && <DeliveryInfo info={deliveryInfo} />}
+              </div>
               <button
-                className="btn btn-success mt-2"
+                className="btn btn-primary mt-2"
                 onClick={() => navigate("/checkout")}
               >
                 Make an Order
