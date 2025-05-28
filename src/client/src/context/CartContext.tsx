@@ -34,7 +34,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 
   const clearCart = () => {
     setCartCount(0);
-    setLoading(false); // Stop spinner immediately on clear
+    setLoading(false);
   };
 
   useEffect(() => {

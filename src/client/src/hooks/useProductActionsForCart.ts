@@ -8,7 +8,7 @@ export const useProductActionsForCart = (refetchCart: () => Promise<void>) => {
     try {
       await cartService.addToCart(id);
       await refreshCartCount();
-      await refetchCart(); // ✅ correct now
+      await refetchCart();
     } catch (err: any) {
       console.error("Error adding to cart", err);
     }
@@ -18,7 +18,7 @@ export const useProductActionsForCart = (refetchCart: () => Promise<void>) => {
     try {
       await cartService.removeFromCart(id);
       await refreshCartCount();
-      await refetchCart(); // ✅ correct now
+      await refetchCart();
     } catch (err: any) {
       console.error("Error removing from cart", err);
     }

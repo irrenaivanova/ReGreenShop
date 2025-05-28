@@ -12,12 +12,15 @@ import { useProductActionsForCart } from "../../hooks/useProductActionsForCart";
 import { FaTrashAlt, FaTruck } from "react-icons/fa";
 import DeliveryInfo from "../common/DeliveryInfo";
 import { Delivery } from "../../types/Delivery";
+import { useAuth } from "../../context/AuthContext";
 
 const Cart = () => {
   const navigate = useNavigate();
   const [cart, setCart] = useState<AllProductsInCart | null>(null);
   const [deliveryInfo, setDeliveryInfo] = useState<Delivery[]>([]);
   const [showPopup, setShowPopup] = useState(false);
+  const { isAuthenticated } = useAuth();
+  const [showTooltip, setShowTooltip] = useState(false);
 
   const fetchCart = useCallback(async () => {
     const response = await cartService.viewProductsInCart();
@@ -43,6 +46,7 @@ const Cart = () => {
     fetchCart();
   };
 
+  const isDisabled = !isAuthenticated || (cart?.totalPrice ?? 0) < 40;
   return (
     <div className="container my-4">
       <div className="row">
@@ -202,12 +206,58 @@ const Cart = () => {
 
                 {showPopup && <DeliveryInfo info={deliveryInfo} />}
               </div>
-              <button
-                className="btn btn-primary mt-2"
-                onClick={() => navigate("/checkout")}
-              >
-                Make an Order
-              </button>
+              <div className="position-relative d-inline-flex align-items-center gap-2 mt-2">
+                <button
+                  className={`btn btn-primary btn-lg ${
+                    isDisabled ? "disabled" : ""
+                  }`}
+                  disabled={isDisabled}
+                  onClick={() => {
+                    if (!isDisabled)
+                      navigate("/checkout", {
+                        state: {
+                          totalPrice:
+                            (cart.deliveryPriceProducts ?? 0) +
+                            (cart.totalPrice ?? 0),
+                        },
+                      });
+                  }}
+                >
+                  Make an Order
+                </button>
+
+                {!isAuthenticated && (
+                  <span
+                    className="badge bg-warning text-dark"
+                    style={{
+                      cursor: "pointer",
+                      lineHeight: 1,
+                      padding: "0.35em 0.5em",
+                    }}
+                    onMouseEnter={() => setShowTooltip(true)}
+                    onMouseLeave={() => setShowTooltip(false)}
+                  >
+                    ?
+                  </span>
+                )}
+
+                {showTooltip && !isAuthenticated && (
+                  <div
+                    className="position-absolute bg-light border rounded p-2 shadow text-dark small"
+                    style={{
+                      top: "100%",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      marginTop: 6,
+                      whiteSpace: "normal",
+                      minWidth: 180,
+                      zIndex: 1000,
+                    }}
+                  >
+                    You must be logged in to make an order.
+                  </div>
+                )}
+              </div>
             </div>
           ) : (
             <Spinner />
