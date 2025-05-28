@@ -13,6 +13,7 @@ import ReGreenMission from "../pages/ReGreenMission";
 import NotFound from "../pages/NotFound";
 import ProductDetails from "../pages/ProductDetails";
 import Cart from "../pages/Cart";
+import Checkout from "../pages/Checkout";
 
 const MainRoutes = () => {
   return (
@@ -24,6 +25,7 @@ const MainRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<Checkout />} />
         <Route path="/search" element={<SearchResults />} />
         <Route path="/category/:categoryId" element={<RootCategoryPage />} />
         <Route path="/label/:labelId" element={<ProductsByLabel />} />

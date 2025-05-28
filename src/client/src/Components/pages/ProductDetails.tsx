@@ -1,6 +1,5 @@
 import { useCallback } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
-import { IoClose } from "react-icons/io5";
 import Spinner from "../common/Spinner";
 import LikeButton from "../common/LikeButton";
 import CartButton from "../common/CartButton";

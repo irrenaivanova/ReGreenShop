@@ -5,6 +5,7 @@ using ReGreenShop.Application.Deliveries.Queries;
 using ReGreenShop.Application.GreenAlternatives;
 using ReGreenShop.Application.GreenAlternatives.GetAllGreenAlternativesQuery;
 using ReGreenShop.Application.Labels.Queries;
+using ReGreenShop.Application.Vouchers.Queries;
 
 namespace ReGreenShop.Web.Controllers;
 public class UtilityController : BaseController
@@ -20,6 +21,14 @@ public class UtilityController : BaseController
     public async Task<IActionResult> GetAllDeliveryPrices()
     {
         var query = new GetDeliveryPricesQuery();
+        var result = await this.mediator.Send(query);
+        return ApiResponseHelper.Success(result);
+    }
+
+    [HttpGet(nameof(GetAllVouchers))]
+    public async Task<IActionResult> GetAllVouchers()
+    {
+        var query = new GetAllVouchersQuery();
         var result = await this.mediator.Send(query);
         return ApiResponseHelper.Success(result);
     }
