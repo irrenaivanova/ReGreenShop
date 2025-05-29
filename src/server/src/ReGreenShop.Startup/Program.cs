@@ -106,10 +106,11 @@ if (app.Environment.IsProduction())
 }
 
 // Adding the requiring job after building the app - it don`t modify the service collection
-RecurringJob.AddOrUpdate<PromoJob>("Promotion Service", service => service.Execute(CancellationToken.None), Cron.Daily);
+RecurringJob.AddOrUpdate<PromoJob>("Promotion Service", service => service.Execute(CancellationToken.None), Cron.Weekly);
+RecurringJob.AddOrUpdate<DeleteCartsJob>("DeleteUnUsedCarts Service", service => service.Execute(CancellationToken.None), Cron.Daily);
 
 app.UseCustomExceptionHandler();
-
+    
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();

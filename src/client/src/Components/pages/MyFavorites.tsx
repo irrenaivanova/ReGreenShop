@@ -33,7 +33,7 @@ const MyFavorites = () => {
 
   return (
     <div className="container mt-1">
-      <h3 className="mb-4">Top Products</h3>
+      <h3 className="mb-4">My Products</h3>
 
       {error && <ErrorModal message={error} onClose={() => {}} />}
 

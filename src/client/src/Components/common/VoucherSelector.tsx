@@ -18,9 +18,10 @@ const VoucherSelector = ({ availableGreenPoints, onSelectVoucher }: Props) => {
       .catch((err) => console.error("Failed to fetch vouchers", err));
   }, []);
 
-  const handleChange = (id: number) => {
-    setSelectedId(id);
-    onSelectVoucher(id);
+  const handleChange = (id: number | null) => {
+    const newSelectedId = selectedId === id ? null : id;
+    setSelectedId(newSelectedId);
+    onSelectVoucher(newSelectedId);
   };
 
   const anyAvailable = vouchers.some(
@@ -80,6 +81,17 @@ const VoucherSelector = ({ availableGreenPoints, onSelectVoucher }: Props) => {
           );
         })}
       </div>
+      {selectedId !== null && (
+        <div className="mt-2 w-100">
+          <button
+            type="button"
+            className="btn btn-sm btn-outline-danger"
+            onClick={() => handleChange(null)}
+          >
+            Remove voucher
+          </button>
+        </div>
+      )}
     </div>
   );
 };

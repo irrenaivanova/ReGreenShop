@@ -56,7 +56,7 @@ public class PdfGeneratorService : IPdfGenerator
 
                     column.Item().AlignRight().Text($"Subtotal: {model.TotalPriceProducts} lv");
                     column.Item().AlignRight().Text($"Delivery: {model.DeliveryPrice} lv");
-                    column.Item().AlignRight().Text($"Discount: {model.Discount} lv");
+                    column.Item().AlignRight().Text($"VoucherDiscount: {model.Discount} lv");
                     column.Item().AlignRight().Text($"Total: {model.TotalPrice} lv").Bold();
                 });
 
