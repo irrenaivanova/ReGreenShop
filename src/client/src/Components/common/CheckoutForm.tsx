@@ -35,6 +35,7 @@ const CheckoutForm = ({ userInfo, onFormSubmit }: Props) => {
     handleSubmit,
     control,
     setValue,
+    setError,
     formState: { errors },
   } = useForm();
 
@@ -42,8 +43,32 @@ const CheckoutForm = ({ userInfo, onFormSubmit }: Props) => {
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const isValidDeliveryTime = (time: Date) => {
+    const now = new Date();
+    const fourHoursFromNow = addHours(now, 4);
+    const hour = time.getHours();
+    return time > fourHoursFromNow && hour >= 9 && hour <= 20;
+  };
+
+  const filterTimes = (time: Date) => {
+    return isValidDeliveryTime(time);
+  };
+
   const handleInternalSubmit = async (data: any) => {
     setIsSubmitting(true);
+
+    if (
+      !data.deliveryDateTime ||
+      !isValidDeliveryTime(new Date(data.deliveryDateTime))
+    ) {
+      setError("deliveryDateTime", {
+        type: "manual",
+        message:
+          "Delivery time must be at least 4 hours from now and between 9:00–20:00.",
+      });
+      setIsSubmitting(false);
+      return;
+    }
 
     const sanitizedData = {
       ...data,
@@ -69,13 +94,6 @@ const CheckoutForm = ({ userInfo, onFormSubmit }: Props) => {
     setValue("number", userInfo.number);
     setValue("cityId", userInfo.cityId);
   }, [userInfo, setValue]);
-
-  const filterTimes = (time: Date) => {
-    const now = new Date();
-    const fourHoursFromNow = addHours(now, 4);
-    const hour = time.getHours();
-    return time > fourHoursFromNow && hour >= 9 && hour <= 20;
-  };
 
   const minDate = new Date();
   const maxDate = addDays(minDate, 5);
@@ -210,5 +228,4 @@ const CheckoutForm = ({ userInfo, onFormSubmit }: Props) => {
     </div>
   );
 };
-
 export default CheckoutForm;
