@@ -4,6 +4,7 @@ import Logo from "../common/Logo";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../context/AuthContext";
 import { useModal } from "../../context/ModalContext";
+import DOMPurify from "dompurify";
 
 interface LoginFormInputs {
   email: string;
@@ -22,7 +23,10 @@ const Login = () => {
 
   const onSubmit = async (data: LoginFormInputs) => {
     try {
-      const response = await authService.login(data.email, data.password);
+      const response = await authService.login(
+        DOMPurify.sanitize(data.email),
+        DOMPurify.sanitize(data.password)
+      );
       const { accessToken, userId, userName, isAdmin } = response.data.data;
       const successMessage = response.data.message || "Login successful!";
 

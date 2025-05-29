@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { useAuth } from "../../context/AuthContext";
 import { useModal } from "../../context/ModalContext";
 import "@/App.css";
+import DOMPurify from "dompurify";
 
 interface RegisterFormInputs {
   userName: string;
@@ -23,7 +24,10 @@ const Register = () => {
 
   const onSubmit = async (data: RegisterFormInputs) => {
     try {
-      const response = await authService.register(data.userName, data.password);
+      const response = await authService.register(
+        DOMPurify.sanitize(data.userName),
+        DOMPurify.sanitize(data.password)
+      );
       const { accessToken, userId, userName, isAdmin } = response.data.data;
       const successMessage =
         response.data.message || "Registration successful!";

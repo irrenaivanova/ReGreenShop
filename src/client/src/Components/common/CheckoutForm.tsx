@@ -44,7 +44,14 @@ const CheckoutForm = ({ userInfo, onFormSubmit }: Props) => {
 
   const handleInternalSubmit = async (data: any) => {
     setIsSubmitting(true);
-    await onFormSubmit(data);
+
+    const sanitizedData = {
+      ...data,
+      firstName: DOMPurify.sanitize(data.firstName),
+      lastName: DOMPurify.sanitize(data.lastName),
+      street: DOMPurify.sanitize(data.street),
+    };
+    await onFormSubmit(sanitizedData);
     setIsSubmitting(false);
   };
   useEffect(() => {

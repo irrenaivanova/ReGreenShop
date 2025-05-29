@@ -7,6 +7,7 @@ import { RootCategory } from "../../types/RootCategory";
 import { baseUrl } from "../../Constants/baseUrl";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
+import DOMPurify from "dompurify";
 
 const Header = () => {
   const [rootCategories, setRootCategories] = useState<RootCategory[]>([]);
@@ -30,7 +31,11 @@ const Header = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchTerm.trim()) return;
-    navigate(`/search?query=${encodeURIComponent(searchTerm.trim())}`);
+    navigate(
+      `/search?query=${encodeURIComponent(
+        DOMPurify.sanitize(searchTerm.trim())
+      )}`
+    );
   };
 
   const handleLogout = () => {
