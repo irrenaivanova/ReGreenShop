@@ -1,4 +1,4 @@
-export interface UserAddressInfo {
+export interface UserInfoForOrder {
   firstName: string;
   lastName: string;
   street: string;

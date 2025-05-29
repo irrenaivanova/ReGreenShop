@@ -6,7 +6,14 @@ import { userService } from "../../services/userService";
 import { useCallback, useEffect, useState } from "react";
 
 interface MakeAnOrderFormInputs {
-  voucherId: number | null;
+  discountVoucherId: number | null;
+  firstName: string;
+  lastName: string;
+  cityId: number;
+  street: string;
+  number: number;
+  paymentMethodId: number;
+  deliveryDateTime: Date;
 }
 
 const Checkout = () => {
@@ -15,7 +22,9 @@ const Checkout = () => {
   const navigate = useNavigate();
 
   const [user, setUser] = useState<any>(null);
-  const [voucherId, setVoucherId] = useState<number | null>(null);
+  const [discountVoucherId, setdiscountVoucherId] = useState<number | null>(
+    null
+  );
 
   const fetchUserInfo = useCallback(async () => {
     try {
@@ -32,7 +41,7 @@ const Checkout = () => {
 
   const handleSubmitOrder = () => {
     const orderInput: MakeAnOrderFormInputs = {
-      voucherId: voucherId,
+      discountVoucherId: voucherId,
     };
   };
 
@@ -44,7 +53,7 @@ const Checkout = () => {
 
       <VoucherSelector
         availableGreenPoints={user.totalGreenPoints}
-        onSelectVoucher={(id: number | null) => setVoucherId(id)}
+        onSelectVoucher={(id: number | null) => setdiscountVoucherId(id)}
       />
 
       <button className="btn btn-success mt-3" onClick={handleSubmitOrder}>

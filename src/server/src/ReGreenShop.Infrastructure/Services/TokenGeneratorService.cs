@@ -24,7 +24,7 @@ public class TokenGeneratorService : ITokenGenerator
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddMinutes(60),
+            Expires = DateTime.UtcNow.AddMinutes(120),
             SigningCredentials = signingCredentials,
             Issuer = this.jwtSettings.Issuer,
             Audience = this.jwtSettings.Audience,
