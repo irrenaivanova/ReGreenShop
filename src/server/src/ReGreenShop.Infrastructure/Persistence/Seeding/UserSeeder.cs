@@ -34,6 +34,7 @@ internal class UserSeeder : ISeeder
             if (result.Succeeded)
             {
                 await userManager.AddToRoleAsync(adminUser, AdminName);
+                await data.SaveChangesAsync(CancellationToken.None);
             }
         }
     }

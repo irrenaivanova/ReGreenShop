@@ -1,31 +1,25 @@
-import { useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import OrderSummary from "../common/OrderSummary";
 import VoucherSelector from "../common/VoucherSelector";
+import CheckoutForm from "../common/CheckoutForm";
 import { userService } from "../../services/userService";
+import { orderService } from "../../services/orderService";
 import { useCallback, useEffect, useState } from "react";
-
-interface MakeAnOrderFormInputs {
-  discountVoucherId: number | null;
-  firstName: string;
-  lastName: string;
-  cityId: number;
-  street: string;
-  number: number;
-  paymentMethodId: number;
-  deliveryDateTime: Date;
-}
+import { useModal } from "../../context/ModalContext";
+import { UserInfoForOrder } from "../../types/UserInfoForOrder";
+import { useCart } from "../../context/CartContext";
 
 const Checkout = () => {
   const location = useLocation();
   const totalPrice = location.state?.totalPrice;
   const navigate = useNavigate();
+  const { showModal } = useModal();
 
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<UserInfoForOrder | null>(null);
   const [discountVoucherId, setdiscountVoucherId] = useState<number | null>(
     null
   );
-
+  const { clearCart } = useCart();
   const fetchUserInfo = useCallback(async () => {
     try {
       const response = await userService.getUserInfoForOrder();
@@ -39,10 +33,22 @@ const Checkout = () => {
     fetchUserInfo();
   }, [fetchUserInfo]);
 
-  const handleSubmitOrder = () => {
-    const orderInput: MakeAnOrderFormInputs = {
-      discountVoucherId: voucherId,
-    };
+  const handleFormSubmit = async (data: any) => {
+    try {
+      const orderData = {
+        ...data,
+        discountVoucherId,
+        deliveryDateTime: data.deliveryDateTime.toISOString(),
+      };
+
+      const response = await orderService.makeAnOrder(orderData);
+      showModal?.("success", response.data.message || "Order placed!");
+      clearCart();
+      navigate("/");
+    } catch (error: any) {
+      const msg = error.response?.data?.error || "Order failed.";
+      showModal?.("error", msg);
+    }
   };
 
   if (!user) return <div>Loading...</div>;
@@ -56,10 +62,9 @@ const Checkout = () => {
         onSelectVoucher={(id: number | null) => setdiscountVoucherId(id)}
       />
 
-      <button className="btn btn-success mt-3" onClick={handleSubmitOrder}>
-        Submit Order
-      </button>
+      <CheckoutForm userInfo={user} onFormSubmit={handleFormSubmit} />
     </div>
   );
 };
+
 export default Checkout;

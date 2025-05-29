@@ -28,7 +28,7 @@ const Login = () => {
 
       login({ accessToken, userId, userName, isAdmin });
       showModal?.("success", successMessage);
-      navigate("/");
+      navigate("/cart");
     } catch (error: any) {
       const errorMessage = error.response?.data?.error || "Login failed.";
       showModal?.("error", errorMessage);
