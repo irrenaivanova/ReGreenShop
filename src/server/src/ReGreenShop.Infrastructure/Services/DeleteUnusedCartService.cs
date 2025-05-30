@@ -21,8 +21,8 @@ public class DeleteUnusedCartService : IDeleteUnusedCart
                 .Where(x => x.CartId != null)
                 .Select(x => x.CartId)
                 .ToListAsync();
-        var cutoffTime = DateTime.Now.AddHours(-24);
 
+        var cutoffTime = DateTime.Now.AddHours(-24);
         var deletableCarts = await this.data.Carts.Where(x => x.UserId == null &&
                 !usedCartIds.Contains(x.Id) && x.CreatedOn < cutoffTime)
                 .ToListAsync();

@@ -13,13 +13,14 @@ import {
   FaBell,
   FaIdBadge,
   FaSeedling,
-  FaRecycle,
 } from "react-icons/fa";
 import { Dropdown } from "react-bootstrap";
 import { utilityService } from "../../services/utilityService";
 import Logo from "../common/Logo";
 import React from "react";
 import { useAuth } from "../../context/AuthContext";
+
+import NotificationDropdown from "../common/NotificationDropdown";
 
 interface Label {
   id: number;
@@ -87,6 +88,9 @@ const BottomHeader = () => {
         </div>
         {isAuthenticated && (
           <div className="d-flex align-items-center">
+            <div className="me-2">
+              <NotificationDropdown />
+            </div>
             <Link to="/favorites" className="btn btn-outline-primary me-2">
               <FaHeart size={20} />
             </Link>

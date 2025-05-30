@@ -60,8 +60,8 @@ public record FinishAnOrderCommand(FinishAnOrderModel model) : IRequest<Unit>
             order.Payment.Status = Domain.Entities.Enum.PaymentStatus.Completed;
             await this.data.SaveChangesAsync();
 
-            var title = $"Order {order.Id.Substring(0,6)} completed";
-            var message = $"Order {order.Id.Substring(0, 6)} from date: {order.CreatedOn.ToString("dd MMM yyyy")}completed successfully. You have received {greenPointsReceived} Green Points.";
+            var title = $"Order completed";
+            var message = $"Order {order.Id.Substring(0, 6)} from date: {order.CreatedOn.ToString("dd MMM yyyy")} is completed successfully. You have received {greenPointsReceived} Green Points.";
             await this.notificationService.NotifyUserAsync(userId, title, message);
 
             return Unit.Value;
