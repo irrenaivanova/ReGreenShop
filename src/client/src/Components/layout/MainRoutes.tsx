@@ -14,6 +14,8 @@ import NotFound from "../pages/NotFound";
 import ProductDetails from "../pages/ProductDetails";
 import Cart from "../pages/Cart";
 import Checkout from "../pages/Checkout";
+import MyOrders from "../pages/MyOrders";
+import PendingOrders from "../pages/PendingOrders";
 
 const MainRoutes = () => {
   return (
@@ -25,6 +27,8 @@ const MainRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/my-orders" element={<MyOrders />} />
+        <Route path="/pendingOrders" element={<PendingOrders />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/search" element={<SearchResults />} />
         <Route path="/category/:categoryId" element={<RootCategoryPage />} />

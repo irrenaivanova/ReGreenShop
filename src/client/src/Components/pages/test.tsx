@@ -5,16 +5,20 @@ import { useModal } from "../../context/ModalContext";
 import { Col, Container, Row, Table } from "react-bootstrap";
 import Spinner from "../common/Spinner";
 import { baseUrl } from "../../Constants/baseUrl";
+import GreenForm from "../common/GreenForm";
 
-const MyOrders = () => {
+const PendingOrders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { showModal } = useModal();
+  const [visibleFormOrderId, setVisibleFormOrderId] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await orderService.getMyOrders();
+        const res = await orderService.getPendingOrders();
         setOrders(res.data.data || []);
       } catch (err: any) {
         const errorMessage = err.response?.data?.error || "Login failed.";
@@ -25,6 +29,14 @@ const MyOrders = () => {
     };
     fetchOrders();
   }, []);
+
+  const toggleForm = (orderId: string) => {
+    if (visibleFormOrderId === orderId) {
+      setVisibleFormOrderId(null);
+    } else {
+      setVisibleFormOrderId(orderId);
+    }
+  };
 
   return (
     <Container className="my-4">
@@ -52,6 +64,7 @@ const MyOrders = () => {
                   <th>Payment</th>
                   <th>TotalPrice</th>
                   <th>Invoice</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -73,6 +86,20 @@ const MyOrders = () => {
                         Invoice
                       </a>
                     </td>
+
+                    <td>
+                      <button
+                        className="btn btn-outline-success"
+                        onClick={() => toggleForm(order.id)}
+                      >
+                        Finalizing
+                      </button>
+                      {visibleFormOrderId === order.id && (
+                        <div className="mt-2">
+                          <GreenForm orderId={order.id} />
+                        </div>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -84,4 +111,4 @@ const MyOrders = () => {
   );
 };
 
-export default MyOrders;
+export default PendingOrders;

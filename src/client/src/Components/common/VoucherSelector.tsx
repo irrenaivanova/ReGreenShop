@@ -32,7 +32,7 @@ const VoucherSelector = ({ availableGreenPoints, onSelectVoucher }: Props) => {
     <div className="card p-4 border-primary mt-4 col-md-10 offset-md-1">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h5 className="mb-0">
-          You have <strong>{availableGreenPoints}</strong> green points
+          You have <strong>{availableGreenPoints}</strong> ReGreen points
         </h5>
         <small
           className={`ms-3  fw-bold ${
