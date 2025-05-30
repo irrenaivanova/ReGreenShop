@@ -97,8 +97,31 @@ public class SendGridEmailSender : IEmailSender
         }
         catch (Exception ex)
         {
+            string errorMessage = ex.Message;
+            string? extractedMessage = null;
+            try
+            {
+                int jsonStart = ex.Message.IndexOf("{");
+                if (jsonStart >= 0)
+                {
+                    string jsonPart = ex.Message.Substring(jsonStart);
+                    using var doc = System.Text.Json.JsonDocument.Parse(jsonPart);
+                    var root = doc.RootElement;
+
+                    if (root.TryGetProperty("errors", out var errors) && errors.GetArrayLength() > 0)
+                    {
+                        extractedMessage = errors[0].GetProperty("message").GetString() ?? ex.Message;
+                    }
+                }
+            }
+            catch
+            {
+                extractedMessage = ex.Message;
+            }
+
+
             string title = "Email not sent!";
-            string body = $"Email to {recipientEmail} failed. Reason: {ex.Message}";
+            string body = $"Email to {recipientEmail} failed. Reason: {extractedMessage}";
 
             this.logger.LogError(ex, "Failed to send email. Notifying admin...");
             await this.adminNotifier.NotifyAdminAsync(title, body);

@@ -10,7 +10,6 @@ import {
   FaGift,
   FaUser,
   FaBoxOpen,
-  FaBell,
   FaIdBadge,
   FaSeedling,
 } from "react-icons/fa";
@@ -21,6 +20,7 @@ import React from "react";
 import { useAuth } from "../../context/AuthContext";
 
 import NotificationDropdown from "../common/NotificationDropdown";
+import { MdOutlineWorkHistory } from "react-icons/md";
 
 interface Label {
   id: number;
@@ -38,6 +38,7 @@ const BottomHeader = () => {
   const [labels, setLabels] = useState<Label[]>([]);
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const { isAdmin } = useAuth();
 
   useEffect(() => {
     utilityService
@@ -109,14 +110,6 @@ const BottomHeader = () => {
                 </Dropdown.Item>
                 <Dropdown.Item
                   as={Link}
-                  to="/my-notifications"
-                  className="fs-6 d-flex align-items-center"
-                >
-                  <FaBell className="me-2 text-warning" />
-                  My Notifications
-                </Dropdown.Item>
-                <Dropdown.Item
-                  as={Link}
                   to="/my-info"
                   className="fs-6 d-flex align-items-center"
                 >
@@ -131,6 +124,23 @@ const BottomHeader = () => {
                   <FaSeedling className="me-2 text-warning" />
                   My ReGreen Impact
                 </Dropdown.Item>
+
+                {isAdmin && (
+                  <>
+                    <Dropdown.Divider />
+                    <Dropdown.Header className="text-danger text-uppercase small px-3 text-decoration-underline">
+                      Admin Area
+                    </Dropdown.Header>
+                    <Dropdown.Item
+                      as={Link}
+                      to="/pendingOrders"
+                      className="fs-6 d-flex align-items-center"
+                    >
+                      <MdOutlineWorkHistory className="me-2 text-danger" />
+                      Pending Orders
+                    </Dropdown.Item>
+                  </>
+                )}
               </Dropdown.Menu>
             </Dropdown>
           </div>

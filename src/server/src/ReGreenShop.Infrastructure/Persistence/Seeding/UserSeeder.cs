@@ -10,10 +10,10 @@ internal class UserSeeder : ISeeder
 {
     public async Task SeedAsync(ApplicationDbContext data, IServiceProvider serviceProvider)
     {
-        //if (data.Users.Any())
-        //{
-        //    return;
-        //}
+        if (data.Users.Any())
+        {
+            return;
+        }
 
         var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
         var roleManager = serviceProvider.GetRequiredService<RoleManager<Role>>();
