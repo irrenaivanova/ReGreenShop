@@ -17,6 +17,7 @@ import Checkout from "../pages/Checkout";
 import MyOrders from "../pages/MyOrders";
 import PendingOrders from "../pages/PendingOrders";
 import GreenImpact from "../pages/GreenImpact";
+import MyInfo from "../pages/MyInfo";
 
 const MainRoutes = () => {
   return (
@@ -29,6 +30,7 @@ const MainRoutes = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/my-orders" element={<MyOrders />} />
+        <Route path="/my-info" element={<MyInfo />} />
         <Route path="/pendingOrders" element={<PendingOrders />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/search" element={<SearchResults />} />
