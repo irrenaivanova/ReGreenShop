@@ -1,4 +1,5 @@
 using System.Text;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -65,12 +66,27 @@ public static class ServiceRegistration
 
         var signKey = Encoding.ASCII.GetBytes(jwtSettings.SignKey);
 
+        // GoogleSettings
+        services.Configure<GoogleAuthentication>(configuration.GetSection(nameof(GoogleAuthentication)));
+        var googleSettings = configuration.GetSection(nameof(GoogleAuthentication)).Get<GoogleAuthentication>() ??
+                     throw new InvalidOperationException("The GoogleAuthenticationSettings are missing!");
+        var googleClientId = googleSettings.ClientId;
+        var googleClientSecret = googleSettings.ClientSecret; 
+
+
         services
             .AddAuthentication(options =>
             {
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddCookie().AddGoogle(options =>
+            {
+                options.ClientId = googleClientId;
+                options.ClientSecret = googleClientSecret;
+                options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.CallbackPath = "/signin-google";
             })
             .AddJwtBearer(options =>
             {

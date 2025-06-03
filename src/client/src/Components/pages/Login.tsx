@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { useAuth } from "../../context/AuthContext";
 import { useModal } from "../../context/ModalContext";
 import DOMPurify from "dompurify";
+import { baseUrl } from "../../Constants/baseUrl";
 
 interface LoginFormInputs {
   email: string;
@@ -20,6 +21,14 @@ const Login = () => {
   const { login } = useAuth();
   const { showModal } = useModal();
   const navigate = useNavigate();
+
+  const handleGoogleLogin = () => {
+    const backendUrl = `${baseUrl}/User/login/google`;
+    const returnUrl = `${window.location.origin}/google-login`;
+    window.location.href = `${backendUrl}?returnUrl=${encodeURIComponent(
+      returnUrl
+    )}`;
+  };
 
   const onSubmit = async (data: LoginFormInputs) => {
     try {
@@ -85,6 +94,14 @@ const Login = () => {
 
             <button type="submit" className="btn btn-primary small w-100 py-2">
               Login
+            </button>
+            <button
+              className="btn btn-primary small w-100 py-2 mt-2"
+              onClick={() => {
+                handleGoogleLogin();
+              }}
+            >
+              Continue with Google
             </button>
           </form>
 

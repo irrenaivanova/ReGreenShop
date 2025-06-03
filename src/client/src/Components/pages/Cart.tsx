@@ -50,7 +50,7 @@ const Cart = () => {
   return (
     <div className="container my-4">
       <div className="row">
-        <div className="col-md-9">
+        <div className="col-12 col-md-9">
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h4 className="mb-0">Products in Cart</h4>
             <span
@@ -109,16 +109,13 @@ const Cart = () => {
 
                         <div
                           className="d-flex align-items-center gap-3"
-                          style={{ fontSize: "1.1rem", width: "340px" }}
+                          style={{ fontSize: "1.1rem" }}
                         >
                           <div
                             className="d-flex align-items-start"
                             style={{ fontSize: "1.1rem" }}
                           >
-                            <div
-                              className="d-flex"
-                              style={{ minWidth: "160px", flexShrink: 0 }}
-                            >
+                            <div className="d-flex" style={{ flexShrink: 0 }}>
                               <CartButton
                                 quantity={product.quantityInCart || 0}
                                 onIncrement={() => handleIncrement(product.id)}

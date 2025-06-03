@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using ReGreenShop.Application.Common.Services;
 using ReGreenShop.Application.Orders.Commands.MakeAnOrder;
 using ReGreenShop.Application.Users.Queries.GetUserInfo;
@@ -19,4 +20,6 @@ public interface IIdentity : IScopedService
     Task<GetUserInfoModel> GetUserInfoAsync();
 
     Task UpdateGreenPoints(string userId, int greenPoints);
+
+    Task<(AuthResponse, bool)> LoginOrRegisterExternalAsync(ExternalLoginInfo loginInfo);
 }

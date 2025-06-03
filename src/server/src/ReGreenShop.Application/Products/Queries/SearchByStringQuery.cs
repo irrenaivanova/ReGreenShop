@@ -56,13 +56,16 @@ public class SearchByStringQuery : IRequest<AllProductsPaginated>
                 item.Score += categoryScore;
             }
 
+            //stopwatch
             var products = await query
                 .Where(x => x.Score > 0)
                 .OrderByDescending(x => x.Score)
                 .Skip((request.Page - 1) * request.ItemsPerPage)
                 .Take(request.ItemsPerPage)
                 .Select(x => x.Product)
+
                 .To<ProductInList>()
+
                 .ToListAsync();
 
             foreach (var prod in products)

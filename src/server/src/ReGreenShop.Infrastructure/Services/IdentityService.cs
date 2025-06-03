@@ -67,6 +67,66 @@ public class IdentityService : IIdentity
         };
     }
 
+    public async Task<(AuthResponse, bool)> LoginOrRegisterExternalAsync(ExternalLoginInfo loginInfo)
+    {
+        bool isRegister = false;
+        var user = await this.userManager.FindByLoginAsync(loginInfo.LoginProvider, loginInfo.ProviderKey);
+
+        if (user == null)
+        {
+            var email = loginInfo.Principal.FindFirstValue(ClaimTypes.Email);
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new ExternalLoginProviderException("Google", "Email not found in external login info.");
+            }
+
+            user = await this.userManager.FindByEmailAsync(email);
+
+            if (user == null)
+            {
+                user = new User
+                {
+                    UserName = email,
+                    Email = email,
+                };
+
+                var createResult = await this.userManager.CreateAsync(user);
+                if (!createResult.Succeeded)
+                {
+                    throw new ExternalLoginProviderException("Google", "Failed to create user.");
+                }
+                isRegister = true;
+            }
+
+            var addLoginResult = await this.userManager.AddLoginAsync(user, loginInfo);
+            if (!addLoginResult.Succeeded)
+            {
+                throw new ExternalLoginProviderException("Google", "Failed to associate external login.");
+            }
+
+        }
+        var isAdmin = await this.userManager.IsInRoleAsync(user, AdminName);
+
+        var claims = new List<Claim>
+                {
+                    new(ClaimTypes.NameIdentifier, user.Id),
+                    new(ClaimTypes.Name, user.UserName ?? ""),
+                };
+
+        if (isAdmin)
+        {
+            claims.Add(new(ClaimTypes.Role, AdminName));
+        }
+
+        var accessToken = this.tokenGenerator.GenerateAccessToken(claims);
+        return (new AuthResponse
+        {
+            IsAdmin = isAdmin,
+            UserId = user.Id,
+            UserName = user.UserName ?? "",
+            AccessToken = accessToken
+        }, isRegister);
+    }
     public async Task<AuthResponse> RegisterUserAsync(string username, string password)
     {
         if (string.IsNullOrWhiteSpace(username))
@@ -128,7 +188,7 @@ public class IdentityService : IIdentity
             FirstName = user.FirstName,
             LastName = user.LastName,
             TotalGreenPoints = user.TotalGreenPoints,
-            Street = user.Addresses.LastOrDefault()!= null ? user.Addresses.LastOrDefault()!.Street : null,
+            Street = user.Addresses.LastOrDefault() != null ? user.Addresses.LastOrDefault()!.Street : null,
             Number = user.Addresses.LastOrDefault() != null ? user.Addresses.LastOrDefault()!.Number : null,
             CityId = user.Addresses.LastOrDefault() != null ? user.Addresses.LastOrDefault()!.CityId : null,
             CityName = user.Addresses.LastOrDefault() != null ? user.Addresses.LastOrDefault()!.City.Name : null,

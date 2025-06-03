@@ -14,6 +14,7 @@ const RootCategoryPage = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
   useEffect(() => {
     setPage(1);
   }, [categoryId]);
@@ -28,7 +29,6 @@ const RootCategoryPage = () => {
     if (data?.totalPages) {
       setTotalPages(data.totalPages);
     }
-
     return Array.isArray(data?.products) ? data.products : [];
   }, [categoryId, page]);
 
@@ -56,7 +56,9 @@ const RootCategoryPage = () => {
       <div className="mb-4">
         <SubCategoriesList rootCategoryId={Number(categoryId)} />
       </div>
+
       <h4>Products</h4>
+
       {loading && (
         <div className="centered-spinner">
           <Spinner />
@@ -88,7 +90,7 @@ const RootCategoryPage = () => {
             onDecrement={handleDecrement}
           />
 
-          <div className="d-flex justify-content-center align-items-center mt-4">
+          <div className="d-flex flex-wrap justify-content-center align-items-center mt-4 gap-3">
             <Button
               variant="primary"
               onClick={handlePrevPage}
@@ -96,7 +98,7 @@ const RootCategoryPage = () => {
             >
               <FaAngleDoubleLeft />
             </Button>
-            <span className="mx-3">
+            <span>
               Page {page} of {totalPages}
             </span>
             <Button

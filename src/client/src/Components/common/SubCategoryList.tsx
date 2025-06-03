@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import { CategoryWithSubCategories } from "../../types/SubCategoryTypes";
 import { Link } from "react-router-dom";
 import { categoriesService } from "../../services/categoriesService";
@@ -36,15 +35,19 @@ const SubCategoriesList = ({ rootCategoryId }: Props) => {
 
   return (
     <div className="card p-4 shadow-sm mb-4 border">
-      <div className="d-flex">
-        <div className="me-4 text-center" style={{ minWidth: "120px" }}>
+      <div className="d-flex flex-column flex-md-row">
+        <div
+          className="text-center mb-3 mb-md-0 me-md-4"
+          style={{ minWidth: "120px" }}
+        >
           {categoryData.imagePath && (
             <img
               src={`${baseUrl}${categoryData.imagePath}`}
               alt={categoryData.name}
               style={{
-                width: 100,
-                height: 100,
+                width: "100%",
+                maxWidth: "100px",
+                height: "auto",
                 objectFit: "cover",
                 borderRadius: 8,
                 marginBottom: 10,
@@ -53,38 +56,35 @@ const SubCategoriesList = ({ rootCategoryId }: Props) => {
           )}
           <h5>{categoryData.name}</h5>
         </div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(6, 1fr)",
-            gap: "8px",
-            width: "100%",
-          }}
-        >
+        <div className="row w-100">
           {categoryData.subCategories.map((sub) => (
             <div
               key={sub.id}
-              className="border rounded p-3"
-              style={{ backgroundColor: "rgba(255, 193, 7, 0.05)" }}
+              className="col-12 col-sm-6 col-md-4 col-lg-2 mb-3"
             >
-              <Link
-                to={`/subcategory/${sub.id}`}
-                className="fw-bold text-dark text-center text-decoration-none"
+              <div
+                className="border rounded p-2 h-100"
+                style={{ backgroundColor: "rgba(255, 193, 7, 0.05)" }}
               >
-                {sub.name}
-              </Link>
-              <ul className="list-unstyled mb-0 mt-2">
-                {sub.subSubCategories.map((subsub) => (
-                  <li key={subsub.id}>
-                    <Link
-                      to={`/subcategory/${subsub.id}`}
-                      className="text-dark text-decoration-none"
-                    >
-                      {subsub.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+                <Link
+                  to={`/subcategory/${sub.id}`}
+                  className="fw-bold text-dark text-center text-decoration-none d-block mb-2"
+                >
+                  {sub.name}
+                </Link>
+                <ul className="list-unstyled mb-0">
+                  {sub.subSubCategories.map((subsub) => (
+                    <li key={subsub.id}>
+                      <Link
+                        to={`/subcategory/${subsub.id}`}
+                        className="text-dark text-decoration-none"
+                      >
+                        {subsub.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           ))}
         </div>
@@ -92,4 +92,5 @@ const SubCategoriesList = ({ rootCategoryId }: Props) => {
     </div>
   );
 };
+
 export default SubCategoriesList;

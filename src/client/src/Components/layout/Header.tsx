@@ -61,22 +61,21 @@ const Header = () => {
             Categories
           </Dropdown.Toggle>
           <Dropdown.Menu
-            className="dropdown-menu-end shadow"
+            className="dropdown-menu-end shadow p-0"
             style={{
-              maxHeight: "1000px",
+              maxHeight: "70vh",
               overflowY: "auto",
-              minWidth: "40vw",
-              maxWidth: "50vw",
-              padding: "0",
+              minWidth: "280px",
             }}
           >
             {rootCategories.length === 0 ? (
               <Dropdown.Item disabled>Loading...</Dropdown.Item>
             ) : (
               <div
+                className="d-none d-md-grid"
                 style={{
-                  display: "grid",
                   gridTemplateColumns: "1fr 1fr",
+                  display: "grid",
                   borderTop: "2px solid var(--bs-light)",
                   borderLeft: "2px solid var(--bs-light)",
                 }}
@@ -97,14 +96,43 @@ const Header = () => {
                       src={`${baseUrl}${cat.imagePath}`}
                       alt={cat.name}
                       style={{
-                        width: 80,
-                        height: 80,
+                        width: 60,
+                        height: 60,
                         objectFit: "cover",
                         marginRight: 10,
                         borderRadius: 4,
                       }}
                     />
-                    <span style={{ fontSize: "1.25rem", fontWeight: "400" }}>
+                    <span style={{ fontSize: "1rem", fontWeight: "400" }}>
+                      {cat.name}
+                    </span>
+                  </Dropdown.Item>
+                ))}
+              </div>
+            )}
+
+            {/* Mobile layout */}
+            {rootCategories.length > 0 && (
+              <div className="d-block d-md-none">
+                {rootCategories.map((cat) => (
+                  <Dropdown.Item
+                    as={Link}
+                    to={`/category/${cat.id}`}
+                    key={cat.id}
+                    className="d-flex align-items-center border-bottom py-2 px-3"
+                  >
+                    <img
+                      src={`${baseUrl}${cat.imagePath}`}
+                      alt={cat.name}
+                      style={{
+                        width: 40,
+                        height: 40,
+                        objectFit: "cover",
+                        marginRight: 10,
+                        borderRadius: 4,
+                      }}
+                    />
+                    <span style={{ fontSize: "0.95rem", fontWeight: "400" }}>
                       {cat.name}
                     </span>
                   </Dropdown.Item>

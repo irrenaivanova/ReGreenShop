@@ -1,6 +1,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using ReGreenShop.Application.Common.Helpers;
 using ReGreenShop.Application.Common.Identity.Login;
 using ReGreenShop.Application.Common.Identity.Register;
@@ -10,15 +13,24 @@ using ReGreenShop.Application.Users.Commands;
 using ReGreenShop.Application.Users.Queries.GetAllUnreadNotificationsQuery;
 using ReGreenShop.Application.Users.Queries.GetUserInfo;
 using ReGreenShop.Application.Users.Queries.GetUserInfoForOrderQuery;
+using ReGreenShop.Infrastructure.Persistence.Identity;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace ReGreenShop.Web.Controllers;
 public class UserController : BaseController
 {
     private readonly IMediator mediator;
+    private readonly SignInManager<User> signInManager;
+    private readonly LinkGenerator linkGenerator;
+    private readonly IHttpContextAccessor context;
 
-    public UserController(IMediator mediator)
+    public UserController(IMediator mediator, SignInManager<User> signInManager,
+                           LinkGenerator linkGenerator, IHttpContextAccessor context)
     {
         this.mediator = mediator;
+        this.signInManager = signInManager;
+        this.linkGenerator = linkGenerator;
+        this.context = context;
     }
 
     [HttpGet(nameof(GetUserInfoForOrder))]
@@ -70,6 +82,32 @@ public class UserController : BaseController
     {
         var result = await this.mediator.Send(command);
         return ApiResponseHelper.Created(result, "Registration successful! You are now logged in.");
+    }
+
+    [HttpGet("login/google")]
+    public IActionResult LoginWithGoogle(string returnUrl = "/")
+    {
+        // var redirectUrl = Url.Action(nameof(GoogleLoginCallback), new { returnUrl });
+        var redirectUrl = this.linkGenerator.GetPathByName(this.context.HttpContext!,nameof(GoogleLoginCallback))
+                       + $"?returnUrl={returnUrl}";
+        var properties = this.signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
+        return Challenge(properties, "Google");
+    }
+
+    [HttpGet("login/google/callback")]
+    public async Task<IActionResult> GoogleLoginCallback(string returnUrl = "/")
+    {
+        var command = new HandleGoogleLoginCommand(returnUrl);
+        var result = await this.mediator.Send(command);
+        Response.Cookies.Append("jwt", result.AccessToken, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Strict,
+            Expires = DateTimeOffset.UtcNow.AddHours(1)
+        });
+
+        return Redirect(returnUrl);
     }
 
     [Authorize]

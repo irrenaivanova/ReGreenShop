@@ -52,6 +52,11 @@ public class ExceptionHandlerMiddleware
                 code = HttpStatusCode.BadRequest;
                 result = JsonConvert.SerializeObject(new { error = ex.Message });
                 break;
+
+            case ExternalLoginProviderException ex:
+                code = HttpStatusCode.Unauthorized;
+                result = JsonConvert.SerializeObject(new { error = ex.Message });
+                break;
             // 401 Unauthorized
             case UnauthorizedAccessException _:
                 code = HttpStatusCode.Unauthorized;
@@ -61,6 +66,11 @@ public class ExceptionHandlerMiddleware
             case SecurityException _:
                 code = HttpStatusCode.Forbidden;
                 result = JsonConvert.SerializeObject(new { error = "Forbidden: You do not have permission to access this resource." });
+                break;
+
+            default:
+                code = HttpStatusCode.InternalServerError;
+                result = JsonConvert.SerializeObject(new { error = "Something went wrong. Please try again later." });
                 break;
         }
 

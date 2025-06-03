@@ -17,6 +17,7 @@ using Serilog;
 using static ReGreenShop.Application.ServiceRegistration;
 using static ReGreenShop.Web.ServiceRegistration;
 using static ReGreenShop.Application.Common.GlobalConstants;
+using ReGreenShop.Application.Common.Services;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -65,8 +66,12 @@ builder.Host.UseSerilog();
 builder.Services.AddHangfire(config =>
     config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnectionHangFire")));
 builder.Services.AddHangfireServer();
-
 builder.Services.AddTransient<PromoJob>();
+
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.MinimumSameSitePolicy = SameSiteMode.Lax;
+});
 
 var app = builder.Build();
 
@@ -116,6 +121,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseAuthorization();
+
+app.UseAuthentication();
 
 app.UseSession();
 
