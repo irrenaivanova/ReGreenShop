@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Order } from "../../types/Order";
-import { orderService } from "../../services/orderService";
 import { useModal } from "../../context/ModalContext";
 import { Col, Container, Row, Table } from "react-bootstrap";
 import Spinner from "../common/Spinner";
 import { baseUrl } from "../../Constants/baseUrl";
 import GreenForm from "../common/GreenForm";
+import { adminService } from "../../services/adminService";
 
 const PendingOrders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -18,7 +18,7 @@ const PendingOrders = () => {
   const fetchOrders = async () => {
     setIsLoading(true);
     try {
-      const res = await orderService.getPendingOrders();
+      const res = await adminService.getPendingOrders();
       setOrders(res.data.data || []);
     } catch (err: any) {
       const errorMessage =

@@ -1,4 +1,4 @@
-namespace ReGreenShop.Application.Orders.Commands.FinishAnOrder;
+namespace ReGreenShop.Application.AdminArea.Commands.FinishAnOrder;
 public class GreenModel
 {
     public int Id { get; set; }

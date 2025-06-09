@@ -18,6 +18,7 @@ import MyOrders from "../pages/MyOrders";
 import PendingOrders from "../pages/PendingOrders";
 import GreenImpact from "../pages/GreenImpact";
 import MyInfo from "../pages/MyInfo";
+import GoogleLoginRedirect from "../pages/GoogleLoginRedirect";
 
 const MainRoutes = () => {
   return (
@@ -27,6 +28,7 @@ const MainRoutes = () => {
         <Route path="/favorites" element={<MyFavorites />} />
         <Route path="/regreen-rules" element={<ReGreenMission />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/google-login" element={<GoogleLoginRedirect />} />
         <Route path="/register" element={<Register />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/my-orders" element={<MyOrders />} />

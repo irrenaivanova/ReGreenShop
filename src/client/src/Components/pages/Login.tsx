@@ -22,14 +22,6 @@ const Login = () => {
   const { showModal } = useModal();
   const navigate = useNavigate();
 
-  const handleGoogleLogin = () => {
-    const backendUrl = `${baseUrl}/User/login/google`;
-    const returnUrl = `${window.location.origin}/google-login`;
-    window.location.href = `${backendUrl}?returnUrl=${encodeURIComponent(
-      returnUrl
-    )}`;
-  };
-
   const onSubmit = async (data: LoginFormInputs) => {
     try {
       const response = await authService.login(
@@ -95,14 +87,12 @@ const Login = () => {
             <button type="submit" className="btn btn-primary small w-100 py-2">
               Login
             </button>
-            <button
-              className="btn btn-primary small w-100 py-2 mt-2"
-              onClick={() => {
-                handleGoogleLogin();
-              }}
+            <a
+              className="btn btn-primary small w-100 py-2 mt-2 text-center"
+              href={`${baseUrl}/User/login/google`}
             >
               Continue with Google
-            </button>
+            </a>
           </form>
 
           <div className="text-center mt-5">

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using ReGreenShop.Application.Common.Interfaces;
 using ReGreenShop.Infrastructure.Persistence.Identity;
@@ -20,6 +21,6 @@ public class ExternalAuthService : IExternalAuth
 
     public AuthenticationProperties GetGoogleAuthProperties(string redirectUrl)
     {
-        return this.signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
+        return this.signInManager.ConfigureExternalAuthenticationProperties(GoogleDefaults.AuthenticationScheme, redirectUrl);
     }
 }

@@ -5,6 +5,7 @@ import { useModal } from "../../context/ModalContext";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import Spinner from "./Spinner";
 import { orderService } from "../../services/orderService";
+import { adminService } from "../../services/adminService";
 
 interface GreenAlternative {
   id: number;
@@ -51,7 +52,7 @@ const GreenForm = ({ orderId, onFinish }: GreenFormProps) => {
       greenModels,
     };
     try {
-      orderService.finishAnOrder(payload);
+      adminService.finishAnOrder(payload);
       showModal?.("success", "Order successfully finished!");
       reset();
 

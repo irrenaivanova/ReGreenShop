@@ -38,7 +38,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins("https://localhost:5173")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -68,16 +68,11 @@ builder.Services.AddHangfire(config =>
 builder.Services.AddHangfireServer();
 builder.Services.AddTransient<PromoJob>();
 
-builder.Services.Configure<CookiePolicyOptions>(options =>
-{
-    options.MinimumSameSitePolicy = SameSiteMode.Lax;
-});
 
 var app = builder.Build();
 
 // QuestPDF is free if the organization earns less than $1million USD per year
 QuestPDF.Settings.License = LicenseType.Community;
-
 
 
 // Perform database migration and seeding
@@ -96,6 +91,7 @@ app.UseCors("AllowFrontend");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
@@ -120,11 +116,15 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
-app.UseAuthorization();
+app.UseCors("AllowFrontend");
+
+app.UseCookiePolicy();
+
+app.UseSession();
 
 app.UseAuthentication();
 
-app.UseSession();
+app.UseAuthorization();
 
 app.MapControllers();
 

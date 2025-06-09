@@ -1,9 +1,12 @@
 using MediatR;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.WebUtilities;
 using ReGreenShop.Application.Common.Helpers;
 using ReGreenShop.Application.Common.Identity.Login;
 using ReGreenShop.Application.Common.Identity.Register;
@@ -85,29 +88,34 @@ public class UserController : BaseController
     }
 
     [HttpGet("login/google")]
-    public IActionResult LoginWithGoogle(string returnUrl = "/")
+    public IActionResult LoginWithGoogle(string? returnUrl)
     {
-        // var redirectUrl = Url.Action(nameof(GoogleLoginCallback), new { returnUrl });
-        var redirectUrl = this.linkGenerator.GetPathByName(this.context.HttpContext!,nameof(GoogleLoginCallback))
-                       + $"?returnUrl={returnUrl}";
-        var properties = this.signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
-        return Challenge(properties, "Google");
+        if (string.IsNullOrEmpty(returnUrl))
+        {
+            returnUrl = "/";
+        }
+        var redirectUrl = this.linkGenerator.GetPathByName(this.context.HttpContext!, nameof(GoogleLoginCallback))
+                       + $"?returnUrl={Uri.EscapeDataString(returnUrl)}";
+
+        var properties = this.signInManager.ConfigureExternalAuthenticationProperties(GoogleDefaults.AuthenticationScheme, redirectUrl);
+        return Challenge(properties, GoogleDefaults.AuthenticationScheme);
     }
 
     [HttpGet("login/google/callback")]
-    public async Task<IActionResult> GoogleLoginCallback(string returnUrl = "/")
+    public async Task<IActionResult> GoogleLoginCallback(string returnUrl)
     {
         var command = new HandleGoogleLoginCommand(returnUrl);
         var result = await this.mediator.Send(command);
-        Response.Cookies.Append("jwt", result.AccessToken, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict,
-            Expires = DateTimeOffset.UtcNow.AddHours(1)
-        });
+        var queryParams = new Dictionary<string, string>
+    {
+        { "accessToken", result.AccessToken },
+        { "userId", result.UserId },
+        { "userName", result.UserName },
+        { "isAdmin", result.IsAdmin.ToString().ToLower() } 
+    };
 
-        return Redirect(returnUrl);
+        var redirectUrl = QueryHelpers.AddQueryString(returnUrl, queryParams);
+        return Redirect(redirectUrl);
     }
 
     [Authorize]

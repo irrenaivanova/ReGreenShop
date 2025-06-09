@@ -1,6 +1,8 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -71,24 +73,37 @@ public static class ServiceRegistration
         var googleSettings = configuration.GetSection(nameof(GoogleAuthentication)).Get<GoogleAuthentication>() ??
                      throw new InvalidOperationException("The GoogleAuthenticationSettings are missing!");
         var googleClientId = googleSettings.ClientId;
-        var googleClientSecret = googleSettings.ClientSecret; 
+        var googleClientSecret = googleSettings.ClientSecret;
 
+        services.Configure<CookiePolicyOptions>(options =>
+        {
+            options.MinimumSameSitePolicy = SameSiteMode.None;
+        });
 
         services
             .AddAuthentication(options =>
             {
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                //options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddCookie().AddGoogle(options =>
+            .AddCookie(options =>
             {
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SameSite = SameSiteMode.None; 
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always; 
+            })
+            .AddGoogle(options =>
+            {
+                
                 options.ClientId = googleClientId;
                 options.ClientSecret = googleClientSecret;
+                //options.CallbackPath = "/signin-google";
+
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.CallbackPath = "/signin-google";
             })
-            .AddJwtBearer(options =>
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
             {
                 options.Events = new JwtBearerEvents
                 {

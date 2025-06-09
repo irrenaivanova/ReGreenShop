@@ -5,7 +5,7 @@ using ReGreenShop.Application.Common.Identity;
 using ReGreenShop.Application.Common.Interfaces;
 using ReGreenShop.Domain.Entities;
 
-namespace ReGreenShop.Application.Orders.Commands.FinishAnOrder;
+namespace ReGreenShop.Application.AdminArea.Commands.FinishAnOrder;
 public record FinishAnOrderCommand(FinishAnOrderModel model) : IRequest<Unit>
 {
     public class FinishAnOrderCommandHandler : IRequestHandler<FinishAnOrderCommand, Unit>
@@ -27,7 +27,7 @@ public record FinishAnOrderCommand(FinishAnOrderModel model) : IRequest<Unit>
                 .FirstOrDefaultAsync(x => x.Id == request.model.OrderId);
             if (order == null)
             {
-                throw new NotFoundException("Order",request.model.OrderId);
+                throw new NotFoundException("Order", request.model.OrderId);
             }
             var userId = order.UserId;
             var greenPointsReceived = 0;
@@ -51,7 +51,7 @@ public record FinishAnOrderCommand(FinishAnOrderModel model) : IRequest<Unit>
                 greenPointsReceived += item.Quantity * greenAlternative.RewardPoints;
             }
 
-            if(greenPointsReceived > 0)
+            if (greenPointsReceived > 0)
             {
                 await this.userService.UpdateGreenPoints(userId, greenPointsReceived);
             }
