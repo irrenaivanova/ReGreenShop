@@ -98,10 +98,10 @@ public class UserController : BaseController
                        + $"?returnUrl={Uri.EscapeDataString(returnUrl)}";
 
         var properties = this.signInManager.ConfigureExternalAuthenticationProperties(GoogleDefaults.AuthenticationScheme, redirectUrl);
-        return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+        return Challenge(properties, ["Google"]);
     }
 
-    [HttpGet("login/google/callback")]
+    [HttpGet(nameof(GoogleLoginCallback), Name = nameof(GoogleLoginCallback))]
     public async Task<IActionResult> GoogleLoginCallback(string returnUrl)
     {
         var command = new HandleGoogleLoginCommand(returnUrl);

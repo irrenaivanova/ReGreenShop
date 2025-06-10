@@ -89,7 +89,14 @@ const Login = () => {
             </button>
             <a
               className="btn btn-primary small w-100 py-2 mt-2 text-center"
-              href={`${baseUrl}/User/login/google`}
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                const returnUrl = encodeURIComponent(
+                  `${window.location.origin}/google-login`
+                );
+                window.location.href = `${baseUrl}/User/login/google?returnUrl=${returnUrl}`;
+              }}
             >
               Continue with Google
             </a>

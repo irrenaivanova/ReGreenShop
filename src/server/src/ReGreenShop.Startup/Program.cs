@@ -116,8 +116,6 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
-app.UseCors("AllowFrontend");
-
 app.UseCookiePolicy();
 
 app.UseSession();

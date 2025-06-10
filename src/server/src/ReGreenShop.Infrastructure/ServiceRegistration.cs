@@ -83,25 +83,30 @@ public static class ServiceRegistration
         services
             .AddAuthentication(options =>
             {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                //options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddCookie(options =>
-            {
-                options.Cookie.HttpOnly = true;
-                options.Cookie.SameSite = SameSiteMode.None; 
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always; 
-            })
+            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddGoogle(options =>
             {
                 
                 options.ClientId = googleClientId;
                 options.ClientSecret = googleClientSecret;
-                //options.CallbackPath = "/signin-google";
+                options.SignInScheme = IdentityConstants.ExternalScheme;
 
-                options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.Scope.Add("email");
+                options.Scope.Add("profile");
+
+                options.Events.OnRedirectToAuthorizationEndpoint = context =>
+                {
+                    var redirectUri = context.RedirectUri;
+                    redirectUri += (redirectUri.Contains("?") ? "&" : "?") + "prompt=select_account";
+
+                    context.Response.Redirect(redirectUri);
+                    return Task.CompletedTask;
+                };
+
             })
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
             {
