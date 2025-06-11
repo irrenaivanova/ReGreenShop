@@ -12,6 +12,7 @@ import {
   FaBoxOpen,
   FaIdBadge,
   FaSeedling,
+  FaListUl,
 } from "react-icons/fa";
 import { Dropdown } from "react-bootstrap";
 import { utilityService } from "../../services/utilityService";
@@ -128,7 +129,7 @@ const BottomHeader = () => {
                 {isAdmin && (
                   <>
                     <Dropdown.Divider />
-                    <Dropdown.Header className="text-danger text-uppercase small px-3 text-decoration-underline">
+                    <Dropdown.Header className="text-danger small px-3 text-decoration-underline">
                       Admin Area
                     </Dropdown.Header>
                     <Dropdown.Item
@@ -138,6 +139,15 @@ const BottomHeader = () => {
                     >
                       <MdOutlineWorkHistory className="me-2 text-danger" />
                       Pending Orders
+                    </Dropdown.Item>
+
+                    <Dropdown.Item
+                      as={Link}
+                      to="/allProductsAdmin"
+                      className="fs-6 d-flex align-items-center"
+                    >
+                      <FaListUl className="me-2 text-danger" />
+                      All products
                     </Dropdown.Item>
                   </>
                 )}

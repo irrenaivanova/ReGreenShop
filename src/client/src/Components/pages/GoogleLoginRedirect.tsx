@@ -19,7 +19,10 @@ const GoogleLoginRedirect = () => {
 
     if (accessToken && userId && userName) {
       login({ accessToken, userId, userName, isAdmin });
-      showModal?.("success", "Login with Google successful!");
+      showModal?.(
+        "success",
+        `Welcome, ${userName} Login with Google successful!`
+      );
       navigate("/cart");
     } else {
       showModal?.("error", "Google login failed.");

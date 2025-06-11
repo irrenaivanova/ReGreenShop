@@ -1,64 +1,39 @@
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using ReGreenShop.Application.Common.Interfaces;
 using ReGreenShop.Application.Common.Mappings;
 
 namespace ReGreenShop.Application.AdminArea.Queries.GetAllProductsQuery;
-public record GetAllProductsQuery(int page,
-    int pageSize,
-    string? name,
-    string? category,
-    string? label,
-    decimal? minPrice,
-    decimal? maxPrice) : IRequest<IEnumerable<AdminProductInListModel>>
+public record GetAllProducts(int page,
+    int pageSize) : IRequest<AllProductsAdminPaginated>
 {
-    public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, IEnumerable<AdminProductInListModel>>
+    public class GetAllProductsHandler : IRequestHandler<GetAllProducts, AllProductsAdminPaginated>
     {
         private readonly IData data;
 
-        public GetAllProductsQueryHandler(IData data)
+        public GetAllProductsHandler(IData data)
         {
             this.data = data;
         }
 
-        public Task<IEnumerable<AdminProductInListModel>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
+        public async Task<AllProductsAdminPaginated> Handle(GetAllProducts request, CancellationToken cancellationToken)
         {
-            var query = this.data.Products.AsQueryable();
+            var query = this.data.Products.Include(x => x.Image).AsNoTracking().AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(request.name))
-            {
-                query = query.Where(x => x.Name.ToLower().Contains(request.name.ToLower()));
-            }
+            var totalCount = await query.CountAsync(cancellationToken);
+            int totalPages = (int)Math.Ceiling(totalCount / (double)request.pageSize);
 
-            if (!string.IsNullOrWhiteSpace(request.category))
-            {
-                query = query.Where(x =>
-                    x.ProductCategories.Any(x => x.Category.NameInEnglish == request.category.ToLower()));
-            }
-
-            if (!string.IsNullOrWhiteSpace(request.label))
-            {
-                query = query.Where(x =>
-                    x.LabelProducts.Any(x => x.Label.Name.ToLower() == request.label.ToLower()));
-            }
-
-            if (request.minPrice.HasValue)
-            {
-                query = query.Where(x => x.Price >= request.minPrice.Value);
-            }
-
-            if (request.maxPrice.HasValue)
-            {
-                query = query.Where(x => x.Price <= request.maxPrice.Value);
-            }
-
-            query = query.OrderBy(p => p.Id)
+            var products = await query.OrderBy(p => p.Id)
                          .Skip((request.page - 1) * request.pageSize)
-                         .Take(request.pageSize);
+                         .Take(request.pageSize)
+                         .To<AdminProductInListModel>()
+                         .ToListAsync();
 
-            var result = query.To<AdminProductInListModel>().ToList();
+            var productsPaginated = new AllProductsAdminPaginated();
+            productsPaginated.TotalPages = totalPages;
+            productsPaginated.Products = products;
 
-            return Task.FromResult(result.AsEnumerable());
-
+            return productsPaginated;
         }
     }
 }

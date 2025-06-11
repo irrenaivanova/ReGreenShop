@@ -6,6 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useModal } from "../../context/ModalContext";
 import DOMPurify from "dompurify";
 import { baseUrl } from "../../Constants/baseUrl";
+import { FcGoogle } from "react-icons/fc";
 
 interface LoginFormInputs {
   email: string;
@@ -29,7 +30,7 @@ const Login = () => {
         DOMPurify.sanitize(data.password)
       );
       const { accessToken, userId, userName, isAdmin } = response.data.data;
-      const successMessage = response.data.message || "Login successful!";
+      const successMessage = `Welcome back ${userName}!`;
 
       login({ accessToken, userId, userName, isAdmin });
       showModal?.("success", successMessage);
@@ -84,12 +85,14 @@ const Login = () => {
               )}
             </div>
 
-            <button type="submit" className="btn btn-primary small w-100 py-2">
+            <button
+              type="submit"
+              className="btn btn-outline-primary w-100 py-2"
+            >
               Login
             </button>
-            <a
-              className="btn btn-primary small w-100 py-2 mt-2 text-center"
-              href="#"
+            <button
+              className="btn btn-outline-primary small w-100 py-2 mt-2 d-flex align-items-center justify-content-center"
               onClick={(e) => {
                 e.preventDefault();
                 const returnUrl = encodeURIComponent(
@@ -97,9 +100,11 @@ const Login = () => {
                 );
                 window.location.href = `${baseUrl}/User/login/google?returnUrl=${returnUrl}`;
               }}
+              style={{ fontSize: "1rem", fontWeight: "500" }}
             >
+              <FcGoogle size={24} style={{ marginRight: "8px" }} />
               Continue with Google
-            </a>
+            </button>
           </form>
 
           <div className="text-center mt-5">

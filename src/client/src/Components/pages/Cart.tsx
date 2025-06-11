@@ -109,7 +109,7 @@ const Cart = () => {
 
                         <div
                           className="d-flex align-items-center gap-3"
-                          style={{ fontSize: "1.1rem" }}
+                          style={{ fontSize: "1.1rem", width: "280px" }}
                         >
                           <div
                             className="d-flex align-items-start"

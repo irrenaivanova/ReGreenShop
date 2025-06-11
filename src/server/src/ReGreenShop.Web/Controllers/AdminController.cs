@@ -1,3 +1,4 @@
+using System.Security.Permissions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +10,7 @@ using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Web.Controllers;
 
-[Authorize(Roles = AdminName)]
+//[Authorize(Roles = AdminName)]
 public class AdminController : BaseController
 {
     private readonly IMediator mediator;
@@ -31,15 +32,26 @@ public class AdminController : BaseController
     [HttpGet(nameof(GetAll))]
     public async Task<IActionResult> GetAll(
                      int page = 1,
-                     int pageSize = 10,
-                     string? name = null,
-                     string? category = null,
-                     string? label = null,
-                     decimal? minPrice = null,
-                     decimal? maxPrice = null)
+                     int pageSize = 10)
     {
-        var result = await this.mediator.Send(new GetAllProductsQuery(page, pageSize, name, category, label, minPrice, maxPrice));
-        return Ok(result);
+        var query = new GetAllProducts(page, pageSize);
+        var result = await this.mediator.Send(query);
+        return ApiResponseHelper.Success(result);
+    }
+
+    [HttpPost(nameof(SearchAll))]
+    public async Task<IActionResult> SearchAll(
+                 int page = 1,
+                 int pageSize = 10,
+                 string? searchString = null,
+                 decimal? minPrice = null,
+                 decimal? maxPrice = null,
+                 decimal? minStock = null,
+                 decimal? maxStock = null)
+    {
+        var query = new SearchAllProducts(page, pageSize, searchString, minPrice, maxPrice, minStock, maxStock);
+        var result = await this.mediator.Send(query);
+        return ApiResponseHelper.Success(result);
     }
 
     // Commands

@@ -6,12 +6,12 @@ using ReGreenShop.Domain.Entities;
 using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Application.AdminArea.Queries.GetAllProductsQuery;
-public class AdminProductInListModel : IMapFrom<Product>
+public class AdminProductInListModel : IMapFrom<Product>, IMapExplicitly
 {
     public AdminProductInListModel()
     {
         Labels = new List<string>();
-        Categories = new List<CategoryModel>();
+        Categories = new List<string>();
     }
 
     public int Id { get; set; }
@@ -32,24 +32,19 @@ public class AdminProductInListModel : IMapFrom<Product>
 
     public int? DiscountPercentage { get; set; }
 
-    public string? ValidTo { get; set; }
-
     public int Stock { get; set; }
 
     public List<string> Labels { get; set; }
 
-    public List<CategoryModel> Categories { get; set; }
+    public List<string> Categories { get; set; }
 
     public void CreateMappings(IProfileExpression configuration)
     {
         configuration.CreateMap<Product, AdminProductInListModel>()
-            .ForMember(x => x.ImagePath, cfg => cfg.MapFrom(x => x.Image!.BlobPath ?? x.Image.LocalPath))
-            .ForMember(x => x.Labels, cfg => cfg.MapFrom(x => x.LabelProducts.Select(x => x.Label.Name)))
-            .ForMember(x => x.DiscountPercentage, cfg => cfg.MapFrom(x => x.LabelProducts.Any(y => y.Label.Name == Offer) ?
-                                                            x.LabelProducts.FirstOrDefault(y => y.Label.Name == Offer)!.PercentageDiscount : null))
-            .ForMember(x => x.ValidTo, cfg => cfg.MapFrom(x => x.LabelProducts.Any()
-                                       ? x.LabelProducts.FirstOrDefault()!.CreatedOn.AddDays(x.LabelProducts.FirstOrDefault()!.Duration)
-                                      .ToString(DateTimeCustomFormat, CultureInfo.InvariantCulture) : string.Empty))
-            .ForMember(x => x.Categories, cfg => cfg.MapFrom(x => x.ProductCategories));
-    }
+        .ForMember(x => x.ImagePath, cfg => cfg.MapFrom(x => x.Image!.BlobPath ?? x.Image.LocalPath))
+        .ForMember(x => x.Categories, cfg => cfg.MapFrom(x => x.ProductCategories.Select(x => x.Category.NameInEnglish)))
+        .ForMember(x => x.Labels, cfg => cfg.MapFrom(x => x.LabelProducts.Select(x => x.Label.Name)))
+        .ForMember(x => x.DiscountPercentage, cfg => cfg.MapFrom(x => x.LabelProducts.Any(y => y.Label.Name == Offer) ?
+                                                        x.LabelProducts.FirstOrDefault(y => y.Label.Name == Offer)!.PercentageDiscount : null));
+   }
 }

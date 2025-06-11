@@ -18,6 +18,7 @@ using static ReGreenShop.Application.ServiceRegistration;
 using static ReGreenShop.Web.ServiceRegistration;
 using static ReGreenShop.Application.Common.GlobalConstants;
 using ReGreenShop.Application.Common.Services;
+using ReGreenShop.Web.ModelBinders;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -50,8 +51,11 @@ builder.Services.AddApplication();
 builder.Services.AddWebComponents();
 
 
-builder.Services.AddControllers().
-    AddApplicationPart(typeof(ReGreenShop.Web.Controllers.BaseController).Assembly);
+builder.Services.AddControllers(options =>
+{
+    options.ModelBinderProviders.Insert(0, new DecimalModelBinderProvider());
+})
+.AddApplicationPart(typeof(ReGreenShop.Web.Controllers.BaseController).Assembly);
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

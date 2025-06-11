@@ -4,7 +4,6 @@ import { utilityService } from "../../services/utilityService";
 import { useModal } from "../../context/ModalContext";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import Spinner from "./Spinner";
-import { orderService } from "../../services/orderService";
 import { adminService } from "../../services/adminService";
 
 interface GreenAlternative {

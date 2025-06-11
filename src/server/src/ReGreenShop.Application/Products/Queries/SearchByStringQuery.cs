@@ -63,9 +63,7 @@ public class SearchByStringQuery : IRequest<AllProductsPaginated>
                 .Skip((request.Page - 1) * request.ItemsPerPage)
                 .Take(request.ItemsPerPage)
                 .Select(x => x.Product)
-
                 .To<ProductInList>()
-
                 .ToListAsync();
 
             foreach (var prod in products)
