@@ -66,7 +66,6 @@ const BottomHeader = () => {
                 to="/regreen-rules"
                 className="text-decoration-underline text-primary d-inline-flex align-items-center fs-6 fw-bold"
               >
-                {/* <FaRecycle className="me-2 text-primary" /> */}
                 ReGreenRules
               </Link>
             </div>

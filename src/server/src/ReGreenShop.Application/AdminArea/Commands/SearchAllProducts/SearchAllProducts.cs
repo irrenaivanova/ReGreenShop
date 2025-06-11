@@ -23,7 +23,7 @@ public record SearchAllProducts(int page,
 
         public async Task<AllProductsAdminPaginated> Handle(SearchAllProducts request, CancellationToken cancellationToken)
         {
-            var query = this.data.Products.Include(x => x.Image).AsNoTracking().AsQueryable();
+            var query = this.data.Products.AsNoTracking().AsQueryable();
             if (!string.IsNullOrWhiteSpace(request.searchString))
             {
                 var words = request.searchString
@@ -71,6 +71,7 @@ public record SearchAllProducts(int page,
             int totalPages = (int)Math.Ceiling(totalCount / (double)request.pageSize);
 
             var products = await query.OrderBy(p => p.Id)
+                         .OrderBy(x => x.Stock)  
                          .Skip((request.page - 1) * request.pageSize)
                          .Take(request.pageSize)
                          .To<AdminProductInListModel>()

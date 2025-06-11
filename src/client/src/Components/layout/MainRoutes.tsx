@@ -19,7 +19,7 @@ import PendingOrders from "../pages/PendingOrders";
 import GreenImpact from "../pages/GreenImpact";
 import MyInfo from "../pages/MyInfo";
 import GoogleLoginRedirect from "../pages/GoogleLoginRedirect";
-import AllProductsAdmin from "../pages/AllProductsAdmin";
+import AllProductsPaginated from "../pages/AllProductsPaginated";
 
 const MainRoutes = () => {
   return (
@@ -38,7 +38,7 @@ const MainRoutes = () => {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/search" element={<SearchResults />} />
         <Route path="/my-impact" element={<GreenImpact />} />
-        <Route path="/allProductsAdmin" element={<AllProductsAdmin />} />
+        <Route path="/allProductsAdmin" element={<AllProductsPaginated />} />
         <Route path="/category/:categoryId" element={<RootCategoryPage />} />
         <Route path="/label/:labelId" element={<ProductsByLabel />} />
         <Route path="/product/:productId" element={<ProductDetails />} />

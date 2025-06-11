@@ -39,7 +39,7 @@ public class AdminController : BaseController
         return ApiResponseHelper.Success(result);
     }
 
-    [HttpPost(nameof(SearchAll))]
+    [HttpGet(nameof(SearchAll))]
     public async Task<IActionResult> SearchAll(
                  int page = 1,
                  int pageSize = 10,

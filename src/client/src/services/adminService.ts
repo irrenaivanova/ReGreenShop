@@ -18,8 +18,16 @@ export const adminService = {
     maxPrice?: string;
     minStock?: number;
     maxStock?: number;
-  }) => request.post("Admin/SearchAll", getAllData),
+  }) =>
+    request.get("Admin/SearchAll", {
+      params: getAllData,
+    }),
 
   getAllProducts: (getAllData: { page: number; pageSize: number }) =>
     request.get("Admin/GetAll", { params: getAllData }),
+
+  updateProduct: (data: { id: number; price: number; stock: number }) =>
+    request.put("/Admin/UpdateProduct", data),
+
+  deleteProduct: (id: number) => request.delete(`/Admin/DeleteProduct/${id}`),
 };

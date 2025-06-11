@@ -25,5 +25,7 @@ export const requestFactory = () => {
   return {
     get: (url: string, config?: any) => instance.get(url, config),
     post: (url: string, data: any) => instance.post(url, data),
+    put: (url: string, data: any) => instance.put(url, data),
+    delete: (url: string, config?: any) => instance.delete(url, config),
   };
 };
