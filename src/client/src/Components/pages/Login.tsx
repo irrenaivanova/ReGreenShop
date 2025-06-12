@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { authService } from "../../services/authService";
 import Logo from "../common/Logo";
 import { useForm } from "react-hook-form";
@@ -105,13 +105,20 @@ const Login = () => {
               <FcGoogle size={24} style={{ marginRight: "8px" }} />
               Continue with Google
             </button>
+
+            <Link
+              to="/register"
+              className="btn btn-outline-primary w-100 py-2 text-center mt-2"
+            >
+              Or just register ...
+            </Link>
           </form>
 
           <div className="text-center mt-5">
             <Logo
               style={{ height: "80px", width: "auto", marginBottom: "10px" }}
             />
-            <div className="fw-bold text-primary mt-2">
+            <div className="fw-bold text-primary mt-4">
               Shop Smart. Live Green.
             </div>
           </div>

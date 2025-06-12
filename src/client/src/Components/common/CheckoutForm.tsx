@@ -16,7 +16,7 @@ interface Props {
     cityName: string;
     totalGreenPoints: number;
   };
-  onFormSubmit: (data: any) => void;
+  onFormSubmit: (data: any, paymentMethodId: number) => void;
 }
 
 interface City {
@@ -76,7 +76,7 @@ const CheckoutForm = ({ userInfo, onFormSubmit }: Props) => {
       lastName: DOMPurify.sanitize(data.lastName),
       street: DOMPurify.sanitize(data.street),
     };
-    await onFormSubmit(sanitizedData);
+    await onFormSubmit(sanitizedData, sanitizedData.paymentMethodId);
     setIsSubmitting(false);
   };
   useEffect(() => {

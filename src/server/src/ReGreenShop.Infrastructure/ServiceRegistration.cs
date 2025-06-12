@@ -17,6 +17,7 @@ using ReGreenShop.Infrastructure.Persistence.Identity;
 using ReGreenShop.Infrastructure.Persistence.Seeding.Common;
 using ReGreenShop.Infrastructure.Services;
 using ReGreenShop.Infrastructure.Settings;
+using Stripe;
 using static ReGreenShop.Application.ServiceRegistration;
 
 public static class ServiceRegistration
@@ -55,6 +56,7 @@ public static class ServiceRegistration
         var sendSettings = configuration.GetSection(nameof(SendGridSettings)).Get<SendGridSettings>() ??
                             throw new InvalidOperationException("The SendGridSettings are missing!");
         var sendGridApiKey = sendSettings.ApiKey;
+
         services.AddTransient<IEmailSender, SendGridEmailSender>();
 
         // JWToken
@@ -67,6 +69,18 @@ public static class ServiceRegistration
             throw new InvalidOperationException("The JwtSettings are missing!");
 
         var signKey = Encoding.ASCII.GetBytes(jwtSettings.SignKey);
+
+        // Stripe
+        services
+            .Configure<StripeSettings>(configuration.GetSection(nameof(StripeSettings)));
+
+        var stripeSettingsConfigSection = configuration.GetSection(nameof(StripeSettings));
+
+        var stripeSettings = stripeSettingsConfigSection.Get<StripeSettings>() ??
+            throw new InvalidOperationException("The StripeSettings are missing!");
+
+        StripeConfiguration.ApiKey = stripeSettings.SecretKey;
+
 
         // GoogleSettings
         services.Configure<GoogleAuthentication>(configuration.GetSection(nameof(GoogleAuthentication)));

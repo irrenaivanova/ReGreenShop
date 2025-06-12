@@ -13,13 +13,14 @@ import ReGreenMission from "../pages/ReGreenMission";
 import NotFound from "../pages/NotFound";
 import ProductDetails from "../pages/ProductDetails";
 import Cart from "../pages/Cart";
-import Checkout from "../pages/Checkout";
+
 import MyOrders from "../pages/MyOrders";
 import PendingOrders from "../pages/PendingOrders";
 import GreenImpact from "../pages/GreenImpact";
 import MyInfo from "../pages/MyInfo";
 import GoogleLoginRedirect from "../pages/GoogleLoginRedirect";
 import AllProductsPaginated from "../pages/AllProductsPaginated";
+import Checkout from "../pages/Checkout";
 
 const MainRoutes = () => {
   return (

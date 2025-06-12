@@ -6,6 +6,9 @@ using ReGreenShop.Application.Carts.Queries.GetNumberOfProductsInCart;
 using ReGreenShop.Application.Carts.Queries.ViewProductsInCartQuery;
 using ReGreenShop.Application.Common.Helpers;
 using ReGreenShop.Domain.Entities;
+using ReGreenShop.Web.Services;
+using Stripe.Checkout;
+using Stripe;
 
 namespace ReGreenShop.Web.Controllers;
 public class CartController : BaseController
@@ -62,6 +65,14 @@ public class CartController : BaseController
     public async Task<IActionResult> CleanCart()
     {
         var command = new CleanCartCommand();
+        var result = await this.mediator.Send(command);
+        return ApiResponseHelper.Success(result);
+    }
+
+    [HttpPost(nameof(CreateStripeSession))]
+    public async Task<IActionResult> CreateStripeSession([FromBody] CreateStripeSessionDto dto)
+    {
+        var command = new CreateStripeSession(dto.OrderId);
         var result = await this.mediator.Send(command);
         return ApiResponseHelper.Success(result);
     }

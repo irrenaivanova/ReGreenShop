@@ -106,7 +106,7 @@ const Register = () => {
             <Logo
               style={{ height: "80px", width: "auto", marginBottom: "10px" }}
             />
-            <div className="fw-bold text-primary mt-2">
+            <div className="fw-bold text-primary mt-4">
               Shop Smart. Live Green.
             </div>
           </div>
