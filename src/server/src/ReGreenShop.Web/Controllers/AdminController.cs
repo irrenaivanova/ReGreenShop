@@ -2,7 +2,9 @@ using System.Security.Permissions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ReGreenShop.Application.AdminArea.Commands.DeleteProduct;
 using ReGreenShop.Application.AdminArea.Commands.FinishAnOrder;
+using ReGreenShop.Application.AdminArea.Commands.UpdateProduct;
 using ReGreenShop.Application.AdminArea.Queries.GetAllProductsQuery;
 using ReGreenShop.Application.Common.Helpers;
 using ReGreenShop.Application.Orders.Queries.GetPendingOrdersQuery;
@@ -61,5 +63,23 @@ public class AdminController : BaseController
         var command = new FinishAnOrderCommand(model);
         var result = await this.mediator.Send(command);
         return ApiResponseHelper.Success(result!, "The order has been finished successfully.");
+    }
+
+
+    [HttpDelete(nameof(DeleteProduct))]
+    public async Task<IActionResult> DeleteProduct(int id)
+    {
+        var command = new DeleteProductCommand(id);
+        var result = await this.mediator.Send(command);
+        return ApiResponseHelper.Success(result!, "The product has been deleted successfully.");
+    }
+
+
+    [HttpPut(nameof(UpdateProduct))]
+    public async Task<IActionResult> UpdateProduct([FromBody] UpdateProductModel model)
+    {
+        var command = new UpdateProductCommand(model);
+        var result = await this.mediator.Send(command);
+        return ApiResponseHelper.Success(result!, "The product has been deleted successfully.");
     }
 }

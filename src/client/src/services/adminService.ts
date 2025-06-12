@@ -29,5 +29,6 @@ export const adminService = {
   updateProduct: (data: { id: number; price: number; stock: number }) =>
     request.put("/Admin/UpdateProduct", data),
 
-  deleteProduct: (id: number) => request.delete(`/Admin/DeleteProduct/${id}`),
+  deleteProduct: (id: number) =>
+    request.delete(`/Admin/DeleteProduct?id=${id}`),
 };

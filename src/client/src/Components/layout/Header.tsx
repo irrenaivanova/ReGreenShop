@@ -110,8 +110,6 @@ const Header = () => {
                 ))}
               </div>
             )}
-
-            {/* Mobile layout */}
             {rootCategories.length > 0 && (
               <div className="d-block d-md-none">
                 {rootCategories.map((cat) => (
@@ -132,7 +130,13 @@ const Header = () => {
                         borderRadius: 4,
                       }}
                     />
-                    <span style={{ fontSize: "0.95rem", fontWeight: "400" }}>
+                    <span
+                      style={{
+                        fontSize: "0.95rem",
+                        fontWeight: "400",
+                        textTransform: "none",
+                      }}
+                    >
                       {cat.name}
                     </span>
                   </Dropdown.Item>

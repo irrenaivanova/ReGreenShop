@@ -5,9 +5,9 @@ interface ProductEditModalProps {
   show: boolean;
   onHide: () => void;
   onSave: () => void;
-  price: number;
+  price: string;
   stock: number;
-  onChange: (field: "price" | "stock", value: number) => void;
+  onChange: (field: "price" | "stock", value: string | number) => void;
 }
 
 const ProductEditModal: React.FC<ProductEditModalProps> = ({
@@ -18,20 +18,31 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
   stock,
   onChange,
 }) => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave();
+  };
+
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(",", ".");
+    onChange("price", value);
+  };
+
   return (
     <Modal show={show} onHide={onHide} backdrop="static" centered>
-      <Modal.Header closeButton>
-        <Modal.Title>Edit Product</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form>
+      <Form onSubmit={handleSubmit}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Product</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
           <Form.Group className="mb-3">
             <Form.Label>Price</Form.Label>
             <Form.Control
-              type="string"
+              type="text"
               value={price}
-              onChange={(e) => onChange("price", parseFloat(e.target.value))}
+              onChange={handlePriceChange}
               min={0}
+              inputMode="decimal"
             />
           </Form.Group>
           <Form.Group>
@@ -39,20 +50,22 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
             <Form.Control
               type="number"
               value={stock}
-              onChange={(e) => onChange("stock", parseInt(e.target.value))}
+              onChange={(e) =>
+                onChange("stock", parseInt(e.target.value, 10) || 0)
+              }
               min={0}
             />
           </Form.Group>
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={onHide}>
-          Cancel
-        </Button>
-        <Button variant="primary" onClick={onSave}>
-          Save Changes
-        </Button>
-      </Modal.Footer>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={onHide}>
+            Cancel
+          </Button>
+          <Button variant="primary" type="submit">
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Form>
     </Modal>
   );
 };
