@@ -9,6 +9,7 @@ using ReGreenShop.Domain.Entities;
 using ReGreenShop.Web.Services;
 using Stripe.Checkout;
 using Stripe;
+using ReGreenShop.Application.Carts.Models;
 
 namespace ReGreenShop.Web.Controllers;
 public class CartController : BaseController
@@ -57,6 +58,14 @@ public class CartController : BaseController
     public async Task<IActionResult> RemoveFromCart(int id)
     {
         var command = new RemoveFromCartCommand(id);
+        var result = await this.mediator.Send(command);
+        return ApiResponseHelper.Success(result, "Successfully removed from cart");
+    }
+
+    [HttpGet(nameof(RemoveAllProducts) + "/{id}")]
+    public async Task<IActionResult> RemoveAllProducts(int id)
+    {
+        var command = new RemoveAllOfAProductCommand(id);
         var result = await this.mediator.Send(command);
         return ApiResponseHelper.Success(result, "Successfully removed from cart");
     }

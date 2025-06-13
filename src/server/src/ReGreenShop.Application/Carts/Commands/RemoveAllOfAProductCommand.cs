@@ -3,20 +3,20 @@ using ReGreenShop.Application.Common.Exceptions;
 using ReGreenShop.Application.Common.Interfaces;
 
 namespace ReGreenShop.Application.Carts.Commands;
-public record RemoveAllOfAProductCommand(int id) : IRequest<Unit>
+public record RemoveFromCartCommand(int id) : IRequest<Unit>
 {
-    public class RemoveAllOfAProductCommandHandler : IRequestHandler<RemoveAllOfAProductCommand, Unit>
+    public class RemoveFromCartCommandHandler : IRequestHandler<RemoveFromCartCommand, Unit>
     {
         private readonly IData data;
         private readonly ICart cartService;
 
-        public RemoveAllOfAProductCommandHandler(IData data, ICart cartService)
+        public RemoveFromCartCommandHandler(IData data, ICart cartService)
         {
             this.data = data;
             this.cartService = cartService;
         }
 
-        public async Task<Unit> Handle(RemoveAllOfAProductCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(RemoveFromCartCommand request, CancellationToken cancellationToken)
         {
             var product = this.data.Products.SingleOrDefault(x => x.Id == request.id);
             if (product == null)
@@ -32,7 +32,11 @@ public record RemoveAllOfAProductCommand(int id) : IRequest<Unit>
 
             if (cartItem != null)
             {
-                this.data.CartItems.Remove(cartItem);
+                cartItem.Quantity -= 1;
+                if (cartItem.Quantity == 0)
+                {
+                    this.data.CartItems.Remove(cartItem);
+                }
             }
             await this.data.SaveChangesAsync();
             return Unit.Value;

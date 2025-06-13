@@ -24,7 +24,7 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
   };
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(",", ".");
+    const value = e.target.value;
     onChange("price", value);
   };
 

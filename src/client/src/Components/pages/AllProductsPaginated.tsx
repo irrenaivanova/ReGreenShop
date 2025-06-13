@@ -30,7 +30,7 @@ const AllProductsPaginated = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [editStock, setEditStock] = useState<number>(0);
-  const [editPrice, setEditPrice] = useState<number>(0);
+  const [editPrice, setEditPrice] = useState<string>("0.00");
   const { showModal } = useModal();
   const [searchFilters, setSearchFilters] = useState<{
     searchString?: string;
@@ -89,7 +89,7 @@ const AllProductsPaginated = () => {
   const openEditModal = (product: AdminAllProduct) => {
     setSelectedProduct(product);
     setEditStock(product.stock);
-    setEditPrice(product.price);
+    setEditPrice(product.price.toFixed(2));
     setShowEditModal(true);
   };
 
@@ -105,7 +105,7 @@ const AllProductsPaginated = () => {
       await adminService.deleteProduct(selectedProduct.id);
       showModal?.("success", "Product deleted successfully.");
       setShowDeleteModal(false);
-      await fetchProducts();
+      searchFilters ? await fetchSearchedProducts() : await fetchProducts();
     } catch (error: any) {
       const errMessage = error.response?.data?.error || "Delete failed.";
       showModal?.("error", errMessage);
@@ -115,15 +115,21 @@ const AllProductsPaginated = () => {
   const handleEditSave = async () => {
     if (!selectedProduct) return;
 
+    const parsedPrice = parseFloat(editPrice.replace(",", "."));
+
+    if (isNaN(parsedPrice)) {
+      showModal?.("error", "Invalid price format.");
+      return;
+    }
     try {
       await adminService.updateProduct({
         id: selectedProduct.id,
-        price: editPrice,
+        price: parsedPrice,
         stock: editStock,
       });
       showModal?.("success", "Product updated successfully.");
       setShowEditModal(false);
-      fetchProducts();
+      searchFilters ? await fetchSearchedProducts() : await fetchProducts();
     } catch (error: any) {
       const errMessage = error.response?.data?.error || "Update failed.";
       showModal?.("error", errMessage);
@@ -357,8 +363,14 @@ const AllProductsPaginated = () => {
         price={editPrice}
         stock={editStock}
         onChange={(field, value) => {
-          if (field === "price") setEditPrice(value);
-          else if (field === "stock") setEditStock(value);
+          if (field === "price") {
+            setEditPrice(value as string);
+          } else if (field === "stock") {
+            const num = Number(value);
+            if (!isNaN(num)) {
+              setEditStock(num);
+            }
+          }
         }}
       />
       <ProductDeleteModal

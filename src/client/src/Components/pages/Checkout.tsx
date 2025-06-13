@@ -64,6 +64,7 @@ const Checkout = () => {
     } catch (error: any) {
       const msg = error.response?.data?.error || "Order failed.";
       showModal?.("error", msg);
+      navigate("/cart");
     }
   };
 

@@ -28,10 +28,11 @@ public record MakeAnOrderCommand(MakeAnOrderModel model) : IRequest<string>
         private readonly IStorage storage;
         private readonly IEmailSender emailSender;
         private readonly IWebHostEnvironment web;
+        private readonly INotifier notifier;
 
         public MakeAnOrderCommandHandler(ICurrentUser currentUser, IData data, ICart cartService, IDelivery deliveryService,
                                         IIdentity userService, IPdfGenerator pdfGenerator,IStorage storage, IEmailSender emailSender,
-                                        IWebHostEnvironment web)
+                                        IWebHostEnvironment web, INotifier notifier)
         {
             this.currentUser = currentUser;
             this.data = data;
@@ -42,6 +43,7 @@ public record MakeAnOrderCommand(MakeAnOrderModel model) : IRequest<string>
             this.storage = storage;
             this.emailSender = emailSender;
             this.web = web;
+            this.notifier = notifier;
         }
 
         public async Task<string> Handle(MakeAnOrderCommand request, CancellationToken cancellationToken)
@@ -159,7 +161,6 @@ public record MakeAnOrderCommand(MakeAnOrderModel model) : IRequest<string>
                 this.data.Addresses.Add(address);
             }
 
-            // TODO : Integrate Stripe for payment processing and status tracking
             // Create new order
             var newOrder = new Order()
             {
@@ -205,10 +206,23 @@ public record MakeAnOrderCommand(MakeAnOrderModel model) : IRequest<string>
                     throw new InsufficientQuantityException(product.Name, item.QuantityInCart);
                 }
                 product!.Stock -= item.QuantityInCart;
+
+
+                // Notify the admin if stock of a product is under 3
+                int stockAfterSell = product!.Stock;
+                if (stockAfterSell <= 3)
+                {
+                    string title = "Low Stock Alert";
+                    string message = $"Only {stockAfterSell}items remain in stock of {item.Name}.";
+                    await this.notifier.NotifyAdminAsync(title, message);
+                }
+
             }
 
             // Clear the user cart
             await this.cartService.ClearCartAsync();
+
+            // SaveChange on the unit of work
             await this.data.SaveChangesAsync();
 
 
@@ -246,7 +260,6 @@ public record MakeAnOrderCommand(MakeAnOrderModel model) : IRequest<string>
             await this.data.SaveChangesAsync();
 
             // Send an email with the Poly policy attached
-
             string templateId = "d-5e226b6ae4c4434cadfee761ff05ea51";
             var dynamicDta = new Dictionary<string, object>
                     {

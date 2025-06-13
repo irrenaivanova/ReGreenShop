@@ -21,6 +21,8 @@ import MyInfo from "../pages/MyInfo";
 import GoogleLoginRedirect from "../pages/GoogleLoginRedirect";
 import AllProductsPaginated from "../pages/AllProductsPaginated";
 import Checkout from "../pages/Checkout";
+import StripeSuccess from "../pages/StripeSuccess";
+import StripeFail from "../pages/StripeFail";
 
 const MainRoutes = () => {
   return (
@@ -32,6 +34,8 @@ const MainRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/google-login" element={<GoogleLoginRedirect />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/stripe-success" element={<StripeSuccess />} />
+        <Route path="/stripe-fail" element={<StripeFail />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/my-orders" element={<MyOrders />} />
         <Route path="/my-info" element={<MyInfo />} />

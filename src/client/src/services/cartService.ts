@@ -14,6 +14,9 @@ export const cartService = {
 
   removeFromCart: (id: number) => request.get(`/Cart/RemoveFromCart/${id}`),
 
+  removeAllProducts: (id: number) =>
+    request.get(`/Cart/RemoveAllProducts/${id}`),
+
   cleanCart: () => request.get("/Cart/CleanCart"),
 
   createStripeSession: (orderId: string) =>

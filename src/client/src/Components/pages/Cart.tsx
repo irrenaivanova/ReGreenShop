@@ -13,6 +13,8 @@ import { FaTrashAlt, FaTruck } from "react-icons/fa";
 import DeliveryInfo from "../common/DeliveryInfo";
 import { Delivery } from "../../types/Delivery";
 import { useAuth } from "../../context/AuthContext";
+import { Button } from "react-bootstrap";
+import { BsXCircleFill } from "react-icons/bs";
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -33,6 +35,7 @@ const Cart = () => {
   };
 
   const { refreshCartCount } = useCart();
+
   useEffect(() => {
     fetchCart();
   }, [fetchCart]);
@@ -44,6 +47,13 @@ const Cart = () => {
     await cartService.cleanCart();
     await refreshCartCount();
     fetchCart();
+  };
+  const handleRemoveProduct = async (productId: number) => {
+    try {
+      await cartService.removeAllProducts(productId);
+      fetchCart();
+      await refreshCartCount();
+    } catch (error) {}
   };
 
   const isDisabled = !isAuthenticated || (cart?.totalPrice ?? 0) < 40;
@@ -142,6 +152,19 @@ const Cart = () => {
                             <p className="fw-bold mb-0">
                               {product.totalPriceProduct?.toFixed(2)} lv
                             </p>
+                            <Button
+                              variant="outline-danger"
+                              size="sm"
+                              className="p-0"
+                              style={{
+                                border: "none",
+                                background: "transparent",
+                              }}
+                              onClick={() => handleRemoveProduct(product.id)}
+                              title="Remove from cart"
+                            >
+                              <BsXCircleFill size={18} />
+                            </Button>
                           </div>
                         </div>
                       </div>

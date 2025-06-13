@@ -45,8 +45,8 @@ public record CreateStripeSession([FromBody] string orderId) : IRequest<string>
                 },
             },
                 Mode = "payment",
-                SuccessUrl = "https://localhost:5173/",
-                CancelUrl = "https://localhost:5173/",
+                SuccessUrl = "https://localhost:5173/stripe-success",
+                CancelUrl = "https://localhost:5173/stripe-fail",
             };
 
             try
