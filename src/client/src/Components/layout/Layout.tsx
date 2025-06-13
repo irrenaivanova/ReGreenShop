@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import Footer from "./Footer";
 import Header from "./Header";
 import BottomHeader from "./BottomHeader";
+import ChatWidget from "../common/ChatWidget";
 
 const Layout = () => {
   return (
@@ -12,6 +13,7 @@ const Layout = () => {
         <Outlet />
       </main>
       <Footer />
+      <ChatWidget />
     </>
   );
 };

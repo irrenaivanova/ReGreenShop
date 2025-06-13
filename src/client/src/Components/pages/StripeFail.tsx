@@ -5,11 +5,11 @@ import Logo from "../common/Logo";
 const StripeFail = () => {
   const navigate = useNavigate();
 
-  // Auto-redirect after 7 seconds
+  // Auto-redirect after 10 seconds
   useEffect(() => {
     const timeout = setTimeout(() => {
       navigate("/");
-    }, 7000);
+    }, 10000);
     return () => clearTimeout(timeout);
   }, [navigate]);
 

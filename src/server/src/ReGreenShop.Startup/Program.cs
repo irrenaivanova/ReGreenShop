@@ -19,6 +19,7 @@ using static ReGreenShop.Web.ServiceRegistration;
 using static ReGreenShop.Application.Common.GlobalConstants;
 using ReGreenShop.Application.Common.Services;
 using ReGreenShop.Web.ModelBinders;
+using ReGreenShop.Web.Hubs;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -90,6 +91,8 @@ using (var scope = app.Services.CreateScope())
 }
 AutoMapperConfig.RegisterMappings(typeof(GlobalConstants).Assembly);
 
+app.UseRouting();
+
 app.UseCors("AllowFrontend");
 
 // Configure the HTTP request pipeline.
@@ -124,11 +127,14 @@ app.UseCookiePolicy();
 
 app.UseSession();
 
+
 app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<ChatHub>("/chathub");
 
 app.Run();
 
