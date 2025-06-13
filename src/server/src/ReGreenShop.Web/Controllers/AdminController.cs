@@ -12,7 +12,7 @@ using static ReGreenShop.Application.Common.GlobalConstants;
 
 namespace ReGreenShop.Web.Controllers;
 
-//[Authorize(Roles = AdminName)]
+[Authorize(Roles = AdminName)]
 public class AdminController : BaseController
 {
     private readonly IMediator mediator;
