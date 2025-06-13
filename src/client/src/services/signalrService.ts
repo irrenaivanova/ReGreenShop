@@ -1,4 +1,3 @@
-// services/signalrService.ts
 import * as signalR from "@microsoft/signalr";
 import { baseUrl } from "../Constants/baseUrl";
 
@@ -15,40 +14,32 @@ export const connectToChatHub = async (
     .withAutomaticReconnect()
     .build();
 
-  // 1) subscribe before start
+  // Subscribe before start
   connection.on("ReceiveMessage", (senderId, text) => {
-    console.log("🔔 ReceiveMessage fired:", { senderId, text });
+    console.log("🔔 ReceiveMessage:", senderId, text);
     onReceive(senderId, text);
   });
 
-  // 2) log lifecycle
-  connection.onreconnecting((error) =>
-    console.warn("SignalR reconnecting", error)
-  );
-  connection.onreconnected((id) =>
-    console.log("SignalR reconnected, connectionId:", id)
-  );
-  connection.onclose((error) => console.error("SignalR closed", error));
+  // Lifecycle logs
+  connection.onreconnecting((e) => console.warn("SignalR reconnecting", e));
+  connection.onreconnected((id) => console.log("SignalR reconnected:", id));
+  connection.onclose((e) => console.error("SignalR closed", e));
 
-  // 3) start
   try {
     await connection.start();
-    console.log(
-      "✅ SignalR connected with connectionId=",
-      connection.connectionId
-    );
+    console.log("✅ SignalR Connected, id=", connection.connectionId);
   } catch (err) {
     console.error("❌ SignalR Connection Error:", err);
   }
 };
 
 export const sendMessage = (receiverId: string, message: string) => {
-  console.log("➤ Invoking SendMessage:", { receiverId, message });
-  if (connection?.state === signalR.HubConnectionState.Connected) {
+  console.log("➤ sendMessage to", receiverId, message);
+  if (connection.state === signalR.HubConnectionState.Connected) {
     connection
       .invoke("SendMessage", receiverId, message)
-      .catch((err) => console.error("❌ SendMessage failed:", err));
+      .catch((e) => console.error("❌ SendMessage failed:", e));
   } else {
-    console.warn("⚠️ Cannot send, connection state:", connection?.state);
+    console.warn("⚠️ sendMessage skipped, state=", connection.state);
   }
 };

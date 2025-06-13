@@ -1,4 +1,3 @@
-// components/ChatWidget.tsx
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { connectToChatHub, sendMessage } from "../../services/signalrService";
@@ -7,8 +6,6 @@ interface Message {
   senderId: string;
   text: string;
 }
-
-const ADMIN_USER_ID = "2cd377ad-ffad-4c83-8455-07b7039733da";
 
 const ChatWidget: React.FC = () => {
   const { user } = useAuth();
@@ -19,26 +16,34 @@ const ChatWidget: React.FC = () => {
   );
 
   useEffect(() => {
-    console.log("🛰️ ChatWidget mounting, user:", user);
+    console.log("🛰️ ChatWidget mount, user:", user);
     if (!user?.accessToken) return;
 
     connectToChatHub(user.accessToken, (senderId, text) => {
-      setMessages((prev) => [...prev, { senderId, text }]);
+      setMessages((m) => [...m, { senderId, text }]);
+
+      // If admin, track who’s talking so replies go back
       if (user.isAdmin) {
         setCurrentChatUserId(senderId);
-        console.log("🔑 Admin chat now with user:", senderId);
+        console.log("🔑 Admin chatting with:", senderId);
       }
     });
   }, [user]);
 
   const handleSend = () => {
-    console.log("🖊️ handleSend called. input:", input);
     if (!input.trim() || !user) return;
 
-    const receiverId = user.isAdmin ? currentChatUserId! : ADMIN_USER_ID;
-    console.log("📤 Sending to receiverId:", receiverId);
+    // If I’m admin, send to tracked user; else send to admin’s GUID
+    const receiverId = user.isAdmin
+      ? currentChatUserId!
+      : user.isAdmin === false
+      ? /* your admin GUID here */ "2cd377ad-ffad-4c83-8455-07b7039733da"
+      : "";
+
+    console.log("📤 handleSend →", receiverId, input);
     sendMessage(receiverId, input);
-    setMessages((prev) => [...prev, { senderId: "Me", text: input }]);
+
+    setMessages((m) => [...m, { senderId: "Me", text: input }]);
     setInput("");
   };
 
@@ -59,18 +64,18 @@ const ChatWidget: React.FC = () => {
       }}
     >
       <div style={{ flex: 1, overflowY: "auto", padding: 10 }}>
-        {messages.map((msg, i) => (
+        {messages.map((m, i) => (
           <div key={i}>
-            <b>{msg.senderId}:</b> {msg.text}
+            <b>{m.senderId}:</b> {m.text}
           </div>
         ))}
       </div>
       <div style={{ padding: 10, borderTop: "1px solid #ccc" }}>
         <input
+          style={{ width: "70%", marginRight: 5 }}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
-          style={{ width: "70%", marginRight: 5 }}
         />
         <button onClick={handleSend}>Send</button>
       </div>
