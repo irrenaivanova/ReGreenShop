@@ -1,6 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { connectToChatHub, sendMessage } from "../../services/signalrService";
+import {
+  connectToChatHub,
+  disconnectFromChatHub,
+  sendMessage,
+} from "../../services/signalrService";
 
 interface Message {
   senderId: string;
@@ -21,27 +25,61 @@ const ChatWidget: React.FC = () => {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const hasConnectedRef = useRef(false); // Prevent duplicate subscription
+  const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const isOpenRef = useRef(isOpen);
+  useEffect(() => {
+    isOpenRef.current = isOpen;
+  }, [isOpen]);
+
+  const unreadCountRef = useRef(unreadCount);
+  useEffect(() => {
+    unreadCountRef.current = unreadCount;
+  }, [unreadCount]);
+
+  const resetInactivityTimer = () => {
+    if (inactivityTimerRef.current) {
+      clearTimeout(inactivityTimerRef.current);
+    }
+
+    inactivityTimerRef.current = setTimeout(() => {
+      if (!user?.isAdmin) {
+        // Disconnect the user from SignalR if inactive
+        disconnectFromChatHub();
+        hasConnectedRef.current = false; // Allow reconnect later
+        setIsOpen(false);
+
+        if (unreadCountRef.current === 0) {
+          setMessages([]);
+        }
+
+        console.log("disconnected");
+      }
+    }, 1 * 60 * 1000); // 1 minutes
+  };
 
   useEffect(() => {
     if (!user?.accessToken || hasConnectedRef.current) return;
 
-    hasConnectedRef.current = true;
+    if (user.isAdmin || isOpen) {
+      hasConnectedRef.current = true;
 
-    connectToChatHub(user.accessToken, (senderId, text) => {
-      setMessages((prev) => {
-        const updated = [...prev, { senderId, text }];
+      connectToChatHub(user.accessToken, (senderId, text) => {
+        resetInactivityTimer();
+        setMessages((prev) => {
+          const updated = [...prev, { senderId, text }];
+          if (!isOpenRef.current) {
+            setUnreadCount((count) => count + 1);
+          }
+          return updated;
+        });
 
-        if (!isOpen) {
-          setUnreadCount((count) => count + 1);
+        if (user.isAdmin) {
+          setCurrentChatUserId(senderId);
         }
-        return updated;
       });
-
-      if (user.isAdmin) {
-        setCurrentChatUserId(senderId);
-      }
-    });
-  }, [user]);
+    }
+  }, [user, isOpen]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -78,7 +116,7 @@ const ChatWidget: React.FC = () => {
 
   return (
     <div
-      style={{ position: "fixed", bottom: 20, right: 20, zIndex: 1050 }}
+      style={{ position: "fixed", bottom: 70, right: 20, zIndex: 1050 }}
       className="shadow"
     >
       <div
