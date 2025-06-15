@@ -42,6 +42,6 @@ public class ChatHub : Hub
         var senderUserId = Context.UserIdentifier;
         var userName = Context.User?.Identity?.Name;
         return Clients.User(receiverUserId)
-                      .SendAsync("ReceiveMessage", senderUserId, message);
+                      .SendAsync("ReceiveMessage", senderUserId,userName, message);
     }
 }

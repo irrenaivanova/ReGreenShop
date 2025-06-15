@@ -8,6 +8,7 @@ import {
 
 interface Message {
   senderId: string;
+  senderName: string;
   text: string;
 }
 
@@ -64,10 +65,11 @@ const ChatWidget: React.FC = () => {
     if (user.isAdmin || isOpen) {
       hasConnectedRef.current = true;
 
-      connectToChatHub(user.accessToken, (senderId, text) => {
+      connectToChatHub(user.accessToken, (senderId, senderName, text) => {
+        console.log("Message received:", { senderId, senderName, text });
         resetInactivityTimer();
         setMessages((prev) => {
-          const updated = [...prev, { senderId, text }];
+          const updated = [...prev, { senderId, senderName, text }];
           if (!isOpenRef.current) {
             setUnreadCount((count) => count + 1);
           }
@@ -95,7 +97,10 @@ const ChatWidget: React.FC = () => {
     const receiverId = user.isAdmin ? currentChatUserId! : ADMIN_GUID;
 
     sendMessage(receiverId, input);
-    setMessages((prev) => [...prev, { senderId: "Me", text: input }]);
+    setMessages((prev) => [
+      ...prev,
+      { senderId: "Me", senderName: "Me", text: input },
+    ]);
     setInput("");
   };
 
@@ -159,7 +164,7 @@ const ChatWidget: React.FC = () => {
                   m.senderId === "Me" ? "text-end" : "text-start"
                 }`}
               >
-                <b>{m.senderId === "Me" ? "Me" : m.senderId}:</b>{" "}
+                <b>{m.senderId === "Me" ? "Me" : m.senderName}:</b>{" "}
                 <span>{m.text}</span>
               </div>
             ))}

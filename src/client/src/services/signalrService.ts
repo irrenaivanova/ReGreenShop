@@ -5,7 +5,11 @@ let connection: signalR.HubConnection | null = null;
 
 export function connectToChatHub(
   token: string,
-  onMessageReceived: (senderId: string, text: string) => void
+  onMessageReceived: (
+    senderId: string,
+    senderName: string,
+    text: string
+  ) => void
 ) {
   if (connection) return;
 
