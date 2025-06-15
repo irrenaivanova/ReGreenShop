@@ -11,7 +11,16 @@ export function connectToChatHub(
     text: string
   ) => void
 ) {
-  if (connection) return;
+  if (connection) {
+    // Only start if disconnected
+    if (connection.state === signalR.HubConnectionState.Disconnected) {
+      return connection.start().catch((err) => {
+        console.error("Failed to start connection:", err);
+      });
+    }
+    // Already connected or connecting
+    return Promise.resolve();
+  }
 
   connection = new signalR.HubConnectionBuilder()
     .withUrl(`${baseUrl}/chatHub`, {
@@ -20,31 +29,27 @@ export function connectToChatHub(
     .withAutomaticReconnect()
     .build();
 
-  connection.on("ReceiveMessage", onMessageReceived);
+  connection.on("ReceiveMessage", (senderId, senderName, text) => {
+    onMessageReceived(senderId, senderName, text);
+  });
 
-  connection
-    .start()
-    .then(() => console.log("SignalR connected"))
-    .catch((err) => console.error("SignalR connection failed:", err));
+  return connection.start().catch((err) => {
+    console.error("Failed to start connection:", err);
+  });
 }
 
 export function disconnectFromChatHub() {
   if (connection) {
-    connection
-      .stop()
-      .then(() => {
-        console.log("SignalR disconnected");
-        connection = null;
-      })
-      .catch((err) => console.error("Error disconnecting SignalR:", err));
+    connection.stop();
+    connection = null;
   }
 }
 
 export function sendMessage(receiverId: string, message: string) {
   if (connection && connection.state === signalR.HubConnectionState.Connected) {
-    connection
-      .invoke("SendMessage", receiverId, message)
-      .catch((e) => console.error("SendMessage failed:", e));
+    connection.invoke("SendMessage", receiverId, message).catch((e) => {
+      console.error("SendMessage failed:", e);
+    });
   } else {
     console.warn(
       "Connection is null or not connected. State =",
@@ -52,3 +57,17 @@ export function sendMessage(receiverId: string, message: string) {
     );
   }
 }
+
+export const getConnectedUsers = async (): Promise<
+  { userId: string; userName: string }[]
+> => {
+  if (!connection) throw new Error("Connection not established");
+
+  try {
+    const users = await connection.invoke("GetConnectedUsers");
+    return users;
+  } catch (err) {
+    console.error("Error getting connected users:", err);
+    return [];
+  }
+};
