@@ -23,6 +23,7 @@ import AllProductsPaginated from "../pages/AllProductsPaginated";
 import Checkout from "../pages/Checkout";
 import StripeSuccess from "../pages/StripeSuccess";
 import StripeFail from "../pages/StripeFail";
+import MapFinder from "../common/MapFinder";
 
 const MainRoutes = () => {
   return (
@@ -51,6 +52,7 @@ const MainRoutes = () => {
           path="/subcategory/:categoryId"
           element={<ProductsBySubCategory />}
         />
+        <Route path="/google-maps" element={<MapFinder />} />
         <Route path="/*" element={<NotFound />} />
       </Route>
     </Routes>

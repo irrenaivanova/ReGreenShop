@@ -51,7 +51,6 @@ const ChatWidget: React.FC = () => {
     unreadCountRef.current = unreadCount;
   }, [unreadCount]);
 
-  // Admin connect to chat hub on mount
   useEffect(() => {
     if (!user?.isAdmin) return;
 
@@ -114,7 +113,6 @@ const ChatWidget: React.FC = () => {
     return () => clearInterval(interval);
   }, [user, currentChatUserId]);
 
-  // Reset inactivity timer for users (not admin)
   const resetInactivityTimer = () => {
     if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
 
@@ -128,7 +126,7 @@ const ChatWidget: React.FC = () => {
         }
         console.log("Disconnected due to inactivity");
       }
-    }, 0.2 * 60 * 1000); // 1 minute
+    }, 0.2 * 60 * 1000);
   };
 
   useEffect(() => {
@@ -171,18 +169,9 @@ const ChatWidget: React.FC = () => {
 
     if (willOpen && !user?.isAdmin) {
       setUnreadCount(0);
-      resetInactivityTimer();
-    }
-
-    if (!willOpen && !user?.isAdmin) {
-      // If user closes chat manually, clear timer and disconnect
-      if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
-      disconnectFromChatHub();
-      hasConnectedRef.current = false;
     }
   };
 
-  // Admin selects user chat - reset unread count for that user
   const handleUserClick = (userId: string) => {
     setCurrentChatUserId(userId);
     setUnreadAdminMap((prev) => {
@@ -190,12 +179,6 @@ const ChatWidget: React.FC = () => {
       delete updated[userId];
       return updated;
     });
-  };
-
-  // Reset timer on input change
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(e.target.value);
-    resetInactivityTimer(); // reset inactivity timer on typing
   };
 
   const handleSend = () => {
@@ -217,7 +200,7 @@ const ChatWidget: React.FC = () => {
         { senderId: "Me", senderName: "Me", text: input },
       ]);
     }
-    resetInactivityTimer();
+
     setInput("");
   };
 
@@ -232,7 +215,6 @@ const ChatWidget: React.FC = () => {
       style={{ position: "fixed", bottom: 70, right: 20, zIndex: 1050 }}
       className="shadow"
     >
-      {/* Chat Banner */}
       <div
         role="button"
         onClick={toggleChat}
@@ -243,7 +225,6 @@ const ChatWidget: React.FC = () => {
       >
         {bannerText}
 
-        {/* Admin unread red dot badge */}
         {user.isAdmin &&
           Object.values(unreadAdminMap).some((count) => count > 0) && (
             <span
@@ -252,7 +233,6 @@ const ChatWidget: React.FC = () => {
             />
           )}
 
-        {/* User unread count badge */}
         {!isOpen && unreadCount > 0 && !user.isAdmin && (
           <span
             className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
@@ -263,13 +243,11 @@ const ChatWidget: React.FC = () => {
         )}
       </div>
 
-      {/* Chat Box */}
       {isOpen && (
         <div
           className="bg-white border rounded-bottom d-flex"
           style={{ width: user.isAdmin ? 440 : 280, height: 400 }}
         >
-          {/* Admin Tab Sidebar */}
           {user.isAdmin && (
             <div className="border-end" style={{ width: 140 }}>
               <div className="bg-primary text-white text-center py-2">
@@ -295,7 +273,6 @@ const ChatWidget: React.FC = () => {
             </div>
           )}
 
-          {/* Message Panel */}
           <div className="d-flex flex-column flex-grow-1">
             <div className="bg-light p-2 text-center border-bottom">
               {user.isAdmin
@@ -324,14 +301,13 @@ const ChatWidget: React.FC = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input */}
             <div className="p-2 border-top d-flex">
               <input
                 type="text"
                 className="form-control form-control-sm me-2"
                 placeholder="Type your message..."
                 value={input}
-                onChange={handleInputChange}
+                onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
               />
               <button
