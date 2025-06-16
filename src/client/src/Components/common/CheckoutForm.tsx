@@ -303,7 +303,6 @@ const CheckoutForm = ({ userInfo, onFormSubmit }: Props) => {
           {renderError(errors.deliveryDateTime)}
         </div>
 
-        {/* Submit button */}
         <div className="col-md-12 d-flex justify-content-end mt-3">
           <button
             type="submit"

@@ -1,6 +1,7 @@
 import React from "react";
 import { Modal, Button } from "react-bootstrap";
 import Logo from "./Logo";
+import { useNavigate } from "react-router-dom";
 
 interface OnlinePaymentModalProps {
   show: boolean;
@@ -13,6 +14,12 @@ const OnlinePaymentModal: React.FC<OnlinePaymentModalProps> = ({
   onClose,
   onProceedToPayment,
 }) => {
+  const navigate = useNavigate();
+
+  const handleClose = () => {
+    if (onClose) onClose();
+    navigate("/stripe-fail");
+  };
   return (
     <Modal
       show={show}
@@ -42,7 +49,7 @@ const OnlinePaymentModal: React.FC<OnlinePaymentModalProps> = ({
         <p>Please click below to proceed to pay by card.</p>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={onClose}>
+        <Button variant="secondary" onClick={handleClose}>
           Cancel
         </Button>
         <Button variant="primary" onClick={onProceedToPayment}>
