@@ -17,19 +17,8 @@ public class MakeAnOrderCommandValidator : AbstractValidator<MakeAnOrderCommand>
             .NotEmpty().WithMessage("Last name is required")
             .MaximumLength(MaxLengthShortName);
 
-        RuleFor(x => x.model.Street)
-            .NotEmpty().WithMessage("Street is required")
-            .MaximumLength(MaxLengthLongName);
-
-        RuleFor(x => x.model.Number)
-            .NotEmpty().WithMessage("Number is required");
-
         RuleFor(x => x.model.PaymentMethodId)
             .NotEmpty().WithMessage("Payment method is required");
-
-        RuleFor(x => x.model.CityId)
-            .NotEmpty().WithMessage("City is required");
-
 
         RuleFor(x => x.model.DeliveryDateTime)
             .NotEmpty().WithMessage("Date and time of delivery is required")

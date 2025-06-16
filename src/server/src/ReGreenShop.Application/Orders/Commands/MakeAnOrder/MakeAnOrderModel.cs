@@ -7,11 +7,7 @@ public class MakeAnOrderModel
 
     public string LastName { get; set; } = string.Empty;
 
-    public int CityId { get; set; }
-
-    public string Street { get; set; } = string.Empty;
-
-    public int Number { get; set; }
+    public string FullAddress { get; set; } = string.Empty;
 
     public int PaymentMethodId { get; set; }
 

@@ -140,21 +140,13 @@ public record MakeAnOrderCommand(MakeAnOrderModel model) : IRequest<string>
 
             // Create a new delivery address if one does not already exist
             var address = await this.data.Addresses.Where(x => x.UserId == userId)
-                .FirstOrDefaultAsync(x => x.CityId == request.model.CityId && x.Street == request.model.Street && x.Number == request.model.Number);
+                .FirstOrDefaultAsync(x => x.FullAddress == request.model.FullAddress);
 
             if (address == null)
             {
-                var city = await this.data.Cities.FirstOrDefaultAsync(x => x.Id == request.model.CityId);
-                if (city == null)
-                {
-                    throw new NotFoundException("City", request.model.CityId);
-                }
-
                 address = new Address()
                 {
-                    CityId = request.model.CityId,
-                    Street = request.model.Street,
-                    Number = request.model.Number,
+                    FullAddress = request.model.FullAddress,
                     UserId = userId,
                 };
 

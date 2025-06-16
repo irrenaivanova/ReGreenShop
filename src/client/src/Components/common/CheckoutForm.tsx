@@ -1,8 +1,14 @@
+import { useState, useEffect, useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { useEffect, useState } from "react";
 import { addHours, addDays } from "date-fns";
 import DOMPurify from "dompurify";
 import DatePicker from "react-datepicker";
+import {
+  GoogleMap,
+  Marker,
+  Autocomplete,
+  useJsApiLoader,
+} from "@react-google-maps/api";
 import { utilityService } from "../../services/utilityService";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -10,24 +16,26 @@ interface Props {
   userInfo: {
     firstName: string;
     lastName: string;
-    street: string;
-    number: number;
-    cityId: number;
-    cityName: string;
+    address: string;
     totalGreenPoints: number;
   };
   onFormSubmit: (data: any, paymentMethodId: number) => void;
-}
-
-interface City {
-  id: number;
-  name: string;
 }
 
 interface PaymentMethod {
   id: number;
   name: string;
 }
+
+const containerStyle = {
+  width: "100%",
+  height: "300px",
+};
+
+const defaultCenter = {
+  lat: 42.6977,
+  lng: 23.3219,
+};
 
 const CheckoutForm = ({ userInfo, onFormSubmit }: Props) => {
   const {
@@ -39,10 +47,25 @@ const CheckoutForm = ({ userInfo, onFormSubmit }: Props) => {
     formState: { errors },
   } = useForm();
 
-  const [cities, setCities] = useState<City[]>([]);
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Google Maps API Loader with Places library
+  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
+  const { isLoaded, loadError } = useJsApiLoader({
+    googleMapsApiKey: apiKey,
+    libraries: ["places"],
+  });
+  const isAddressInSofia = (address: string) => {
+    return address.toLowerCase().includes("sofia");
+  };
+  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+  const [location, setLocation] = useState<google.maps.LatLngLiteral | null>(
+    null
+  );
+  const [fullAddress, setFullAddress] = useState("");
+
+  // Valid delivery time check
   const isValidDeliveryTime = (time: Date) => {
     const now = new Date();
     const fourHoursFromNow = addHours(now, 4);
@@ -50,10 +73,94 @@ const CheckoutForm = ({ userInfo, onFormSubmit }: Props) => {
     return time > fourHoursFromNow && hour >= 9 && hour <= 20;
   };
 
-  const filterTimes = (time: Date) => {
-    return isValidDeliveryTime(time);
+  const filterTimes = (time: Date) => isValidDeliveryTime(time);
+
+  // Load payment methods on mount
+  useEffect(() => {
+    utilityService
+      .getAllPaymentMethods()
+      .then((res) => setPaymentMethods(res.data.data));
+  }, []);
+
+  // Initialize form & address/map from userInfo.address
+  useEffect(() => {
+    if (!userInfo) return;
+
+    setValue("firstName", userInfo.firstName);
+    setValue("lastName", userInfo.lastName);
+    setValue("paymentMethodId", ""); // Reset payment method on load
+
+    setFullAddress(userInfo.address);
+    setValue("fullAddress", userInfo.address);
+
+    // Geocode to get lat/lng from address string
+    if (isLoaded && userInfo.address) {
+      const geocoder = new window.google.maps.Geocoder();
+      geocoder.geocode({ address: userInfo.address }, (results, status) => {
+        if (status === "OK" && results && results[0]) {
+          const loc = results[0].geometry.location;
+          setLocation({ lat: loc.lat(), lng: loc.lng() });
+        } else {
+          setLocation(null);
+        }
+      });
+    }
+  }, [userInfo, setValue, isLoaded]);
+
+  // Autocomplete load
+  const onLoadAutocomplete = (
+    autocomplete: google.maps.places.Autocomplete
+  ) => {
+    autocompleteRef.current = autocomplete;
   };
 
+  // When place selected from autocomplete
+  const onPlaceChanged = () => {
+    if (autocompleteRef.current !== null) {
+      const place = autocompleteRef.current.getPlace();
+      if (!place.geometry || !place.geometry.location) {
+        alert(
+          "ReGreenShop: No details available for input: '" + place.name + "'"
+        );
+        return;
+      }
+      const lat = place.geometry.location.lat();
+      const lng = place.geometry.location.lng();
+      const formattedAddress = place.formatted_address || "";
+
+      if (!isAddressInSofia(formattedAddress)) {
+        alert("ReGreenShop: Please enter an address in Sofia.");
+        return;
+      }
+      setLocation({ lat, lng });
+      setFullAddress(place.formatted_address || "");
+      setValue("fullAddress", place.formatted_address || "");
+    }
+  };
+
+  // When marker is dragged, update position and address input via reverse geocoding
+  const handleMarkerDragEnd = (e: google.maps.MapMouseEvent) => {
+    if (!e.latLng) return;
+    const lat = e.latLng.lat();
+    const lng = e.latLng.lng();
+    setLocation({ lat, lng });
+
+    const geocoder = new window.google.maps.Geocoder();
+    geocoder.geocode({ location: { lat, lng } }, (results, status) => {
+      if (status === "OK" && results && results[0]) {
+        const addr = results[0].formatted_address || "";
+
+        if (!isAddressInSofia(addr)) {
+          alert("ReGreenShop: Please enter an address in Sofia.");
+          return;
+        }
+        setFullAddress(addr || "");
+        setValue("fullAddress", addr || "");
+      }
+    });
+  };
+
+  // On submit, sanitize & send
   const handleInternalSubmit = async (data: any) => {
     setIsSubmitting(true);
 
@@ -74,29 +181,23 @@ const CheckoutForm = ({ userInfo, onFormSubmit }: Props) => {
       ...data,
       firstName: DOMPurify.sanitize(data.firstName),
       lastName: DOMPurify.sanitize(data.lastName),
-      street: DOMPurify.sanitize(data.street),
+      fullAddress: DOMPurify.sanitize(data.fullAddress),
     };
+
     await onFormSubmit(sanitizedData, sanitizedData.paymentMethodId);
     setIsSubmitting(false);
   };
-  useEffect(() => {
-    utilityService.getAllCities().then((res) => setCities(res.data.data));
-    utilityService
-      .getAllPaymentMethods()
-      .then((res) => setPaymentMethods(res.data.data));
-  }, []);
 
-  useEffect(() => {
-    if (!userInfo) return;
-    setValue("firstName", userInfo.firstName);
-    setValue("lastName", userInfo.lastName);
-    setValue("street", userInfo.street);
-    setValue("number", userInfo.number);
-    setValue("cityId", userInfo.cityId);
-  }, [userInfo, setValue]);
+  if (loadError) return <p>Error loading Google Maps</p>;
+  if (!isLoaded) return <p>Loading Map...</p>;
 
   const minDate = new Date();
   const maxDate = addDays(minDate, 5);
+
+  const renderError = (error: any) =>
+    error?.message ? (
+      <small className="text-danger">{String(error.message)}</small>
+    ) : null;
 
   return (
     <div className="card p-4 border-primary mt-4 col-md-10 offset-md-1">
@@ -108,73 +209,63 @@ const CheckoutForm = ({ userInfo, onFormSubmit }: Props) => {
             className="form-control"
             {...register("firstName", { required: "First name is required." })}
           />
-          {errors.firstName?.message && (
-            <small className="text-danger">{`${errors.firstName.message}`}</small>
-          )}
+          {renderError(errors.firstName)}
         </div>
-
         <div className="col-md-6">
           <label className="form-label">Last Name</label>
           <input
             className="form-control"
             {...register("lastName", { required: "Last name is required." })}
           />
-          {errors.lastName?.message && (
-            <small className="text-danger">{`${errors.lastName.message}`}</small>
-          )}
+          {renderError(errors.lastName)}
         </div>
 
-        <div className="col-md-8">
-          <label className="form-label">Street</label>
-          <input
-            className="form-control"
-            {...register("street", { required: "Street is required." })}
-          />
-          {errors.street?.message && (
-            <small className="text-danger">{`${errors.street.message}`}</small>
-          )}
-        </div>
-
-        <div className="col-md-4">
-          <label className="form-label">Number</label>
-          <input
-            type="number"
-            className="form-control"
-            {...register("number", {
-              required: "Number is required.",
-              min: 1,
-            })}
-          />
-          {errors.number?.message && (
-            <small className="text-danger">{`${errors.number.message}`}</small>
-          )}
-        </div>
-        <div className="col-md-6">
-          <label className="form-label">City</label>
-          <select
-            className="form-select"
-            {...register("cityId", { required: true })}
-            defaultValue={userInfo.cityId?.toString() || ""}
+        <div className="col-md-12">
+          <label className="form-label">Address (Full)</label>
+          <Autocomplete
+            onLoad={onLoadAutocomplete}
+            onPlaceChanged={onPlaceChanged}
           >
-            <option value="" disabled>
-              Select city
-            </option>
-            {cities.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-          {errors.cityId && (
-            <small className="text-danger">City is required.</small>
-          )}
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Enter your address"
+              {...register("fullAddress", { required: "Address is required." })}
+              value={fullAddress}
+              onChange={(e) => {
+                setFullAddress(e.target.value);
+                setValue("fullAddress", e.target.value);
+              }}
+            />
+          </Autocomplete>
+          {renderError(errors.fullAddress)}
         </div>
 
+        {/* Map */}
+        <div className="col-md-12">
+          <GoogleMap
+            mapContainerStyle={containerStyle}
+            center={location || defaultCenter}
+            zoom={location ? 16 : 10}
+          >
+            {location && (
+              <Marker
+                position={location}
+                draggable={true}
+                onDragEnd={handleMarkerDragEnd}
+              />
+            )}
+          </GoogleMap>
+        </div>
+
+        {/* Payment Method */}
         <div className="col-md-6">
           <label className="form-label">Payment Method</label>
           <select
             className="form-select"
-            {...register("paymentMethodId", { required: true })}
+            {...register("paymentMethodId", {
+              required: "Payment method is required.",
+            })}
           >
             <option value="">Select payment method</option>
             {paymentMethods.map((pm) => (
@@ -183,42 +274,40 @@ const CheckoutForm = ({ userInfo, onFormSubmit }: Props) => {
               </option>
             ))}
           </select>
-          {errors.paymentMethodId && (
-            <small className="text-danger">Payment method is required.</small>
-          )}
+          {renderError(errors.paymentMethodId)}
         </div>
-        <div className="col-md-9">
+
+        {/* Delivery Time */}
+        <div className="col-md-6">
           <label className="form-label mb-2">Delivery Time</label>
-          <div>
-            <Controller
-              control={control}
-              name="deliveryDateTime"
-              rules={{ required: "Delivery time is required." }}
-              render={({ field }) => (
-                <DatePicker
-                  {...field}
-                  selected={field.value}
-                  showTimeSelect
-                  filterTime={filterTimes}
-                  minDate={minDate}
-                  maxDate={maxDate}
-                  dateFormat="MMMM d, yyyy h:mm aa"
-                  placeholderText="Select a delivery time"
-                  className="form-control"
-                  timeIntervals={60}
-                  popperPlacement="bottom-start"
-                />
-              )}
-            />
-          </div>
-          {errors.deliveryDateTime?.message && (
-            <small className="text-danger">{`${errors.deliveryDateTime.message}`}</small>
-          )}
+          <Controller
+            control={control}
+            name="deliveryDateTime"
+            rules={{ required: "Delivery time is required." }}
+            render={({ field }) => (
+              <DatePicker
+                {...field}
+                selected={field.value}
+                showTimeSelect
+                filterTime={filterTimes}
+                minDate={minDate}
+                maxDate={maxDate}
+                dateFormat="MMMM d, yyyy h:mm aa"
+                placeholderText="Select a delivery time"
+                className="form-control"
+                timeIntervals={60}
+                popperPlacement="bottom-start"
+              />
+            )}
+          />
+          {renderError(errors.deliveryDateTime)}
         </div>
-        <div className="col-md-3 d-flex align-items-end justify-content-end">
+
+        {/* Submit button */}
+        <div className="col-md-12 d-flex justify-content-end mt-3">
           <button
             type="submit"
-            className="btn btn-primary btn-lg mt-3"
+            className="btn btn-primary btn-lg"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Placing your order..." : "Confirm Order"}
@@ -228,4 +317,5 @@ const CheckoutForm = ({ userInfo, onFormSubmit }: Props) => {
     </div>
   );
 };
+
 export default CheckoutForm;

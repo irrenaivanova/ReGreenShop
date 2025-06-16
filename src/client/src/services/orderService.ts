@@ -8,9 +8,7 @@ export const orderService = {
   makeAnOrder: (orderData: {
     firstName: string;
     lastName: string;
-    cityId: number;
-    street: string;
-    number: number;
+    fullAddress: string;
     paymentMethodId: number;
     deliveryDateTime: string; // ISO string --> new Date().toISOString()
     discountVoucherId: string | null;

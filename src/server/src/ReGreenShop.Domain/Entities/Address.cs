@@ -9,13 +9,15 @@ public class Address : BaseDeletableModel<int>
         Orders = new List<Order>();
     }
 
-    public int CityId { get; set; }
+    public string? FullAddress { get; set; }
 
-    public City City { get; set; } = default!;
+    public int? CityId { get; set; }
 
-    public string Street { get; set; } = string.Empty;
+    public City? City { get; set; } = default!;
 
-    public int Number { get; set; }
+    public string? Street { get; set; } 
+
+    public int? Number { get; set; }
 
     public string UserId { get; set; } = string.Empty;
 

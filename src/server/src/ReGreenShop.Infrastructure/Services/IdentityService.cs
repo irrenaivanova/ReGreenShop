@@ -188,10 +188,7 @@ public class IdentityService : IIdentity
             FirstName = user.FirstName,
             LastName = user.LastName,
             TotalGreenPoints = user.TotalGreenPoints,
-            Street = user.Addresses.LastOrDefault() != null ? user.Addresses.LastOrDefault()!.Street : null,
-            Number = user.Addresses.LastOrDefault() != null ? user.Addresses.LastOrDefault()!.Number : null,
-            CityId = user.Addresses.LastOrDefault() != null ? user.Addresses.LastOrDefault()!.CityId : null,
-            CityName = user.Addresses.LastOrDefault() != null ? user.Addresses.LastOrDefault()!.City.Name : null,
+            FullAddress = user.Addresses.LastOrDefault() != null ? user.Addresses.LastOrDefault()!.FullAddress : null,
         };
 
         return userInfo;
