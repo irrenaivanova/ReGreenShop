@@ -25,8 +25,6 @@ const ChatWidget: React.FC = () => {
   const [input, setInput] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
-
-  // Admin: messages stored per user
   const [messagesMap, setMessagesMap] = useState<Record<string, Message[]>>({});
   const [connectedUsers, setConnectedUsers] = useState<ConnectedUser[]>([]);
   const [currentChatUserId, setCurrentChatUserId] = useState<string | null>(
@@ -87,7 +85,6 @@ const ChatWidget: React.FC = () => {
     };
   }, [user]);
 
-  // Poll connected users for admin
   useEffect(() => {
     if (!user?.isAdmin) return;
 
@@ -112,7 +109,7 @@ const ChatWidget: React.FC = () => {
       } catch (err) {
         console.error("Polling failed", err);
       }
-    }, 5000);
+    }, 2000);
 
     return () => clearInterval(interval);
   }, [user, currentChatUserId]);
@@ -131,7 +128,7 @@ const ChatWidget: React.FC = () => {
         }
         console.log("Disconnected due to inactivity");
       }
-    }, 1 * 60 * 1000); // 1 minute
+    }, 0.2 * 60 * 1000); // 1 minute
   };
 
   useEffect(() => {
@@ -145,7 +142,6 @@ const ChatWidget: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messagesMap, currentChatUserId]);
 
-  // Handle opening/closing chat and connecting (users only)
   const toggleChat = () => {
     const willOpen = !isOpen;
     setIsOpen(willOpen);
@@ -175,6 +171,14 @@ const ChatWidget: React.FC = () => {
 
     if (willOpen && !user?.isAdmin) {
       setUnreadCount(0);
+      resetInactivityTimer();
+    }
+
+    if (!willOpen && !user?.isAdmin) {
+      // If user closes chat manually, clear timer and disconnect
+      if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
+      disconnectFromChatHub();
+      hasConnectedRef.current = false;
     }
   };
 
@@ -186,6 +190,12 @@ const ChatWidget: React.FC = () => {
       delete updated[userId];
       return updated;
     });
+  };
+
+  // Reset timer on input change
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value);
+    resetInactivityTimer(); // reset inactivity timer on typing
   };
 
   const handleSend = () => {
@@ -207,7 +217,7 @@ const ChatWidget: React.FC = () => {
         { senderId: "Me", senderName: "Me", text: input },
       ]);
     }
-
+    resetInactivityTimer();
     setInput("");
   };
 
@@ -321,7 +331,7 @@ const ChatWidget: React.FC = () => {
                 className="form-control form-control-sm me-2"
                 placeholder="Type your message..."
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={handleInputChange}
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
               />
               <button
