@@ -1,5 +1,10 @@
-import React, { useState } from "react";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import React, { useState, useRef } from "react";
+import {
+  GoogleMap,
+  Marker,
+  Autocomplete,
+  useJsApiLoader,
+} from "@react-google-maps/api";
 
 const containerStyle = {
   width: "100%",
@@ -7,76 +12,101 @@ const containerStyle = {
 };
 
 const defaultCenter = {
-  lat: 42.6977, // Default: Sofia, Bulgaria
+  lat: 42.6977,
   lng: 23.3219,
 };
 
 const MapFinder: React.FC = () => {
-  const [city, setCity] = useState("");
   const [address, setAddress] = useState("");
-  const [number, setNumber] = useState("");
   const [location, setLocation] = useState<google.maps.LatLngLiteral | null>(
     null
   );
 
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
-  const handleFind = async () => {
-    const fullAddress = `${address} ${number}, ${city}`;
-    const geocoder = new window.google.maps.Geocoder();
+  const { isLoaded, loadError } = useJsApiLoader({
+    googleMapsApiKey: apiKey || "",
+    libraries: ["places"],
+  });
 
-    geocoder.geocode({ address: fullAddress }, (results, status) => {
+  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+
+  const onLoadAutocomplete = (
+    autocomplete: google.maps.places.Autocomplete
+  ) => {
+    autocompleteRef.current = autocomplete;
+  };
+
+  const onPlaceChanged = () => {
+    if (autocompleteRef.current !== null) {
+      const place = autocompleteRef.current.getPlace();
+
+      if (!place.geometry || !place.geometry.location) {
+        alert("No details available for input: '" + place.name + "'");
+        return;
+      }
+
+      const lat = place.geometry.location.lat();
+      const lng = place.geometry.location.lng();
+
+      setLocation({ lat, lng });
+      setAddress(place.formatted_address || "");
+    }
+  };
+
+  const handleMarkerDragEnd = (e: google.maps.MapMouseEvent) => {
+    if (!e.latLng) return;
+
+    const lat = e.latLng.lat();
+    const lng = e.latLng.lng();
+
+    setLocation({ lat, lng });
+
+    // Reverse geocode to get address from lat,lng
+    const geocoder = new window.google.maps.Geocoder();
+    geocoder.geocode({ location: { lat, lng } }, (results, status) => {
       if (status === "OK" && results && results[0]) {
-        const { lat, lng } = results[0].geometry.location;
-        setLocation({ lat: lat(), lng: lng() });
+        setAddress(results[0].formatted_address || "");
       } else {
-        alert("Address not found. Please check the input.");
+        console.warn("Reverse geocode failed: " + status);
       }
     });
   };
 
-  if (!apiKey) {
-    return <p>Missing Google Maps API key</p>;
-  }
+  if (loadError) return <p>Error loading Google Maps</p>;
+
+  if (!isLoaded) return <p>Loading Map...</p>;
 
   return (
     <div>
       <div className="mb-3">
-        <input
-          type="text"
-          placeholder="City"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          className="form-control mb-2"
-        />
-        <input
-          type="text"
-          placeholder="Address"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          className="form-control mb-2"
-        />
-        <input
-          type="text"
-          placeholder="Number"
-          value={number}
-          onChange={(e) => setNumber(e.target.value)}
-          className="form-control mb-2"
-        />
-        <button onClick={handleFind} className="btn btn-primary">
-          Find Me
-        </button>
+        <Autocomplete
+          onLoad={onLoadAutocomplete}
+          onPlaceChanged={onPlaceChanged}
+        >
+          <input
+            type="text"
+            placeholder="Enter address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            className="form-control mb-2"
+          />
+        </Autocomplete>
       </div>
 
-      <LoadScript googleMapsApiKey={apiKey}>
-        <GoogleMap
-          mapContainerStyle={containerStyle}
-          center={location || defaultCenter}
-          zoom={location ? 16 : 10}
-        >
-          {location && <Marker position={location} />}
-        </GoogleMap>
-      </LoadScript>
+      <GoogleMap
+        mapContainerStyle={containerStyle}
+        center={location || defaultCenter}
+        zoom={location ? 16 : 10}
+      >
+        {location && (
+          <Marker
+            position={location}
+            draggable={true}
+            onDragEnd={handleMarkerDragEnd}
+          />
+        )}
+      </GoogleMap>
     </div>
   );
 };
