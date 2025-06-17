@@ -39,7 +39,7 @@ public class GetTopProductsQuery : IRequest<IEnumerable<ProductInList>>
                 .OrderBy(x => x.Stock)
                 .To<ProductInList>()
                 .AsNoTracking()
-                .Take(ProductsInRow*2)
+                .Take(ProductsInRow * 2)
                 .ToListAsync();
 
             topProducts.AddRange(productsTwoForOne);

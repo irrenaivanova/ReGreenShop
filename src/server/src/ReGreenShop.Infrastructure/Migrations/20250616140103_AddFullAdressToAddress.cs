@@ -2,21 +2,20 @@
 
 #nullable disable
 
-namespace ReGreenShop.Infrastructure.Migrations
+namespace ReGreenShop.Infrastructure.Migrations;
+
+/// <inheritdoc />
+public partial class AddFullAdressToAddress : Migration
 {
     /// <inheritdoc />
-    public partial class AddFullAdressToAddress : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
 
-        }
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
 
-        }
     }
 }

@@ -25,6 +25,7 @@ const OnlinePaymentModal: React.FC<OnlinePaymentModalProps> = ({
       show={show}
       onHide={onClose}
       backdrop="static"
+      с
       centered
       contentClassName="bg-light"
     >

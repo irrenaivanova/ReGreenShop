@@ -2,7 +2,6 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ReGreenShop.Application.Common.Interfaces;
 using ReGreenShop.Application.Common.Mappings;
-using ReGreenShop.Application.Deliveries.Queries;
 
 namespace ReGreenShop.Application.Vouchers.Queries;
 public record GetAllVouchersQuery : IRequest<IEnumerable<VoucherModel>>

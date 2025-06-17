@@ -2,8 +2,6 @@ export interface UserInfoForOrder {
   firstName: string;
   lastName: string;
   street: string;
-  number: number;
-  cityId: number;
-  cityName: string;
+  fullAddress: string;
   totalGreenPoints: number;
 }

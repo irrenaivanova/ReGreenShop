@@ -2,58 +2,57 @@
 
 #nullable disable
 
-namespace ReGreenShop.Infrastructure.Migrations
+namespace ReGreenShop.Infrastructure.Migrations;
+
+/// <inheritdoc />
+public partial class NullableBaseCategoryIdinOrderDetails : Migration
 {
     /// <inheritdoc />
-    public partial class NullableBaseCategoryIdinOrderDetails : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropForeignKey(
-                name: "FK_OrderDetails_Categories_BaseCategoryId",
-                table: "OrderDetails");
+        migrationBuilder.DropForeignKey(
+            name: "FK_OrderDetails_Categories_BaseCategoryId",
+            table: "OrderDetails");
 
-            migrationBuilder.AlterColumn<int>(
-                name: "BaseCategoryId",
-                table: "OrderDetails",
-                type: "int",
-                nullable: true,
-                oldClrType: typeof(int),
-                oldType: "int");
+        migrationBuilder.AlterColumn<int>(
+            name: "BaseCategoryId",
+            table: "OrderDetails",
+            type: "int",
+            nullable: true,
+            oldClrType: typeof(int),
+            oldType: "int");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_OrderDetails_Categories_BaseCategoryId",
-                table: "OrderDetails",
-                column: "BaseCategoryId",
-                principalTable: "Categories",
-                principalColumn: "Id");
-        }
+        migrationBuilder.AddForeignKey(
+            name: "FK_OrderDetails_Categories_BaseCategoryId",
+            table: "OrderDetails",
+            column: "BaseCategoryId",
+            principalTable: "Categories",
+            principalColumn: "Id");
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropForeignKey(
-                name: "FK_OrderDetails_Categories_BaseCategoryId",
-                table: "OrderDetails");
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropForeignKey(
+            name: "FK_OrderDetails_Categories_BaseCategoryId",
+            table: "OrderDetails");
 
-            migrationBuilder.AlterColumn<int>(
-                name: "BaseCategoryId",
-                table: "OrderDetails",
-                type: "int",
-                nullable: false,
-                defaultValue: 0,
-                oldClrType: typeof(int),
-                oldType: "int",
-                oldNullable: true);
+        migrationBuilder.AlterColumn<int>(
+            name: "BaseCategoryId",
+            table: "OrderDetails",
+            type: "int",
+            nullable: false,
+            defaultValue: 0,
+            oldClrType: typeof(int),
+            oldType: "int",
+            oldNullable: true);
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_OrderDetails_Categories_BaseCategoryId",
-                table: "OrderDetails",
-                column: "BaseCategoryId",
-                principalTable: "Categories",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-        }
+        migrationBuilder.AddForeignKey(
+            name: "FK_OrderDetails_Categories_BaseCategoryId",
+            table: "OrderDetails",
+            column: "BaseCategoryId",
+            principalTable: "Categories",
+            principalColumn: "Id",
+            onDelete: ReferentialAction.Restrict);
     }
 }

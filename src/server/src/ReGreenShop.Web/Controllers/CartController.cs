@@ -1,15 +1,11 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using ReGreenShop.Application.Carts.Commands;
+using ReGreenShop.Application.Carts.Models;
 using ReGreenShop.Application.Carts.Queries.GetNumberOfProductInCart;
 using ReGreenShop.Application.Carts.Queries.GetNumberOfProductsInCart;
 using ReGreenShop.Application.Carts.Queries.ViewProductsInCartQuery;
 using ReGreenShop.Application.Common.Helpers;
-using ReGreenShop.Domain.Entities;
-using ReGreenShop.Web.Services;
-using Stripe.Checkout;
-using Stripe;
-using ReGreenShop.Application.Carts.Models;
 
 namespace ReGreenShop.Web.Controllers;
 public class CartController : BaseController

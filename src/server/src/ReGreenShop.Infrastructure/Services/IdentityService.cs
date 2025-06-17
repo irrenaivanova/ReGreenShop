@@ -1,6 +1,4 @@
-using System.Linq.Expressions;
 using System.Security.Claims;
-using Azure.Core;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ReGreenShop.Application.Common.Exceptions;

@@ -60,7 +60,7 @@ public class CartService : ICart
     public async Task<int> GetCountProductsInCartAsync()
     {
         var cartId = await GetCartIdAsync();
-        var result =  this.data.CartItems.Where(x => x.CartId == cartId).Sum(x => x.Quantity);
+        var result = this.data.CartItems.Where(x => x.CartId == cartId).Sum(x => x.Quantity);
         return result;
     }
     public async Task<int> GetCountOfConcreteProductInCartAsync(int id)

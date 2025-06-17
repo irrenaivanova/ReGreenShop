@@ -126,7 +126,7 @@ const ChatWidget: React.FC = () => {
         }
         console.log("Disconnected due to inactivity");
       }
-    }, 0.2 * 60 * 1000);
+    }, 0.5 * 60 * 1000);
   };
 
   useEffect(() => {

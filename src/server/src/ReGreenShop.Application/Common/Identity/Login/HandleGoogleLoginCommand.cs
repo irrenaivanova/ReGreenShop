@@ -1,7 +1,4 @@
 using MediatR;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Routing;
-using ReGreenShop.Application.Common.Identity;
 using ReGreenShop.Application.Common.Interfaces;
 
 namespace ReGreenShop.Application.Common.Identity.Login;

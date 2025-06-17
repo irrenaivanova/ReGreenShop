@@ -1,5 +1,4 @@
 using MediatR;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -11,13 +10,11 @@ using ReGreenShop.Application.Common.Helpers;
 using ReGreenShop.Application.Common.Identity.Login;
 using ReGreenShop.Application.Common.Identity.Register;
 using ReGreenShop.Application.GreenAlternatives.GetTotalGreenImpact;
-using ReGreenShop.Application.Orders.Queries.GetMyOrdersQuery;
 using ReGreenShop.Application.Users.Commands;
 using ReGreenShop.Application.Users.Queries.GetAllUnreadNotificationsQuery;
 using ReGreenShop.Application.Users.Queries.GetUserInfo;
 using ReGreenShop.Application.Users.Queries.GetUserInfoForOrderQuery;
 using ReGreenShop.Infrastructure.Persistence.Identity;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace ReGreenShop.Web.Controllers;
 public class UserController : BaseController
@@ -111,7 +108,7 @@ public class UserController : BaseController
         { "accessToken", result.AccessToken },
         { "userId", result.UserId },
         { "userName", result.UserName },
-        { "isAdmin", result.IsAdmin.ToString().ToLower() } 
+        { "isAdmin", result.IsAdmin.ToString().ToLower() }
     };
 
         var redirectUrl = QueryHelpers.AddQueryString(returnUrl, queryParams);

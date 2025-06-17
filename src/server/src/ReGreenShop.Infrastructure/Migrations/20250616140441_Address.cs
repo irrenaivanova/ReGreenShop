@@ -2,27 +2,26 @@
 
 #nullable disable
 
-namespace ReGreenShop.Infrastructure.Migrations
+namespace ReGreenShop.Infrastructure.Migrations;
+
+/// <inheritdoc />
+public partial class Address : Migration
 {
     /// <inheritdoc />
-    public partial class Address : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AddColumn<string>(
-                name: "FullAddress",
-                table: "Addresses",
-                type: "nvarchar(max)",
-                nullable: true);
-        }
+        migrationBuilder.AddColumn<string>(
+            name: "FullAddress",
+            table: "Addresses",
+            type: "nvarchar(max)",
+            nullable: true);
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropColumn(
-                name: "FullAddress",
-                table: "Addresses");
-        }
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropColumn(
+            name: "FullAddress",
+            table: "Addresses");
     }
 }

@@ -16,7 +16,7 @@ interface Props {
   userInfo: {
     firstName: string;
     lastName: string;
-    address: string;
+    fullAddress: string;
     totalGreenPoints: number;
   };
   onFormSubmit: (data: any, paymentMethodId: number) => void;
@@ -50,7 +50,6 @@ const CheckoutForm = ({ userInfo, onFormSubmit }: Props) => {
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Google Maps API Loader with Places library
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: apiKey,
@@ -65,7 +64,6 @@ const CheckoutForm = ({ userInfo, onFormSubmit }: Props) => {
   );
   const [fullAddress, setFullAddress] = useState("");
 
-  // Valid delivery time check
   const isValidDeliveryTime = (time: Date) => {
     const now = new Date();
     const fourHoursFromNow = addHours(now, 4);
@@ -75,46 +73,41 @@ const CheckoutForm = ({ userInfo, onFormSubmit }: Props) => {
 
   const filterTimes = (time: Date) => isValidDeliveryTime(time);
 
-  // Load payment methods on mount
   useEffect(() => {
     utilityService
       .getAllPaymentMethods()
       .then((res) => setPaymentMethods(res.data.data));
   }, []);
 
-  // Initialize form & address/map from userInfo.address
   useEffect(() => {
-    if (!userInfo) return;
+    if (!userInfo || !isLoaded) return;
 
     setValue("firstName", userInfo.firstName);
     setValue("lastName", userInfo.lastName);
-    setValue("paymentMethodId", ""); // Reset payment method on load
+    setValue("paymentMethodId", "");
 
-    setFullAddress(userInfo.address);
-    setValue("fullAddress", userInfo.address);
+    const address = userInfo.fullAddress;
+    setFullAddress(address);
+    setValue("fullAddress", address);
 
-    // Geocode to get lat/lng from address string
-    if (isLoaded && userInfo.address) {
-      const geocoder = new window.google.maps.Geocoder();
-      geocoder.geocode({ address: userInfo.address }, (results, status) => {
-        if (status === "OK" && results && results[0]) {
-          const loc = results[0].geometry.location;
-          setLocation({ lat: loc.lat(), lng: loc.lng() });
-        } else {
-          setLocation(null);
-        }
-      });
-    }
-  }, [userInfo, setValue, isLoaded]);
+    const geocoder = new window.google.maps.Geocoder();
+    geocoder.geocode({ address }, (results, status) => {
+      if (status === "OK" && results && results[0]) {
+        const loc = results[0].geometry.location;
+        setLocation({ lat: loc.lat(), lng: loc.lng() });
+      } else {
+        console.warn("Geocoding failed: " + status);
+        setLocation(defaultCenter);
+      }
+    });
+  }, [userInfo, isLoaded]);
 
-  // Autocomplete load
   const onLoadAutocomplete = (
     autocomplete: google.maps.places.Autocomplete
   ) => {
     autocompleteRef.current = autocomplete;
   };
 
-  // When place selected from autocomplete
   const onPlaceChanged = () => {
     if (autocompleteRef.current !== null) {
       const place = autocompleteRef.current.getPlace();
@@ -138,7 +131,6 @@ const CheckoutForm = ({ userInfo, onFormSubmit }: Props) => {
     }
   };
 
-  // When marker is dragged, update position and address input via reverse geocoding
   const handleMarkerDragEnd = (e: google.maps.MapMouseEvent) => {
     if (!e.latLng) return;
     const lat = e.latLng.lat();
@@ -160,7 +152,6 @@ const CheckoutForm = ({ userInfo, onFormSubmit }: Props) => {
     });
   };
 
-  // On submit, sanitize & send
   const handleInternalSubmit = async (data: any) => {
     setIsSubmitting(true);
 
@@ -241,7 +232,6 @@ const CheckoutForm = ({ userInfo, onFormSubmit }: Props) => {
           {renderError(errors.fullAddress)}
         </div>
 
-        {/* Map */}
         <div className="col-md-12">
           <GoogleMap
             mapContainerStyle={containerStyle}
@@ -258,8 +248,7 @@ const CheckoutForm = ({ userInfo, onFormSubmit }: Props) => {
           </GoogleMap>
         </div>
 
-        {/* Payment Method */}
-        <div className="col-md-6">
+        <div className="col-md-4">
           <label className="form-label">Payment Method</label>
           <select
             className="form-select"
@@ -277,8 +266,7 @@ const CheckoutForm = ({ userInfo, onFormSubmit }: Props) => {
           {renderError(errors.paymentMethodId)}
         </div>
 
-        {/* Delivery Time */}
-        <div className="col-md-6">
+        <div className="col-md-4">
           <label className="form-label mb-2">Delivery Time</label>
           <Controller
             control={control}

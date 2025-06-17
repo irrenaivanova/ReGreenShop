@@ -16,7 +16,7 @@ public class Order : BaseDeletableModel<string>
 
     public string UserId { get; set; } = string.Empty;
 
-    public decimal TotalPrice { get; set; } 
+    public decimal TotalPrice { get; set; }
 
     public OrderStatus Status { get; set; }
 

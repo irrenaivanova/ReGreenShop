@@ -1,6 +1,5 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -105,7 +104,7 @@ public static class ServiceRegistration
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddGoogle(options =>
             {
-                
+
                 options.ClientId = googleClientId;
                 options.ClientSecret = googleClientSecret;
                 options.SignInScheme = IdentityConstants.ExternalScheme;

@@ -2,7 +2,6 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ReGreenShop.Application.Common.Exceptions;
 using ReGreenShop.Application.Common.Interfaces;
-using ReGreenShop.Application.Users.Queries.GetAllUnreadNotificationsQuery;
 
 namespace ReGreenShop.Application.Users.Commands;
 public record ReadNotificationsCommand : IRequest<Unit>

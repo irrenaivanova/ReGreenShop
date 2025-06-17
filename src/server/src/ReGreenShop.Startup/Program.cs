@@ -12,14 +12,12 @@ using ReGreenShop.Infrastructure.Persistence;
 using ReGreenShop.Infrastructure.Persistence.Seeding.Common;
 using ReGreenShop.Startup.AuthorizationFilter;
 using ReGreenShop.Web;
+using ReGreenShop.Web.Hubs;
 using ReGreenShop.Web.Middleware;
+using ReGreenShop.Web.ModelBinders;
 using Serilog;
 using static ReGreenShop.Application.ServiceRegistration;
 using static ReGreenShop.Web.ServiceRegistration;
-using static ReGreenShop.Application.Common.GlobalConstants;
-using ReGreenShop.Application.Common.Services;
-using ReGreenShop.Web.ModelBinders;
-using ReGreenShop.Web.Hubs;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -118,7 +116,7 @@ RecurringJob.AddOrUpdate<PromoJob>("Promotion Service", service => service.Execu
 RecurringJob.AddOrUpdate<DeleteCartsJob>("DeleteUnUsedCarts Service", service => service.Execute(CancellationToken.None), Cron.Daily);
 
 app.UseCustomExceptionHandler();
-    
+
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();

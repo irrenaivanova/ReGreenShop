@@ -71,7 +71,7 @@ public record SearchAllProducts(int page,
             int totalPages = (int)Math.Ceiling(totalCount / (double)request.pageSize);
 
             var products = await query.OrderBy(p => p.Id)
-                         .OrderBy(x => x.Stock)  
+                         .OrderBy(x => x.Stock)
                          .Skip((request.page - 1) * request.pageSize)
                          .Take(request.pageSize)
                          .To<AdminProductInListModel>()

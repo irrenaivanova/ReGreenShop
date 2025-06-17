@@ -1,7 +1,7 @@
 namespace ReGreenShop.Application.Orders.Commands.MakeAnOrder;
 public class ChangeUserModel
 {
-    public  int  GreenPoints {get; set; }
+    public int GreenPoints { get; set; }
 
     public string FirstName { get; set; } = string.Empty;
 

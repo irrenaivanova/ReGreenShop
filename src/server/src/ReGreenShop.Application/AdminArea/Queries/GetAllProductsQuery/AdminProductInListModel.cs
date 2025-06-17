@@ -1,7 +1,5 @@
-using System.Globalization;
 using AutoMapper;
 using ReGreenShop.Application.Common.Mappings;
-using ReGreenShop.Application.Products.Models;
 using ReGreenShop.Domain.Entities;
 using static ReGreenShop.Application.Common.GlobalConstants;
 
@@ -46,5 +44,5 @@ public class AdminProductInListModel : IMapFrom<Product>, IMapExplicitly
         .ForMember(x => x.Labels, cfg => cfg.MapFrom(x => x.LabelProducts.Select(x => x.Label.Name)))
         .ForMember(x => x.DiscountPercentage, cfg => cfg.MapFrom(x => x.LabelProducts.Any(y => y.Label.Name == Offer) ?
                                                         x.LabelProducts.FirstOrDefault(y => y.Label.Name == Offer)!.PercentageDiscount : null));
-   }
+    }
 }

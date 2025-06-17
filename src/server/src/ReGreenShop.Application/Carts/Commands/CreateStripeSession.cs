@@ -19,7 +19,7 @@ public record CreateStripeSession([FromBody] string orderId) : IRequest<string>
 
         public async Task<string> Handle(CreateStripeSession request, CancellationToken cancellationToken)
         {
-            var order = await data.Orders.FirstOrDefaultAsync(x => x.Id == request.orderId);
+            var order = await this.data.Orders.FirstOrDefaultAsync(x => x.Id == request.orderId);
             if (order == null)
             {
                 throw new NotFoundException("Order");
@@ -55,7 +55,7 @@ public record CreateStripeSession([FromBody] string orderId) : IRequest<string>
                 Session session = await service.CreateAsync(options);
                 return session.Id;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new BusinessRulesException("Stripe");
             }

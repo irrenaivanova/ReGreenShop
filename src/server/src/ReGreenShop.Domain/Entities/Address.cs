@@ -15,7 +15,7 @@ public class Address : BaseDeletableModel<int>
 
     public City? City { get; set; } = default!;
 
-    public string? Street { get; set; } 
+    public string? Street { get; set; }
 
     public int? Number { get; set; }
 

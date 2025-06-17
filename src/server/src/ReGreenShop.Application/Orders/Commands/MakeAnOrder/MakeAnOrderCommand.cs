@@ -1,6 +1,3 @@
-
-using System.IO;
-using System.Reflection;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -31,7 +28,7 @@ public record MakeAnOrderCommand(MakeAnOrderModel model) : IRequest<string>
         private readonly INotifier notifier;
 
         public MakeAnOrderCommandHandler(ICurrentUser currentUser, IData data, ICart cartService, IDelivery deliveryService,
-                                        IIdentity userService, IPdfGenerator pdfGenerator,IStorage storage, IEmailSender emailSender,
+                                        IIdentity userService, IPdfGenerator pdfGenerator, IStorage storage, IEmailSender emailSender,
                                         IWebHostEnvironment web, INotifier notifier)
         {
             this.currentUser = currentUser;
@@ -49,7 +46,7 @@ public record MakeAnOrderCommand(MakeAnOrderModel model) : IRequest<string>
         public async Task<string> Handle(MakeAnOrderCommand request, CancellationToken cancellationToken)
         {
             // check if the user is authenticated
-            var userId =  this.currentUser.UserId;
+            var userId = this.currentUser.UserId;
             if (userId == null)
             {
                 throw new AuthenticationException("Please log in to complete your purchase.");
@@ -136,7 +133,7 @@ public record MakeAnOrderCommand(MakeAnOrderModel model) : IRequest<string>
             }
 
             // Calculate the total price including delivery price and discounts
-            var totalPriceOrder = Math.Round(totalPriceProducts + deliveryCost.Value - discount,2);
+            var totalPriceOrder = Math.Round(totalPriceProducts + deliveryCost.Value - discount, 2);
 
             // Create a new delivery address if one does not already exist
             var address = await this.data.Addresses.Where(x => x.UserId == userId)
@@ -166,7 +163,7 @@ public record MakeAnOrderCommand(MakeAnOrderModel model) : IRequest<string>
                     PaymentMethodId = request.model.PaymentMethodId,
                     Status = Domain.Entities.Enum.PaymentStatus.Pending,
                 },
-                DiscountVoucherId = request.model.DiscountVoucherId,    
+                DiscountVoucherId = request.model.DiscountVoucherId,
             };
 
             // Add order details
@@ -269,7 +266,7 @@ public record MakeAnOrderCommand(MakeAnOrderModel model) : IRequest<string>
             };
 
             var userName = await this.userService.GetUserName(userId);
-            await this.emailSender.SendTemplateEmailAsync(SystemEmailSender, SystemEmailSenderName,userName!,templateId, dynamicDta, new List<EmailAttachment> { attachment });
+            await this.emailSender.SendTemplateEmailAsync(SystemEmailSender, SystemEmailSenderName, userName!, templateId, dynamicDta, new List<EmailAttachment> { attachment });
             return newOrder.Id;
         }
     }

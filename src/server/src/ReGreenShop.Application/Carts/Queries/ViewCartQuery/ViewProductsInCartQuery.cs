@@ -83,14 +83,14 @@ public record ViewProductsInCartQuery : IRequest<CartModel>
             var totalPriceProducts = cartItems.SelectMany(x => x.Products).Sum(x => x.TotalPriceProduct);
 
 
-            (decimal? deliveryCost, string deliveryMessage) =  this.deliveryService.CalculateTheDeliveryPrice(totalPriceProducts);
+            (decimal? deliveryCost, string deliveryMessage) = this.deliveryService.CalculateTheDeliveryPrice(totalPriceProducts);
 
             var cartModel = new CartModel
             {
                 ProductsByCategories = cartItems,
                 TotalPrice = totalPriceProducts,
                 DeliveryMessage = deliveryMessage,
-                DeliveryPriceProducts = deliveryCost != null ? Math.Round(deliveryCost.Value,2) : default!
+                DeliveryPriceProducts = deliveryCost != null ? Math.Round(deliveryCost.Value, 2) : default!
             };
 
             return cartModel;

@@ -1,6 +1,5 @@
 using MediatR;
 using ReGreenShop.Application.Common.Identity;
-using ReGreenShop.Application.Common.Interfaces;
 
 namespace ReGreenShop.Application.Users.Queries.GetUserInfoForOrderQuery;
 public record GetUserInfoForOrderQuery : IRequest<UserInfoForOrderModel>

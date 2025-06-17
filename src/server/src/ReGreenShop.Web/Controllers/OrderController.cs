@@ -1,12 +1,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ReGreenShop.Application.AdminArea.Commands.FinishAnOrder;
 using ReGreenShop.Application.Common.Helpers;
-using ReGreenShop.Application.Common.Identity.Login;
 using ReGreenShop.Application.Orders.Commands.MakeAnOrder;
 using ReGreenShop.Application.Orders.Queries.GetMyOrdersQuery;
-using ReGreenShop.Application.Orders.Queries.GetPendingOrdersQuery;
 
 
 namespace ReGreenShop.Web.Controllers;

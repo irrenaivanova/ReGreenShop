@@ -10,7 +10,7 @@ public class RootCategoryModel
 
     public string Name { get; set; } = string.Empty;
 
-    public string? ImagePath { get; set; } 
+    public string? ImagePath { get; set; }
 
     public IList<SubCategoryModel> SubCategories { get; set; }
 }
