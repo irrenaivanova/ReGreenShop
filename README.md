@@ -1,6 +1,6 @@
 ## 🛒 ReGreenShop – Eco Grocery Store
 
-🔗 📽️ This is the [link](screenshots/presentation.pdf) to the presentation I made during the graduation at the Amdaris internship
+🔗 📽️ This is the [link](screenshots/Presentation.pdf) to the presentation I made during the graduation at the Amdaris internship
 
 ReGreenShop is a full-stack ASP.NET Core 8.0 web application developed as part of an internship project. It simulates a modern online grocery store — similar to eBag and Kolichka — with an eco-conscious twist. Users not only shop for groceries but also participate in a built-in recycling program that rewards them with discount points.
 
