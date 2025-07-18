@@ -1,9 +1,6 @@
+## 🛒 ReGreenShop – Eco Grocery Store
 
-🔗 [📽️ Project Presentation (Madrais)](https://example.com/presentation)
-🔗 [📊 Order Flow Diagram](https://example.com/order-diagram)
-
----
-# 🛒 ReGreenShop – ASP.NET Core Eco Grocery Store
+🔗 📽️ This is the [link](screenshots/presentation.pdf) to the presentation I made during the graduation at the Amdaris internship
 
 ReGreenShop is a full-stack ASP.NET Core 8.0 web application developed as part of an internship project. It simulates a modern online grocery store — similar to eBag and Kolichka — with an eco-conscious twist. Users not only shop for groceries but also participate in a built-in recycling program that rewards them with discount points.
 
@@ -18,7 +15,7 @@ ReGreenShop is designed for users in urban areas like Sofia, where recycling opt
 - Exchange points for **discount vouchers**.
 - All recycling rules are explained in a dedicated **ReGreenRules** section.
 
-The application emphasizes **scalability**, **clean architecture**, and **production-readiness**, despite being built in just two months with no prior React experience.
+The application emphasizes **scalability**, **clean architecture**, and **production-readiness**.
 
 ---
 
@@ -77,9 +74,6 @@ There are two main roles:
 ### DevOps
 
 - **Microsoft Azure** deployment:
-  - Web App (frontend)
-  - Web App (backend)
-  - Azure SQL Database
 - Debugging via **Azure Kudu**
 - WebSocket setup for SignalR
 - QR code for easy app access
@@ -87,16 +81,12 @@ There are two main roles:
 ---
 
 ## 📦 E-Commerce Features
-
+Make an order flow diagram
+<p align="center">
+<img src="screenshots/makeAnOrderDiagram.png" alt="makeAnOrderDiagram"  width="500">
+</p>
 - Real-time stock validation before checkout.
 - Complex order flow using multiple services:
-  - **CartService**
-  - **CurrentUserService**
-  - **PriceCalculatorService**
-  - **DeliveryService**
-  - **PDFGeneratorService**
-  - **StorageService**
-  - **SendGridService**
 - Smart cart merging (session to user)
 - Stripe for secure online payments
 - Scheduled Hangfire jobs:
@@ -138,8 +128,11 @@ There are two main roles:
 
 ## 🔗 Live Demo
 
-> Accessible via QR code (distributed during presentation).  
-If unavailable, hosting costs or platform limits may apply.
+If you’d like to see and browse the app in action, visit the link below:
+
+🌐 [Live Demo on Azure](https://regreenshop-bjd6fje3ekfmgxbf.westeurope-01.azurewebsites.net/)
+
+> If the link is unavailable, it’s likely because my free Azure student credits have expired. Hosting ASP.NET Core applications with SQL Server requires resources that are not fully supported by most free platforms. If the link doesn’t work, feel free to check the repository and run the app locally using the setup guide below.
 
 ---
 
@@ -156,12 +149,12 @@ If unavailable, hosting costs or platform limits may apply.
    - `appsettings.json`: DB connection, SendGrid, Stripe, Google APIs
 5. **Database**
    - EF Core migrations applied automatically
-   - Optional: Seed product data via scraping tool
 
----
 
 ## 🗃️ Database Overview
-
+<p align="center">
+<img src="screenshots/DataBase.png" alt="App Screenshot"  width="800">
+</p>
 - Clean relational model with indexed soft deletes
 - Sensitive data nulled out for GDPR compliance
 - Single shopping cart per user/session
@@ -172,29 +165,10 @@ If unavailable, hosting costs or platform limits may apply.
 ## 🧩 Notable Features
 
 - Session-based cart merging with user cart on login
-- Custom promotions engine
+- Custom promotions engine via recurring weekly **Hangfire** job
 - Stripe fallback logic (order saved as "Unpaid" if payment fails)
 - User notification system for orders and recycling points
-- Real-time chat auto-disconnect logic (1 min for demo, 10 min in prod)
-- Manual trigger for weekly promotion job (via Hangfire dashboard)
+- Real-time chat auto-disconnect logic 
 
 ---
 
-
-
-
-
-
-
-
-
-
-
-
-
-# ReGreenShop
-
-##  💾 Database Diagram
-<p align="center">
-<img src="screenshots/DataBase.png" alt="App Screenshot"  width="800">
-</p>
